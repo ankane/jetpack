@@ -2,6 +2,8 @@
 
 :fire: A friendly package manager for R
 
+![Screenshot](https://gist.githubusercontent.com/ankane/b6988db2802aca68a589b31e41b44195/raw/62d228452da6c0a54330de33c6068da23d271996/console.gif)
+
 Uses [Packrat](https://rstudio.github.io/packrat/) to manage dependencies
 
 ## Installing
