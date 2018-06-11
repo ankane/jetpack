@@ -57,11 +57,12 @@ loadDeps <- function() {
     }
   }
 
-  libs <- c("packrat", "devtools", "desc", "docopt", "crayon")
+  libs <- c("packrat", "devtools", "crayon", "desc", "docopt")
   for (lib in libs) {
 
     if (!tryLoad(lib)) {
-      install.packages(lib, repos="https://cloud.r-project.org/")
+      message(paste0("Installing Jetpack dependency: ", lib))
+      install.packages(lib, repos="https://cloud.r-project.org/", quiet=TRUE)
       tryLoad(lib)
     }
   }
