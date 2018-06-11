@@ -1,0 +1,216 @@
+#!/usr/bin/env Rscript
+
+# helpers
+
+abort <- function(msg, color=TRUE) {
+  if (color) {
+    cat(crayon::red(paste0(msg, "\n")))
+  } else{
+    message(msg)
+  }
+  quit(status=1)
+}
+
+installHelper <- function() {
+  # in case we're missing any deps
+  # unfortunately, install_deps doesn't check version requirements
+  # https://github.com/r-lib/devtools/issues/1314
+  devtools::install_deps(".", dependencies=TRUE, upgrade=FALSE)
+
+  suppressMessages(packrat::clean())
+  suppressMessages(packrat::snapshot())
+}
+
+loadDeps <- function() {
+  if (require("packrat", quietly=TRUE, warn.conflicts=FALSE)) {
+    packrat::off()
+  }
+
+  libs <- c("packrat", "devtools", "desc", "docopt", "crayon")
+  for (lib in libs) {
+    if (!requireNamespace(lib, quietly=TRUE)) {
+      installed.packages(lib)
+    }
+  }
+
+  packrat::on()
+}
+
+pkgCheck <- function(name) {
+  if (!pkgInstalled(name)) {
+    abort(paste0("Cannot find package '", name, "' in DESCRIPTION file"))
+  }
+}
+
+pkgInstalled <- function(name) {
+  name %in% rownames(installed.packages())
+}
+
+pkgRemove <- function(name) {
+  if (pkgInstalled(name)) {
+    suppressMessages(remove.packages(name))
+  }
+}
+
+restore <- function() {
+  status <- packrat::status(quiet=TRUE)
+  if (any(is.na(status$library.version))) {
+    packrat::restore()
+  }
+}
+
+showStatus <- function() {
+  status <- packrat::status(quiet=TRUE)
+  for (i in 1:nrow(status)) {
+    row <- status[i, ]
+    message(paste0("Using ", row$package, " ", row$packrat.version))
+  }
+}
+
+success <- function(msg) {
+  cat(crayon::green(paste0(msg, "\n")))
+}
+
+# commands
+
+install <- function() {
+  restore()
+
+  tryCatch({
+    installHelper()
+  }, warning=function(err) {
+    abort(conditionMessage(err))
+  })
+
+  showStatus()
+
+  success("Pack complete!")
+}
+
+init <- function() {
+  if (is.null(getOption("repos"))) {
+    options(repos = "https://cloud.r-project.org/")
+  }
+
+  # create description file
+  if (!file.exists("DESCRIPTION")) {
+    write("Package: app", file="DESCRIPTION")
+  }
+
+  # install packrat
+  if (!file.exists("packrat")) {
+    packrat::init(".")
+  }
+
+  installHelper()
+}
+
+add <- function(name, remote=NULL) {
+  restore()
+
+  for (r in remote) {
+    desc::desc_set_remotes(r)
+  }
+
+  for (n in name) {
+    parts <- strsplit(name, "@")[[1]]
+    version <- NULL
+    version_str <- "*"
+    if (length(parts) != 1) {
+      n <- parts[1]
+      version <- parts[2]
+      version_str <- paste("==", version)
+    }
+
+    desc::desc_set_dep(n, "Imports", version=version_str)
+
+    if (any(remote) || !is.null(version)) {
+      pkgRemove(n)
+    }
+  }
+
+  tryCatch({
+    installHelper()
+  }, warning=function(err) {
+    # revert update
+    for (n in name) {
+      desc::desc_del_dep(n, "Imports")
+    }
+    abort(conditionMessage(err))
+  })
+
+  showStatus()
+
+  success("Pack complete!")
+}
+
+remove <- function(name, remote) {
+  restore()
+
+  pkgCheck(name)
+
+  for (n in name) {
+    desc::desc_del_dep(n, "Imports")
+  }
+
+  if (any(remote)) {
+    for (r in remote) {
+      desc::desc_del_remotes(r)
+    }
+  }
+
+  installHelper()
+
+  success(paste0("Removed ", name, "!"))
+}
+
+update <- function(name) {
+  restore()
+
+  currentVersion <- NULL
+
+  pkgCheck(name)
+
+  currentVersion <- packageVersion(name)
+  pkgRemove(name)
+  installHelper()
+  newVersion <- packageVersion(name)
+
+  msg <- paste0("Updated ", name, " to ", newVersion, " (was ", currentVersion, ")")
+
+  success(msg)
+}
+
+# main
+
+main <- function() {
+  loadDeps()
+
+  doc <- "Usage:
+  jetpack [install]
+  jetpack init
+  jetpack add <package>... [--remote=<remote>]...
+  jetpack remove <package>... [--remote=<remote>]...
+  jetpack update <package>"
+
+  opts <- NULL
+  tryCatch({
+    opts <- docopt::docopt(doc)
+  }, error=function(err) {
+    abort(doc, color=FALSE)
+  })
+
+  if (opts$init) {
+    init()
+  } else if (opts$add) {
+    add(opts$package, opts$remote)
+  } else if (opts$remove) {
+    remove(opts$package, opts$remote)
+  } else if (opts$update) {
+    update(opts$package)
+  } else {
+    install()
+  }
+}
+
+main()
