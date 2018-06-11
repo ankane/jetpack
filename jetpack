@@ -11,10 +11,25 @@ abort <- function(msg, color=TRUE) {
   quit(status=1)
 }
 
+handleVersionDeps <- function() {
+  deps <- desc::desc_get_deps()
+  deps <- deps[startsWith(deps$version, "== "), ]
+  for (i in 1:nrow(deps)) {
+    row <- deps[i, ]
+    name <- row$package
+    version <- sub("== ", "", row$version)
+
+    if (!pkgInstalled(name) || as.character(packageVersion(name)) != version) {
+      devtools::install_version(name, version=version)
+    }
+  }
+}
+
 installHelper <- function() {
   # in case we're missing any deps
   # unfortunately, install_deps doesn't check version requirements
   # https://github.com/r-lib/devtools/issues/1314
+  handleVersionDeps()
   devtools::install_deps(".", dependencies=TRUE, upgrade=FALSE)
 
   suppressMessages(packrat::clean())
@@ -143,13 +158,6 @@ add <- function(name, remote=NULL) {
 
     if (any(remote) || !is.null(version)) {
       pkgRemove(n)
-    }
-
-    if (!is.null(version)) {
-      # ideally devtools::install_deps handles this
-      # a better approach is probably to check for version
-      # mismatches in installHelper, but this works for now
-      devtools::install_version(n, version=version)
     }
   }
 
