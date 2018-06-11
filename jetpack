@@ -141,6 +141,13 @@ add <- function(name, remote=NULL) {
     if (any(remote) || !is.null(version)) {
       pkgRemove(n)
     }
+
+    if (!is.null(version)) {
+      # ideally devtools::install_deps handles this
+      # a better approach is probably to check for version
+      # mismatches in installHelper, but this works for now
+      devtools::install_version(n, version=version)
+    }
   }
 
   tryCatch({
