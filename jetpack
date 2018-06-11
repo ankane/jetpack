@@ -1,6 +1,8 @@
 #!/usr/bin/env Rscript
 #
-# Jetpack 0.1.0
+# Jetpack
+
+jetpack_version <- "0.1.0"
 
 # helpers
 
@@ -237,6 +239,10 @@ update <- function(name) {
   success(msg)
 }
 
+version <- function() {
+  message(paste0("Jetpack version ", jetpack_version))
+}
+
 # main
 
 main <- function() {
@@ -247,7 +253,9 @@ main <- function() {
   jetpack init
   jetpack add <package>... [--remote=<remote>]...
   jetpack remove <package>... [--remote=<remote>]...
-  jetpack update <package>"
+  jetpack update <package>
+  jetpack version
+  jetpack help"
 
   opts <- NULL
   tryCatch({
@@ -264,6 +272,10 @@ main <- function() {
     remove(opts$package, opts$remote)
   } else if (opts$update) {
     update(opts$package)
+  } else if (opts$version) {
+    version()
+  } else if (opts$help) {
+    message(doc)
   } else {
     install()
   }
