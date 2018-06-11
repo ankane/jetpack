@@ -8,6 +8,8 @@
 
 ![Screenshot](https://gist.githubusercontent.com/ankane/b6988db2802aca68a589b31e41b44195/raw/62d228452da6c0a54330de33c6068da23d271996/console.gif)
 
+Inspired by [Yarn](https://yarnpkg.com/) and [Bundler](https://bundler.io/)
+
 ## Installing
 
 Download the Jetpack CLI
