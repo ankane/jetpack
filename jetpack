@@ -14,6 +14,11 @@ abort <- function(msg, color=TRUE) {
 handleVersionDeps <- function() {
   deps <- desc::desc_get_deps()
   deps <- deps[startsWith(deps$version, "== "), ]
+
+  if (nrow(deps) > 0) {
+    warn("Due to a bug with devtools, packages with specific versions\nin the DESCRIPTION file are reinstalled every time jetpack is run.")
+  }
+
   for (i in 1:nrow(deps)) {
     row <- deps[i, ]
     name <- row$package
@@ -96,6 +101,10 @@ showStatus <- function() {
 
 success <- function(msg) {
   cat(crayon::green(paste0(msg, "\n")))
+}
+
+warn <- function(msg) {
+  cat(crayon::yellow(paste0(msg, "\n")))
 }
 
 # commands
