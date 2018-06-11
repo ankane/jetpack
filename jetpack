@@ -33,7 +33,9 @@ loadDeps <- function() {
     }
   }
 
-  packrat::on()
+  if (file.exists("packrat")) {
+    packrat::on()
+  }
 }
 
 pkgCheck <- function(name) {
@@ -53,10 +55,19 @@ pkgRemove <- function(name) {
 }
 
 restore <- function() {
-  status <- packrat::status(quiet=TRUE)
-  if (any(is.na(status$library.version))) {
-    packrat::restore()
-  }
+  tryCatch({
+    status <- packrat::status(quiet=TRUE)
+    if (any(is.na(status$library.version))) {
+      packrat::restore()
+    }
+  }, error=function(err) {
+    msg <- conditionMessage(err)
+    if (grepl("This project has not yet been packified", msg)) {
+      abort("This project has not yet been packified.\nRun 'jetpack init' to init.")
+    } else {
+      abort(msg)
+    }
+  })
 }
 
 showStatus <- function() {
