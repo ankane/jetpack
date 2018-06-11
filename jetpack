@@ -115,7 +115,7 @@ init <- function() {
 
   installHelper()
 
-  success("Run 'jetpack install <package>' to add packages!")
+  success("Run 'jetpack add <package>' to add packages!")
 }
 
 add <- function(name, remote=NULL) {
