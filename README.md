@@ -19,6 +19,12 @@ curl https://raw.githubusercontent.com/ankane/jetpack/v0.1.0/jetpack > /usr/loca
 chmod +x /usr/local/bin/jetpack
 ```
 
+With Homebrew, you can use:
+
+```sh
+brew install ankane/brew/jetpack
+```
+
 ## Getting Started
 
 In your project directory, run:
