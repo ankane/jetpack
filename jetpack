@@ -17,15 +17,15 @@ handleVersionDeps <- function() {
 
   if (nrow(deps) > 0) {
     warn("Due to a bug with devtools, packages with specific versions\nin the DESCRIPTION file are reinstalled every time jetpack is run.")
-  }
 
-  for (i in 1:nrow(deps)) {
-    row <- deps[i, ]
-    name <- row$package
-    version <- sub("== ", "", row$version)
+    for (i in 1:nrow(deps)) {
+      row <- deps[i, ]
+      name <- row$package
+      version <- sub("== ", "", row$version)
 
-    if (!pkgInstalled(name) || as.character(packageVersion(name)) != version) {
-      devtools::install_version(name, version=version)
+      if (!pkgInstalled(name) || as.character(packageVersion(name)) != version) {
+        devtools::install_version(name, version=version)
+      }
     }
   }
 }
