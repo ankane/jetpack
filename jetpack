@@ -42,10 +42,6 @@ installHelper <- function() {
 }
 
 loadDeps <- function() {
-  if (is.null(getOption("repos"))) {
-    options(repos = "http://cloud.r-project.org/")
-  }
-
   if (tryLoad("packrat")) {
     packrat::off()
   }
@@ -65,7 +61,7 @@ loadDeps <- function() {
   for (lib in libs) {
 
     if (!tryLoad(lib)) {
-      install.packages(lib)
+      install.packages(lib, repos="https://cloud.r-project.org/")
       tryLoad(lib)
     }
   }
