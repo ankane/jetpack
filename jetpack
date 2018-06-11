@@ -160,8 +160,6 @@ add <- function(name, remote=NULL) {
 remove <- function(name, remote) {
   restore()
 
-  pkgCheck(name)
-
   for (n in name) {
     desc::desc_del_dep(n, "Imports")
   }
@@ -172,6 +170,7 @@ remove <- function(name, remote) {
     }
   }
 
+  pkgCheck(name)
   installHelper()
 
   success(paste0("Removed ", name, "!"))
