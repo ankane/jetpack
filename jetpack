@@ -5,7 +5,7 @@
 abort <- function(msg, color=TRUE) {
   if (color) {
     cat(crayon::red(paste0(msg, "\n")))
-  } else{
+  } else {
     message(msg)
   }
   quit(status=1)
@@ -42,15 +42,26 @@ installHelper <- function() {
 }
 
 loadDeps <- function() {
+  if (is.null(getOption("repos"))) {
+    options(repos = "http://cloud.r-project.org/")
+  }
+
+  repos <- getOption("repos")
+  insecure_repos <- repos[startsWith(repos, "http://")]
+  for (repo in insecure_repos) {
+    warn(paste0("Insecure CRAN repo: ", repo))
+  }
+
   if (require("packrat", quietly=TRUE, warn.conflicts=FALSE)) {
     packrat::off()
   }
 
   libs <- c("packrat", "devtools", "desc", "docopt", "crayon")
   for (lib in libs) {
-    if (!requireNamespace(lib, quietly=TRUE)) {
+
+    if (!tryLoad(lib)) {
       install.packages(lib)
-      requireNamespace(lib, quietly=TRUE)
+      tryLoad(lib)
     }
   }
 
@@ -103,8 +114,16 @@ success <- function(msg) {
   cat(crayon::green(paste0(msg, "\n")))
 }
 
+tryLoad <- function(lib) {
+  requireNamespace(lib, quietly=TRUE)
+}
+
 warn <- function(msg) {
-  cat(crayon::yellow(paste0(msg, "\n")))
+  if (tryLoad("crayon")) {
+    cat(crayon::yellow(paste0(msg, "\n")))
+  } else {
+    message(msg)
+  }
 }
 
 # commands
@@ -124,10 +143,6 @@ install <- function() {
 }
 
 init <- function() {
-  if (is.null(getOption("repos"))) {
-    options(repos = "https://cloud.r-project.org/")
-  }
-
   # create description file
   if (!file.exists("DESCRIPTION")) {
     write("Package: app", file="DESCRIPTION")
