@@ -75,11 +75,45 @@ jetpack remove dplyr --remote=github::tidyverse/dplyr
 
 ## Deployment
 
-Install Jetpack on your server and run:
+### Server
+
+Install Jetpack on the server and run:
 
 ```R
 jetpack install
 ```
+
+### Docker
+
+Create an `init.R` with:
+
+```R
+install.packages("packrat")
+source("packrat/init.R")
+packrat::restore()
+```
+
+And add it into your `Dockerfile`:
+
+```Dockerfile
+FROM r-base
+
+RUN apt-get update && apt-get install -qq -y --no-install-recommends \
+  libxml2-dev libssl-dev libcurl4-openssl-dev
+
+RUN mkdir -p /app
+WORKDIR /app
+
+COPY packrat ./packrat
+COPY init.R ./
+RUN Rscript init.R
+
+COPY . .
+
+CMD Rscript app.R
+```
+
+(no need to install Jetpack on the image)
 
 ### Heroku
 
