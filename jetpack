@@ -122,6 +122,9 @@ init <- function() {
 add <- function(name, remote=NULL) {
   restore()
 
+  original_deps <- desc::desc_get_deps()
+  original_remotes <- desc::desc_get_remotes()
+
   for (r in remote) {
     desc::desc_set_remotes(r)
   }
@@ -154,9 +157,8 @@ add <- function(name, remote=NULL) {
     installHelper()
   }, warning=function(err) {
     # revert update
-    for (n in name) {
-      desc::desc_del_dep(n, "Imports")
-    }
+    desc::desc_set_deps(original_deps)
+    desc::desc_set_remotes(original_remotes)
     abort(conditionMessage(err))
   })
 
