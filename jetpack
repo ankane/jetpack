@@ -62,6 +62,7 @@ loadDeps <- function() {
 
     if (!tryLoad(lib)) {
       message(paste0("Installing Jetpack dependency: ", lib))
+      # possibly use default repo if we are confident it's secure
       install.packages(lib, repos="https://cloud.r-project.org/", quiet=TRUE)
       tryLoad(lib)
     }
