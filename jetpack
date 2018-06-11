@@ -29,7 +29,8 @@ loadDeps <- function() {
   libs <- c("packrat", "devtools", "desc", "docopt", "crayon")
   for (lib in libs) {
     if (!requireNamespace(lib, quietly=TRUE)) {
-      installed.packages(lib)
+      install.packages(lib)
+      requireNamespace(lib, quietly=TRUE)
     }
   }
 
