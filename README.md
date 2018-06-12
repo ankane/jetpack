@@ -144,6 +144,8 @@ CMD Rscript app.R
 
 (no need to install Jetpack on the image)
 
+Also, add `packrat/lib*/` to your `.dockerignore`.
+
 ### Heroku
 
 There’s [ongoing work](https://github.com/virtualstaticvoid/heroku-buildpack-r/issues/110) to get Packrat working on Heroku.
