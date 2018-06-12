@@ -95,7 +95,7 @@ jetpack remove dplyr --remote=github::tidyverse/dplyr
 
 ## Source Control
 
-Be sure to commit the `packrat` directory to source control, except for the `packrat/lib*/` directories.
+Be sure to commit all files Jetpack generates to source control, except for the `packrat/lib*/` directories.
 
 ## Deployment
 
