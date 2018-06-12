@@ -4,6 +4,7 @@
 
 - Easy to use
 - Designed for reproducibility (thanks to [Packrat](https://rstudio.github.io/packrat/), no more global installs!)
+- Great for collaboration
 - Secure by default
 
 ![Screenshot](https://gist.githubusercontent.com/ankane/b6988db2802aca68a589b31e41b44195/raw/62d228452da6c0a54330de33c6068da23d271996/console.gif)
@@ -46,6 +47,8 @@ Install packages for a project
 ```sh
 jetpack
 ```
+
+Whenever a teammate adds a new package (and commits it), others just need to run this command to keep packages in sync. Do the same if a new member joins the project.
 
 ### Add
 
