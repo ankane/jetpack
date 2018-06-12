@@ -45,10 +45,12 @@ If your project uses Git, `packrat/lib*/` is added to your `.gitignore`.
 Install packages for a project
 
 ```sh
-jetpack
+jetpack install
 ```
 
 Whenever a teammate adds a new package (and commits it), others just need to run this command to keep packages in sync. Do the same if a new member joins the project.
+
+`install` is optional.
 
 ### Add
 
