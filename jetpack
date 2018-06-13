@@ -29,7 +29,8 @@ handleVersionDeps <- function() {
       version <- sub("== ", "", row$version)
 
       if (!pkgInstalled(name) || as.character(packageVersion(name)) != version) {
-        devtools::install_version(name, version=version)
+        extlib <- c("httr", "curl")
+        packrat::with_extlib(extlib, devtools::install_version(name, version=version))
       }
     }
   }
