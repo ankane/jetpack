@@ -39,7 +39,10 @@ installHelper <- function() {
   # unfortunately, install_deps doesn't check version requirements
   # https://github.com/r-lib/devtools/issues/1314
   handleVersionDeps()
-  devtools::install_deps(".", dependencies=TRUE, upgrade=FALSE)
+
+  # use extlib for remote deps
+  extlib <- c("httr", "curl")
+  packrat::with_extlib(extlib, devtools::install_deps(".", dependencies=TRUE, upgrade=FALSE))
 
   suppressMessages(packrat::clean())
   suppressMessages(packrat::snapshot())
