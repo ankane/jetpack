@@ -164,6 +164,7 @@ init <- function() {
 
 add <- function(name, remote=NULL) {
   restore()
+  remote <- c(remote)
 
   original_deps <- desc::desc_get_deps()
   original_remotes <- desc::desc_get_remotes()
@@ -184,7 +185,7 @@ add <- function(name, remote=NULL) {
 
     desc::desc_set_dep(n, "Imports", version=version_str)
 
-    if (any(remote) || !is.null(version)) {
+    if (length(remote) > 0 || !is.null(version)) {
       pkgRemove(n)
     }
   }
@@ -205,12 +206,13 @@ add <- function(name, remote=NULL) {
 
 remove <- function(name, remote) {
   restore()
+  remote <- c(remote)
 
   for (n in name) {
     desc::desc_del_dep(n, "Imports")
   }
 
-  if (any(remote)) {
+  if (length(remote) > 0) {
     for (r in remote) {
       desc::desc_del_remotes(r)
     }
