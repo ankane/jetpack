@@ -2,7 +2,7 @@
 #
 # Jetpack
 
-jetpack_version <- "0.1.0"
+jetpack_version <- "0.1.1"
 
 # helpers
 
