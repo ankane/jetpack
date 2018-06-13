@@ -109,6 +109,16 @@ restore <- function() {
   })
 }
 
+revertAdd <- function(err, original_deps, original_remotes) {
+  desc::desc_set_deps(original_deps)
+  if (length(original_remotes) == 0) {
+    desc::desc_del("Remotes")
+  } else {
+    desc::desc_set_remotes(original_remotes)
+  }
+  abort(conditionMessage(err))
+}
+
 showStatus <- function() {
   status <- packrat::status(quiet=TRUE)
   for (i in 1:nrow(status)) {
@@ -193,10 +203,9 @@ add <- function(name, remote=NULL) {
   tryCatch({
     installHelper()
   }, warning=function(err) {
-    # revert update
-    desc::desc_set_deps(original_deps)
-    desc::desc_set_remotes(original_remotes)
-    abort(conditionMessage(err))
+    revertAdd(err, original_deps, original_remotes)
+  }, error=function(err) {
+    revertAdd(err, original_deps, original_remotes)
   })
 
   showStatus()
