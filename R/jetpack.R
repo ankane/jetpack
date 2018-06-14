@@ -61,7 +61,7 @@ installHelper <- function(status, remove=c()) {
   # https://github.com/r-lib/devtools/issues/1314
   if (nrow(need) > 0 || length(remove) > 0) {
     # use extlib for remote deps
-    packrat::with_extlib(extlib, devtools::install_deps(".", dependencies=TRUE, upgrade=FALSE))
+    packrat::with_extlib(extlib, devtools::install_deps(".", upgrade=FALSE))
   }
 
   # see if any version mismatches
