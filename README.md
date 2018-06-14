@@ -86,6 +86,8 @@ Add from a local source
 jetpack add dplyr --remote=local::/path/to/dplyr
 ```
 
+> The local directory must have the same name as the package
+
 ### Update
 
 Update a package
