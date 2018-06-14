@@ -1,3 +1,7 @@
+## 0.1.3 [unreleased]
+
+- Don't install Suggests dependencies
+
 ## 0.1.2
 
 - Created package
