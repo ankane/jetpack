@@ -50,6 +50,17 @@ installHelper <- function(status, remove=c()) {
   restore <- missing[!is.na(missing$packrat.version), ]
   need <- missing[is.na(missing$packrat.version), ]
 
+  # configure local repos
+  remotes <- desc::desc_get_remotes()
+  repos <- c()
+  for (remote in remotes) {
+    if (startsWith(remote, "local::")) {
+      repo <- dirname(substring(remote, 8))
+      repos <- c(repos, repo)
+    }
+  }
+  packrat::set_opts(local.repos=repos, persist=FALSE)
+
   if (nrow(restore) > 0) {
     suppressWarnings(packrat::restore(prompt=FALSE))
 

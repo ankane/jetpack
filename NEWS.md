@@ -1,5 +1,6 @@
 ## 0.1.3 [unreleased]
 
+- Added support for local repos
 - Allow commands to run in child directores
 - Don't install Suggests dependencies
 
