@@ -63,7 +63,7 @@ installHelper <- function(status, remove=c()) {
   need <- missing[is.na(missing$packrat.version), ]
 
   if (nrow(restore) > 0) {
-    suppressWarnings(packrat::restore())
+    suppressWarnings(packrat::restore(prompt=FALSE))
   }
 
   if (length(remove) > 0) {
@@ -97,7 +97,7 @@ installHelper <- function(status, remove=c()) {
   }
 
   suppressMessages(packrat::clean())
-  suppressMessages(packrat::snapshot())
+  suppressMessages(packrat::snapshot(prompt=FALSE))
 }
 
 pkgVersion <- function(status, name) {
@@ -233,7 +233,7 @@ jetpack.add <- function(packages, remotes=c()) {
 #' @param packages Packages to remove
 #' @param remotes Remotes to remove
 #' @export
-jetpack.remove <- function(packages, remotes) {
+jetpack.remove <- function(packages, remotes=c()) {
   prepCommand()
   status <- getStatus()
 
