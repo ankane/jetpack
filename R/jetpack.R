@@ -101,8 +101,12 @@ pkgRemove <- function(name) {
 }
 
 prepCommand <- function() {
+  packrat::off(print.banner=FALSE)
   for (lib in c("packrat", "devtools", "desc", "crayon")) {
     loadNamespace(lib)
+  }
+  if (packified()) {
+    packrat::on(print.banner=FALSE)
   }
 
   # before each method
@@ -110,10 +114,6 @@ prepCommand <- function() {
   insecure_repos <- repos[startsWith(repos, "http://")]
   for (repo in insecure_repos) {
     warn(paste0("Insecure CRAN repo: ", repo))
-  }
-
-  if (packified()) {
-    packrat::on()
   }
 }
 
