@@ -170,6 +170,9 @@ warn <- function(msg) {
 
 # commands
 
+#' Install packages for a project
+#'
+#' @export
 install <- function() {
   status <- getStatus()
 
@@ -184,6 +187,9 @@ install <- function() {
   success("Pack complete!")
 }
 
+#' Set up Jetpack
+#'
+#' @export
 init <- function() {
   # create description file
   if (!file.exists("DESCRIPTION")) {
@@ -201,29 +207,32 @@ init <- function() {
   success("Run 'jetpack add <package>' to add packages!")
 }
 
-add <- function(name, remote=NULL) {
+#' Add a package
+#'
+#' @param packages Packages to add
+#' @param remotes Remotes to add
+#' @export
+add <- function(packages, remotes=c()) {
   checkJetpack()
-
-  remote <- c(remote)
 
   original_deps <- desc::desc_get_deps()
   original_remotes <- desc::desc_get_remotes()
 
-  for (r in remote) {
-    desc::desc_set_remotes(r)
+  for (remote in remotes) {
+    desc::desc_set_remotes(remote)
   }
 
-  for (n in name) {
-    parts <- strsplit(name, "@")[[1]]
+  for (package in packages) {
+    parts <- strsplit(package, "@")[[1]]
     version <- NULL
     version_str <- "*"
     if (length(parts) != 1) {
-      n <- parts[1]
+      package <- parts[1]
       version <- parts[2]
       version_str <- paste("==", version)
     }
 
-    desc::desc_set_dep(n, "Imports", version=version_str)
+    desc::desc_set_dep(package, "Imports", version=version_str)
   }
 
   tryCatch({
@@ -239,42 +248,56 @@ add <- function(name, remote=NULL) {
   success("Pack complete!")
 }
 
-remove <- function(name, remote) {
+#' Remove a package
+#'
+#' @param packages Packages to remove
+#' @param remotes Remotes to remove
+#' @export
+remove <- function(packages, remotes) {
   status <- getStatus()
 
   # make sure package exists
   # possibly remove for speed
-  for (n in name) {
-    pkgVersion(status, n)
+  for (package in packages) {
+    pkgVersion(status, package)
   }
 
-  remote <- c(remote)
-
-  for (n in name) {
-    desc::desc_del_dep(n, "Imports")
+  for (package in packages) {
+    desc::desc_del_dep(package, "Imports")
   }
 
-  if (length(remote) > 0) {
-    for (r in remote) {
-      desc::desc_del_remotes(r)
+  if (length(remotes) > 0) {
+    for (remote in remotes) {
+      desc::desc_del_remotes(remote)
     }
   }
 
   installHelper(getStatus())
 
-  success(paste0("Removed ", name, "!"))
+  for (package in packages) {
+    success(paste0("Removed ", package, "!"))
+  }
 }
 
-update <- function(name) {
+#' Update a package
+#'
+#' @param packages Packages to update
+#' @export
+update <- function(packages) {
   status <- getStatus()
 
-  currentVersion <- pkgVersion(status, name)
-  installHelper(status, remove=c(name))
-  newVersion <- packageVersion(name)
+  versions <- list()
+  for (package in packages) {
+    versions[package] <- pkgVersion(status, package)
+  }
 
-  msg <- paste0("Updated ", name, " to ", newVersion, " (was ", currentVersion, ")")
+  installHelper(status, remove=packages)
 
-  success(msg)
+  for (package in packages) {
+    currentVersion <- versions[package]
+    newVersion <- packageVersion(package)
+    success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
+  }
 }
 
 version <- function() {
@@ -291,7 +314,7 @@ main <- function() {
   jetpack init
   jetpack add <package>... [--remote=<remote>]...
   jetpack remove <package>... [--remote=<remote>]...
-  jetpack update <package>
+  jetpack update <package>...
   jetpack version
   jetpack help"
 
