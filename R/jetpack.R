@@ -108,6 +108,9 @@ prepCommand <- function() {
 
   # before each method
   repos <- getOption("repos")
+  if (is.list(repos)) {
+    repos <- unlist(repos, use.names=FALSE)
+  }
   insecure_repos <- repos[startsWith(repos, "http://")]
   for (repo in insecure_repos) {
     warn(paste0("Insecure CRAN repo: ", repo))
