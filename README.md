@@ -13,7 +13,7 @@ Inspired by [Yarn](https://yarnpkg.com/) and [Bundler](https://bundler.io/)
 
 ## Installing
 
-Download the Jetpack CLI
+Install the Jetpack CLI
 
 ```sh
 install.packages("devtools")
