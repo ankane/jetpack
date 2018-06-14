@@ -15,9 +15,14 @@ abort <- function(msg, color=TRUE) {
   quit(status=1)
 }
 
+abortNotPackified <- function() {
+  abort("This project has not yet been packified.\nRun 'jetpack init' to init.")
+}
+
+# more lightweight than getStatus
 checkJetpack <- function() {
   if (!file.exists("packrat/init.R")) {
-    abort("This project has not yet been packified.\nRun 'jetpack init' to init.")
+    abortNotPackified()
   }
 }
 
@@ -27,7 +32,7 @@ getStatus <- function() {
   }, error=function(err) {
     msg <- conditionMessage(err)
     if (grepl("This project has not yet been packified", msg)) {
-      abort("This project has not yet been packified.\nRun 'jetpack init' to init.")
+      abortNotPackified()
     } else {
       abort(msg)
     }
@@ -75,9 +80,6 @@ installHelper <- function(status, remove=c()) {
         # need <- need[!identical(need$package, row$package), ]
       }
     }
-
-    suppressMessages(packrat::clean())
-    suppressMessages(packrat::snapshot())
   }, error=function(err) {
     msg <- conditionMessage(err)
     if (grepl("This project has not yet been packified", msg)) {
@@ -86,6 +88,9 @@ installHelper <- function(status, remove=c()) {
       abort(msg)
     }
   })
+
+  suppressMessages(packrat::clean())
+  suppressMessages(packrat::snapshot())
 }
 
 loadDeps <- function() {
