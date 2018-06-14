@@ -1,18 +1,7 @@
-#!/usr/bin/env Rscript
-#
-# Jetpack
-
-jetpack_version <- "0.1.1"
-
 # helpers
 
-abort <- function(msg, color=TRUE) {
-  if (color) {
-    cat(crayon::red(paste0(msg, "\n")))
-  } else {
-    message(msg)
-  }
-  quit(status=1)
+tryLoad <- function(lib) {
+  requireNamespace(lib, quietly=TRUE)
 }
 
 abortNotPackified <- function() {
@@ -41,6 +30,29 @@ getStatus <- function() {
       stop(msg)
     }
   })
+}
+
+prepCommand <- function() {
+  # before each method
+  repos <- getOption("repos")
+  insecure_repos <- repos[startsWith(repos, "http://")]
+  for (repo in insecure_repos) {
+    msg <- paste0("Insecure CRAN repo: ", repo)
+    if (tryLoad("crayon")) {
+      warn(msg)
+    } else {
+      message(msg)
+    }
+  }
+
+  tryLoad("packrat")
+  tryLoad("devtools")
+  tryLoad("desc")
+  tryLoad("crayon")
+
+  if (packified()) {
+    packrat::on()
+  }
 }
 
 installHelper <- function(status, remove=c()) {
@@ -88,38 +100,6 @@ installHelper <- function(status, remove=c()) {
   suppressMessages(packrat::snapshot())
 }
 
-loadDeps <- function() {
-  if (tryLoad("packrat")) {
-    packrat::off()
-  }
-
-  repos <- getOption("repos")
-  insecure_repos <- repos[startsWith(repos, "http://")]
-  for (repo in insecure_repos) {
-    msg <- paste0("Insecure CRAN repo: ", repo)
-    if (tryLoad("crayon")) {
-      warn(msg)
-    } else {
-      message(msg)
-    }
-  }
-
-  libs <- c("packrat", "devtools", "crayon", "desc", "docopt")
-  for (lib in libs) {
-
-    if (!tryLoad(lib)) {
-      message(paste0("Installing Jetpack dependency: ", lib))
-      # possibly use default repo if we are confident it's secure
-      install.packages(lib, repos="https://cloud.r-project.org/", quiet=TRUE)
-      tryLoad(lib)
-    }
-  }
-
-  if (packified()) {
-    packrat::on()
-  }
-}
-
 pkgVersion <- function(status, name) {
   row <- status[status$package == name, ]
   if (nrow(row) == 0) {
@@ -160,10 +140,6 @@ success <- function(msg) {
   cat(crayon::green(paste0(msg, "\n")))
 }
 
-tryLoad <- function(lib) {
-  requireNamespace(lib, quietly=TRUE)
-}
-
 warn <- function(msg) {
   cat(crayon::yellow(paste0(msg, "\n")))
 }
@@ -174,6 +150,7 @@ warn <- function(msg) {
 #'
 #' @export
 install <- function() {
+  prepCommand()
   status <- getStatus()
 
   tryCatch({
@@ -191,6 +168,8 @@ install <- function() {
 #'
 #' @export
 init <- function() {
+  prepCommand()
+
   # create description file
   if (!file.exists("DESCRIPTION")) {
     write("Package: app", file="DESCRIPTION")
@@ -213,6 +192,7 @@ init <- function() {
 #' @param remotes Remotes to add
 #' @export
 add <- function(packages, remotes=c()) {
+  prepCommand()
   checkJetpack()
 
   original_deps <- desc::desc_get_deps()
@@ -254,6 +234,7 @@ add <- function(packages, remotes=c()) {
 #' @param remotes Remotes to remove
 #' @export
 remove <- function(packages, remotes) {
+  prepCommand()
   status <- getStatus()
 
   # make sure package exists
@@ -284,6 +265,7 @@ remove <- function(packages, remotes) {
 #' @param packages Packages to update
 #' @export
 update <- function(packages) {
+  prepCommand()
   status <- getStatus()
 
   versions <- list()
@@ -299,49 +281,3 @@ update <- function(packages) {
     success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
   }
 }
-
-version <- function() {
-  message(paste0("Jetpack version ", jetpack_version))
-}
-
-# main
-
-main <- function() {
-  loadDeps()
-
-  doc <- "Usage:
-  jetpack [install]
-  jetpack init
-  jetpack add <package>... [--remote=<remote>]...
-  jetpack remove <package>... [--remote=<remote>]...
-  jetpack update <package>...
-  jetpack version
-  jetpack help"
-
-  opts <- NULL
-  tryCatch({
-    opts <- docopt::docopt(doc)
-  }, error=function(err) {
-    abort(doc, color=FALSE)
-  })
-
-  if (opts$init) {
-    init()
-  } else if (opts$add) {
-    add(opts$package, opts$remote)
-  } else if (opts$remove) {
-    remove(opts$package, opts$remote)
-  } else if (opts$update) {
-    update(opts$package)
-  } else if (opts$version) {
-    version()
-  } else if (opts$help) {
-    message(doc)
-  } else {
-    install()
-  }
-}
-
-tryCatch(main(), error=function(err) {
-  abort(conditionMessage(err))
-})

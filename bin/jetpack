@@ -1,0 +1,88 @@
+#!/usr/bin/env Rscript
+#
+# Jetpack
+
+jetpack_version <- "0.1.1"
+
+# helpers
+
+abort <- function(msg, color=TRUE) {
+  if (color) {
+    cat(crayon::red(paste0(msg, "\n")))
+  } else {
+    message(msg)
+  }
+  quit(status=1)
+}
+
+loadDeps <- function() {
+  if (tryLoad("packrat")) {
+    packrat::off()
+  }
+
+  if (!tryLoad("jetpack")) {
+    message("Finishing Jetpack installation...")
+
+    if (!tryLoad("devtools")) {
+      install.packages("devtools", repos="https://cloud.r-project.org/", quiet=TRUE)
+      tryLoad("devtools")
+    }
+
+    devtools::install_github("ankane/jetpack", repos="https://cloud.r-project.org/", quiet=TRUE)
+    tryLoad("jetpack")
+  }
+
+  tryLoad("crayon")
+}
+
+tryLoad <- function(lib) {
+  requireNamespace(lib, quietly=TRUE)
+}
+
+# commands
+
+version <- function() {
+  message(paste0("Jetpack version ", jetpack_version))
+}
+
+# main
+
+main <- function() {
+  loadDeps()
+
+  doc <- "Usage:
+  jetpack [install]
+  jetpack init
+  jetpack add <package>... [--remote=<remote>]...
+  jetpack remove <package>... [--remote=<remote>]...
+  jetpack update <package>...
+  jetpack version
+  jetpack help"
+
+  opts <- NULL
+  tryCatch({
+    opts <- docopt::docopt(doc)
+  }, error=function(err) {
+    abort(doc, color=FALSE)
+  })
+
+  if (opts$init) {
+    jetpack::init()
+  } else if (opts$add) {
+    jetpack::add(opts$package, opts$remote)
+  } else if (opts$remove) {
+    jetpack::remove(opts$package, opts$remote)
+  } else if (opts$update) {
+    jetpack::update(opts$package)
+  } else if (opts$version) {
+    version()
+  } else if (opts$help) {
+    message(doc)
+  } else {
+    jetpack::install()
+  }
+}
+
+tryCatch(main(), error=function(err) {
+  abort(conditionMessage(err))
+})
