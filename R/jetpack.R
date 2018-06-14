@@ -42,6 +42,12 @@ installHelper <- function(status, remove=c()) {
 
   if (nrow(restore) > 0) {
     suppressWarnings(packrat::restore(prompt=FALSE))
+
+    # non-vendor approach
+    # for (i in 1:nrow(restore)) {
+    #   row <- restore[i, ]
+    #   packrat::with_extlib(extlib, devtools::install_version(row$package, version=row$version, dependencies=FALSE))
+    # }
   }
 
   if (length(remove) > 0) {
