@@ -16,7 +16,7 @@ Inspired by [Yarn](https://yarnpkg.com/) and [Bundler](https://bundler.io/)
 Download the Jetpack CLI
 
 ```sh
-curl https://raw.githubusercontent.com/ankane/jetpack/v0.1.1/R/jetpack.R > /usr/local/bin/jetpack
+curl https://raw.githubusercontent.com/ankane/jetpack/v0.1.2/bin/jetpack > /usr/local/bin/jetpack
 chmod +x /usr/local/bin/jetpack
 ```
 

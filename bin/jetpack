@@ -17,7 +17,7 @@ if (!tryLoad("jetpack")) {
     tryLoad("devtools")
   }
 
-  devtools::install_github("ankane/jetpack", repos="https://cloud.r-project.org/", quiet=TRUE)
+  devtools::install_github("ankane/jetpack", ref="v0.1.2", repos="https://cloud.r-project.org/", quiet=TRUE)
 }
 
 library(jetpack)

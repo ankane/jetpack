@@ -1,3 +1,8 @@
+## 0.1.2
+
+- Created package
+- Added RStudio commands
+
 ## 0.1.1
 
 - Fixed remote dependencies when httr not installed
