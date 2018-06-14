@@ -100,7 +100,7 @@ pkgRemove <- function(name) {
 
 restore <- function() {
   tryCatch({
-    status <- packrat::status(quiet=TRUE)
+    status <- suppressWarnings(packrat::status(quiet=TRUE))
     missing <- status[is.na(status$library.version), ]
     restore <- missing[!is.na(missing$packrat.version), ]
     need <- missing[is.na(missing$packrat.version), ]
