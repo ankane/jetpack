@@ -247,7 +247,7 @@ jetpack.add <- function(packages, remotes=c()) {
   original_remotes <- desc::desc_get_remotes()
 
   for (remote in remotes) {
-    desc::desc_set_remotes(remote)
+    desc::desc_add_remotes(remote)
   }
 
   for (package in packages) {

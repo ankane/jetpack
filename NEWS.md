@@ -3,6 +3,7 @@
 - Added support for local repos
 - Allow commands to run in child directores
 - Don't install Suggests dependencies
+- Fixed issue with overwriting remotes
 
 ## 0.1.2
 
