@@ -122,7 +122,7 @@ jetpack.add("jsonlite")
 
 ### Server
 
-Install Jetpack on the server and run: [master]
+Install Jetpack on the server and run:
 
 ```sh
 jetpack install --deployment
