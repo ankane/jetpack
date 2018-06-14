@@ -180,15 +180,23 @@ warn <- function(msg) {
 #' Install packages for a project
 #'
 #' @export
-jetpack.install <- function() {
+jetpack.install <- function(deployment=FALSE) {
   prepCommand()
   status <- getStatus()
 
-  tryCatch({
-    installHelper(status)
-  }, warning=function(err) {
-    abort(conditionMessage(err))
-  })
+  if (deployment) {
+    missing <- status[is.na(status$library.version), ]
+    if (nrow(missing) > 0) {
+      stop(paste("Missing packages:", paste(missing$package, collapse=", ")))
+    }
+    suppressWarnings(packrat::restore(prompt=FALSE))
+  } else {
+    tryCatch({
+      installHelper(status)
+    }, warning=function(err) {
+      abort(conditionMessage(err))
+    })
+  }
 
   showStatus()
 
@@ -328,7 +336,7 @@ jetpack.update <- function(packages) {
 #' @export
 jetpack.cli <- function() {
   doc <- "Usage:
-  jetpack [install]
+  jetpack [install] [--deployment]
   jetpack init
   jetpack add <package>... [--remote=<remote>]...
   jetpack remove <package>... [--remote=<remote>]...
@@ -357,7 +365,7 @@ jetpack.cli <- function() {
     } else if (opts$help) {
       message(doc)
     } else {
-      jetpack.install()
+      jetpack.install(deployment=opts$deployment)
     }
   }, error=function(err) {
     abort(conditionMessage(err))

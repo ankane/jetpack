@@ -127,10 +127,10 @@ jetpack.add("jsonlite")
 
 ### Server
 
-Install Jetpack on the server and run:
+Install Jetpack on the server and run: [master]
 
 ```sh
-jetpack install
+jetpack install --deployment
 ```
 
 ### Docker

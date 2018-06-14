@@ -1,3 +1,7 @@
+## 0.1.4 [unreleased]
+
+- Added `--deployment` flag
+
 ## 0.1.3
 
 - Added support for local repos
