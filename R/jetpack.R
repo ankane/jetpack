@@ -112,7 +112,7 @@ pkgRemove <- function(name) {
   }
 }
 
-prepCommand <- function() {
+prepCommand <- function(init=FALSE) {
   loadNamespace("packrat")
   packrat::off(print.banner=FALSE)
   for (lib in c("devtools", "desc", "crayon")) {
@@ -120,7 +120,9 @@ prepCommand <- function() {
   }
 
   # work in child directories
-  setwd(findDir(getwd()))
+  if (!init) {
+    setwd(findDir(getwd()))
+  }
 
   if (packified()) {
     packrat::on(print.banner=FALSE)
@@ -193,7 +195,7 @@ jetpack.install <- function() {
 #'
 #' @export
 jetpack.init <- function() {
-  prepCommand()
+  prepCommand(init=TRUE)
 
   # create description file
   if (!file.exists("DESCRIPTION")) {
