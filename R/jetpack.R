@@ -185,7 +185,7 @@ jetpack.install <- function(deployment=FALSE) {
   status <- getStatus()
 
   if (deployment) {
-    missing <- status[is.na(status$library.version), ]
+    missing <- status[is.na(status$packrat.version), ]
     if (nrow(missing) > 0) {
       stop(paste("Missing packages:", paste(missing$package, collapse=", ")))
     }
