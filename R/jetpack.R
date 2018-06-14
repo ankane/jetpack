@@ -42,52 +42,43 @@ getStatus <- function() {
 installHelper <- function(status, remove=c()) {
   extlib <- c("httr", "curl")
 
-  tryCatch({
-    missing <- status[is.na(status$library.version), ]
-    restore <- missing[!is.na(missing$packrat.version), ]
-    need <- missing[is.na(missing$packrat.version), ]
+  missing <- status[is.na(status$library.version), ]
+  restore <- missing[!is.na(missing$packrat.version), ]
+  need <- missing[is.na(missing$packrat.version), ]
 
-    if (nrow(restore)) {
-      suppressWarnings(packrat::restore())
-    }
+  if (nrow(restore)) {
+    suppressWarnings(packrat::restore())
+  }
 
-    if (length(remove) > 0) {
-      for (name in remove) {
-        pkgRemove(name)
-      }
+  if (length(remove) > 0) {
+    for (name in remove) {
+      pkgRemove(name)
     }
+  }
 
-    # in case we're missing any deps
-    # unfortunately, install_deps doesn't check version requirements
-    # https://github.com/r-lib/devtools/issues/1314
-    if (nrow(need) > 0 || length(remove) > 0) {
-      # use extlib for remote deps
-      packrat::with_extlib(extlib, devtools::install_deps(".", dependencies=TRUE, upgrade=FALSE))
-    }
+  # in case we're missing any deps
+  # unfortunately, install_deps doesn't check version requirements
+  # https://github.com/r-lib/devtools/issues/1314
+  if (nrow(need) > 0 || length(remove) > 0) {
+    # use extlib for remote deps
+    packrat::with_extlib(extlib, devtools::install_deps(".", dependencies=TRUE, upgrade=FALSE))
+  }
 
-    # see if any version mismatches
-    deps <- desc::desc_get_deps()
-    specificDeps <- deps[startsWith(deps$version, "== "), ]
-    specificDeps$version <- sub("== ", "", specificDeps$version)
-    specificDeps <- merge(specificDeps, status, by="package")
-    mismatch <- specificDeps[!identical(specificDeps$version, specificDeps$packrat.version), ]
-    if (nrow(mismatch) > 0) {
-      for (i in 1:nrow(mismatch)) {
-        row <- mismatch[i, ]
-        packrat::with_extlib(extlib, devtools::install_version(row$package, version=row$version))
+  # see if any version mismatches
+  deps <- desc::desc_get_deps()
+  specificDeps <- deps[startsWith(deps$version, "== "), ]
+  specificDeps$version <- sub("== ", "", specificDeps$version)
+  specificDeps <- merge(specificDeps, status, by="package")
+  mismatch <- specificDeps[!identical(specificDeps$version, specificDeps$packrat.version), ]
+  if (nrow(mismatch) > 0) {
+    for (i in 1:nrow(mismatch)) {
+      row <- mismatch[i, ]
+      packrat::with_extlib(extlib, devtools::install_version(row$package, version=row$version))
 
-        # remove from need
-        # need <- need[!identical(need$package, row$package), ]
-      }
+      # remove from need
+      # need <- need[!identical(need$package, row$package), ]
     }
-  }, error=function(err) {
-    msg <- conditionMessage(err)
-    if (grepl("This project has not yet been packified", msg)) {
-      abort("This project has not yet been packified.\nRun 'jetpack init' to init.")
-    } else {
-      abort(msg)
-    }
-  })
+  }
 
   suppressMessages(packrat::clean())
   suppressMessages(packrat::snapshot())
