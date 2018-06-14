@@ -20,6 +20,16 @@ checkJetpack <- function() {
   }
 }
 
+findDir <- function(path) {
+  if (file.exists(file.path(path, "packrat"))) {
+    path
+  } else if (dirname(path) == path) {
+    abortNotPackified()
+  } else {
+    findDir(dirname(path))
+  }
+}
+
 getStatus <- function() {
   tryCatch({
     suppressWarnings(packrat::status(quiet=TRUE))
@@ -108,6 +118,10 @@ prepCommand <- function() {
   for (lib in c("devtools", "desc", "crayon")) {
     loadNamespace(lib)
   }
+
+  # work in child directories
+  setwd(findDir(getwd()))
+
   if (packified()) {
     packrat::on(print.banner=FALSE)
   }

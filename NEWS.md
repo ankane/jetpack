@@ -1,5 +1,6 @@
 ## 0.1.3 [unreleased]
 
+- Allow commands to run in child directores
 - Don't install Suggests dependencies
 
 ## 0.1.2
