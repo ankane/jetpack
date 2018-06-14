@@ -1,5 +1,7 @@
 #!/usr/bin/env Rscript
 
+version <- "0.1.2"
+
 tryLoad <- function(lib) {
   requireNamespace(lib, quietly=TRUE)
 }
@@ -8,8 +10,10 @@ if (tryLoad("packrat")) {
   packrat::off()
 }
 
-if (!tryLoad("jetpack")) {
-  message("Installing Jetpack dependencies...")
+currentVersion <- as.character(packageVersion("jetpack"))
+
+if (!tryLoad("jetpack") || compareVersion(currentVersion, version) < 0) {
+  message("Upgrading Jetpack dependencies...")
   message("This may take a while, but only happens once.")
 
   if (!tryLoad("devtools")) {
@@ -17,7 +21,7 @@ if (!tryLoad("jetpack")) {
     tryLoad("devtools")
   }
 
-  devtools::install_github("ankane/jetpack", ref="v0.1.2", repos="https://cloud.r-project.org/", quiet=TRUE)
+  devtools::install_github("ankane/jetpack", ref=paste0("v", version), repos="https://cloud.r-project.org/", quiet=TRUE)
 }
 
 library(jetpack)
