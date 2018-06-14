@@ -371,3 +371,13 @@ jetpack.cli <- function() {
     abort(conditionMessage(err))
   })
 }
+
+#' Create bin
+#'
+#' @param file The file to create
+#' @export
+createbin <- function(file="/usr/local/bin/jetpack") {
+  write("#!/usr/bin/env Rscript\n\nlibrary(jetpack)\njetpack.cli()", file=file)
+  Sys.chmod(file, "755")
+  message(paste("Wrote", file))
+}

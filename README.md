@@ -16,8 +16,9 @@ Inspired by [Yarn](https://yarnpkg.com/) and [Bundler](https://bundler.io/)
 Download the Jetpack CLI
 
 ```sh
-curl https://raw.githubusercontent.com/ankane/jetpack/v0.1.3/bin/jetpack > /usr/local/bin/jetpack
-chmod +x /usr/local/bin/jetpack
+install.packages("devtools")
+devtools::install_github("ankane/jetpack")
+jetpack::createbin()
 ```
 
 With Homebrew, you can use:
