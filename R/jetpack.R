@@ -248,6 +248,7 @@ remove <- function(name, remote) {
   status <- getStatus()
 
   # make sure package exists
+  # possibly remove for speed
   for (n in name) {
     pkgVersion(status, n)
   }
