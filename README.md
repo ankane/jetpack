@@ -11,7 +11,7 @@
 
 Inspired by [Yarn](https://yarnpkg.com/) and [Bundler](https://bundler.io/)
 
-## Installing
+## Installation
 
 Install Jetpack
 
