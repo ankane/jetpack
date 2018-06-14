@@ -13,7 +13,7 @@ Inspired by [Yarn](https://yarnpkg.com/) and [Bundler](https://bundler.io/)
 
 ## Installing
 
-Download the Jetpack CLI - [view the script](https://raw.githubusercontent.com/ankane/jetpack/master/install.sh)
+Download the Jetpack CLI
 
 ```sh
 curl -sSL https://raw.githubusercontent.com/ankane/jetpack/master/install.sh | sh
