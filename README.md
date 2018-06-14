@@ -13,9 +13,9 @@ Inspired by [Yarn](https://yarnpkg.com/) and [Bundler](https://bundler.io/)
 
 ## Installing
 
-Install the Jetpack CLI
+Install Jetpack from an R session
 
-```sh
+```R
 install.packages("devtools")
 devtools::install_github("ankane/jetpack")
 jetpack::createbin()
