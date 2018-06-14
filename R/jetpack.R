@@ -188,6 +188,10 @@ jetpack.init <- function() {
     packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
   }
 
+  if (file.exists(".Rprofile") && !any(grepl("jetpack", readLines(".Rprofile")))) {
+    write("invisible(tryCatch(packrat::extlib(\"jetpack\"), error=function(err) {}))", file=".Rprofile", append=TRUE)
+  }
+
   installHelper(getStatus())
 
   success("Run 'jetpack add <package>' to add packages!")
