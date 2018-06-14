@@ -16,7 +16,7 @@ abort <- function(msg, color=TRUE) {
 }
 
 abortNotPackified <- function() {
-  abort("This project has not yet been packified.\nRun 'jetpack init' to init.")
+  stop("This project has not yet been packified.\nRun 'jetpack init' to init.")
 }
 
 # more lightweight than getStatus
@@ -34,7 +34,7 @@ getStatus <- function() {
     if (grepl("This project has not yet been packified", msg)) {
       abortNotPackified()
     } else {
-      abort(msg)
+      stop(msg)
     }
   })
 }
@@ -119,7 +119,7 @@ loadDeps <- function() {
 pkgVersion <- function(status, name) {
   row <- status[status$package == name, ]
   if (nrow(row) == 0) {
-    abort(paste0("Cannot find package '", name, "' in DESCRIPTION file"))
+    stop(paste0("Cannot find package '", name, "' in DESCRIPTION file"))
   }
   row$packrat.version
 }
@@ -141,7 +141,7 @@ revertAdd <- function(err, original_deps, original_remotes) {
   } else {
     desc::desc_set_remotes(original_remotes)
   }
-  abort(conditionMessage(err))
+  stop(conditionMessage(err))
 }
 
 showStatus <- function() {
@@ -315,4 +315,6 @@ main <- function() {
   }
 }
 
-main()
+tryCatch(main(), error=function(err) {
+  abort(conditionMessage(err))
+})
