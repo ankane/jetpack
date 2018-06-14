@@ -13,13 +13,6 @@ abortNotPackified <- function() {
   stop("This project has not yet been packified.\nRun 'jetpack init' to init.")
 }
 
-# more lightweight than getStatus
-checkJetpack <- function() {
-  if (!packified()) {
-    abortNotPackified()
-  }
-}
-
 findDir <- function(path) {
   if (file.exists(file.path(path, "packrat"))) {
     path
@@ -241,7 +234,6 @@ jetpack.init <- function() {
 #' @export
 jetpack.add <- function(packages, remotes=c()) {
   prepCommand()
-  checkJetpack()
 
   original_deps <- desc::desc_get_deps()
   original_remotes <- desc::desc_get_remotes()
