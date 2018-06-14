@@ -1,6 +1,4 @@
 #!/usr/bin/env Rscript
-#
-# Jetpack
 
 tryLoad <- function(lib) {
   requireNamespace(lib, quietly=TRUE)
