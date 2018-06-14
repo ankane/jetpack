@@ -66,8 +66,6 @@ Add a specific version
 jetpack add dplyr@0.7.5
 ```
 
-> Due to a bug with devtools, packages added this way are reinstalled every time you run jetpack
-
 Add from GitHub or another remote source
 
 ```sh
