@@ -172,7 +172,7 @@ init <- function() {
 
   # install packrat
   if (!file.exists("packrat")) {
-    packrat::init(".")
+    packrat::init(".", options=list(print.banner.on.startup=FALSE))
     packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
   }
 
