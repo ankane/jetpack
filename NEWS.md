@@ -1,6 +1,7 @@
 ## 0.1.4 [unreleased]
 
 - Added `--deployment` flag
+- Added `createbin` function
 
 ## 0.1.3
 
