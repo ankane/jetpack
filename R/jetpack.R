@@ -69,9 +69,6 @@ installHelper <- function(status, remove=c()) {
       for (i in 1:nrow(mismatch)) {
         row <- mismatch[i, ]
         packrat::with_extlib(extlib, devtools::install_version(row$package, version=row$version))
-
-        # remove from need
-        # need <- need[!identical(need$package, row$package), ]
       }
     }
   }
