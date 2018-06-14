@@ -61,16 +61,18 @@ installHelper <- function(status, remove=c()) {
   # see if any version mismatches
   deps <- desc::desc_get_deps()
   specificDeps <- deps[startsWith(deps$version, "== "), ]
-  specificDeps$version <- sub("== ", "", specificDeps$version)
-  specificDeps <- merge(specificDeps, status, by="package")
-  mismatch <- specificDeps[!identical(specificDeps$version, specificDeps$packrat.version), ]
-  if (nrow(mismatch) > 0) {
-    for (i in 1:nrow(mismatch)) {
-      row <- mismatch[i, ]
-      packrat::with_extlib(extlib, devtools::install_version(row$package, version=row$version))
+  if (nrow(specificDeps) > 0) {
+    specificDeps$version <- sub("== ", "", specificDeps$version)
+    specificDeps <- merge(specificDeps, status, by="package")
+    mismatch <- specificDeps[!identical(specificDeps$version, specificDeps$packrat.version), ]
+    if (nrow(mismatch) > 0) {
+      for (i in 1:nrow(mismatch)) {
+        row <- mismatch[i, ]
+        packrat::with_extlib(extlib, devtools::install_version(row$package, version=row$version))
 
-      # remove from need
-      # need <- need[!identical(need$package, row$package), ]
+        # remove from need
+        # need <- need[!identical(need$package, row$package), ]
+      }
     }
   }
 
