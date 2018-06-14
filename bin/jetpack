@@ -1,0 +1,25 @@
+#!/usr/bin/env Rscript
+#
+# Jetpack
+
+tryLoad <- function(lib) {
+  requireNamespace(lib, quietly=TRUE)
+}
+
+if (tryLoad("packrat")) {
+  packrat::off()
+}
+
+if (!tryLoad("jetpack")) {
+  message("Installing Jetpack dependencies...")
+
+  if (!tryLoad("devtools")) {
+    install.packages("devtools", repos="https://cloud.r-project.org/", quiet=TRUE)
+    tryLoad("devtools")
+  }
+
+  devtools::install_github("ankane/jetpack", repos="https://cloud.r-project.org/", quiet=TRUE)
+}
+
+library(jetpack)
+jetpack.cli()
