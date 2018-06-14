@@ -4,7 +4,7 @@
 \alias{jetpack.remove}
 \title{Remove a package}
 \usage{
-jetpack.remove(packages, remotes)
+jetpack.remove(packages, remotes = c())
 }
 \arguments{
 \item{packages}{Packages to remove}

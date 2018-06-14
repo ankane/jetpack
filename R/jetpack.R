@@ -1,15 +1,16 @@
 # helpers
 
-tryLoad <- function(lib) {
-  requireNamespace(lib, quietly=TRUE)
+abort <- function(msg, color=TRUE) {
+  if (color) {
+    cat(crayon::red(paste0(msg, "\n")))
+  } else {
+    message(msg)
+  }
+  quit(status=1)
 }
 
 abortNotPackified <- function() {
   stop("This project has not yet been packified.\nRun 'jetpack init' to init.")
-}
-
-packified <- function() {
-  file.exists("packrat")
 }
 
 # more lightweight than getStatus
@@ -30,29 +31,6 @@ getStatus <- function() {
       stop(msg)
     }
   })
-}
-
-prepCommand <- function() {
-  # before each method
-  repos <- getOption("repos")
-  insecure_repos <- repos[startsWith(repos, "http://")]
-  for (repo in insecure_repos) {
-    msg <- paste0("Insecure CRAN repo: ", repo)
-    if (tryLoad("crayon")) {
-      warn(msg)
-    } else {
-      message(msg)
-    }
-  }
-
-  tryLoad("packrat")
-  tryLoad("devtools")
-  tryLoad("desc")
-  tryLoad("crayon")
-
-  if (packified()) {
-    packrat::on()
-  }
 }
 
 installHelper <- function(status, remove=c()) {
@@ -100,6 +78,10 @@ installHelper <- function(status, remove=c()) {
   suppressMessages(packrat::snapshot(prompt=FALSE))
 }
 
+packified <- function() {
+  file.exists("packrat")
+}
+
 pkgVersion <- function(status, name) {
   row <- status[status$package == name, ]
   if (nrow(row) == 0) {
@@ -115,6 +97,29 @@ pkgInstalled <- function(name) {
 pkgRemove <- function(name) {
   if (pkgInstalled(name)) {
     suppressMessages(remove.packages(name))
+  }
+}
+
+prepCommand <- function() {
+  # before each method
+  repos <- getOption("repos")
+  insecure_repos <- repos[startsWith(repos, "http://")]
+  for (repo in insecure_repos) {
+    msg <- paste0("Insecure CRAN repo: ", repo)
+    if (tryLoad("crayon")) {
+      warn(msg)
+    } else {
+      message(msg)
+    }
+  }
+
+  tryLoad("packrat")
+  tryLoad("devtools")
+  tryLoad("desc")
+  tryLoad("crayon")
+
+  if (packified()) {
+    packrat::on()
   }
 }
 
@@ -140,11 +145,17 @@ success <- function(msg) {
   cat(crayon::green(paste0(msg, "\n")))
 }
 
+tryLoad <- function(lib) {
+  requireNamespace(lib, quietly=TRUE)
+}
+
+version <- function() {
+  message(paste0("Jetpack version ", packageVersion("jetpack")))
+}
+
 warn <- function(msg) {
   cat(crayon::yellow(paste0(msg, "\n")))
 }
-
-# commands
 
 #' Install packages for a project
 #'
@@ -280,4 +291,45 @@ jetpack.update <- function(packages) {
     newVersion <- packageVersion(package)
     success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
   }
+}
+
+#' Run CLI
+#'
+#' @export
+jetpack.cli <- function() {
+  doc <- "Usage:
+  jetpack [install]
+  jetpack init
+  jetpack add <package>... [--remote=<remote>]...
+  jetpack remove <package>... [--remote=<remote>]...
+  jetpack update <package>...
+  jetpack version
+  jetpack help"
+
+  opts <- NULL
+  tryCatch({
+    opts <- docopt::docopt(doc)
+  }, error=function(err) {
+    abort(doc, color=FALSE)
+  })
+
+  tryCatch({
+    if (opts$init) {
+      jetpack.init()
+    } else if (opts$add) {
+      jetpack.add(opts$package, opts$remote)
+    } else if (opts$remove) {
+      jetpack.remove(opts$package, opts$remote)
+    } else if (opts$update) {
+      jetpack.update(opts$package)
+    } else if (opts$version) {
+      version()
+    } else if (opts$help) {
+      message(doc)
+    } else {
+      jetpack.install()
+    }
+  }, error=function(err) {
+    abort(conditionMessage(err))
+  })
 }
