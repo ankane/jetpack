@@ -105,9 +105,8 @@ restore <- function() {
     restore <- missing[!is.na(missing$packrat.version), ]
     need <- missing[is.na(missing$packrat.version), ]
 
-    # this will fail if nrow(need) > 0
     if (nrow(restore)) {
-      packrat::restore()
+      suppressWarnings(packrat::restore())
     }
   }, error=function(err) {
     msg <- conditionMessage(err)
