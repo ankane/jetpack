@@ -21,11 +21,23 @@ checkJetpack <- function() {
   }
 }
 
-installHelper <- function() {
+getStatus <- function() {
+  tryCatch({
+    suppressWarnings(packrat::status(quiet=TRUE))
+  }, error=function(err) {
+    msg <- conditionMessage(err)
+    if (grepl("This project has not yet been packified", msg)) {
+      abort("This project has not yet been packified.\nRun 'jetpack init' to init.")
+    } else {
+      abort(msg)
+    }
+  })
+}
+
+installHelper <- function(status, remove=c()) {
   extlib <- c("httr", "curl")
 
   tryCatch({
-    status <- suppressWarnings(packrat::status(quiet=TRUE))
     missing <- status[is.na(status$library.version), ]
     restore <- missing[!is.na(missing$packrat.version), ]
     need <- missing[is.na(missing$packrat.version), ]
@@ -34,10 +46,16 @@ installHelper <- function() {
       suppressWarnings(packrat::restore())
     }
 
+    if (length(remove) > 0) {
+      for (name in remove) {
+        pkgRemove(name)
+      }
+    }
+
     # in case we're missing any deps
     # unfortunately, install_deps doesn't check version requirements
     # https://github.com/r-lib/devtools/issues/1314
-    if (nrow(need) > 0) {
+    if (nrow(need) > 0 || length(remove) > 0) {
       # use extlib for remote deps
       packrat::with_extlib(extlib, devtools::install_deps(".", dependencies=TRUE, upgrade=FALSE))
     }
@@ -102,10 +120,12 @@ loadDeps <- function() {
   }
 }
 
-pkgCheck <- function(name) {
-  if (!desc::desc_has_dep(name)) {
+pkgVersion <- function(status, name) {
+  row <- status[status$package == name, ]
+  if (nrow(row) == 0) {
     abort(paste0("Cannot find package '", name, "' in DESCRIPTION file"))
   }
+  row$packrat.version
 }
 
 pkgInstalled <- function(name) {
@@ -151,10 +171,10 @@ warn <- function(msg) {
 # commands
 
 install <- function() {
-  checkJetpack()
+  status <- getStatus()
 
   tryCatch({
-    installHelper()
+    installHelper(status)
   }, warning=function(err) {
     abort(conditionMessage(err))
   })
@@ -176,7 +196,7 @@ init <- function() {
     packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
   }
 
-  installHelper()
+  installHelper(getStatus())
 
   success("Run 'jetpack add <package>' to add packages!")
 }
@@ -207,7 +227,7 @@ add <- function(name, remote=NULL) {
   }
 
   tryCatch({
-    installHelper()
+    installHelper(getStatus())
   }, warning=function(err) {
     revertAdd(err, original_deps, original_remotes)
   }, error=function(err) {
@@ -220,12 +240,16 @@ add <- function(name, remote=NULL) {
 }
 
 remove <- function(name, remote) {
-  checkJetpack()
+  status <- getStatus()
+
+  # make sure package exists
+  for (n in name) {
+    pkgVersion(status, n)
+  }
 
   remote <- c(remote)
 
   for (n in name) {
-    pkgCheck(n)
     desc::desc_del_dep(n, "Imports")
   }
 
@@ -235,18 +259,16 @@ remove <- function(name, remote) {
     }
   }
 
-  installHelper()
+  installHelper(getStatus())
 
   success(paste0("Removed ", name, "!"))
 }
 
 update <- function(name) {
-  checkJetpack()
-  pkgCheck(name)
+  status <- getStatus()
 
-  currentVersion <- packageVersion(name)
-  pkgRemove(name)
-  installHelper()
+  currentVersion <- pkgVersion(status, name)
+  installHelper(status, remove=c(name))
   newVersion <- packageVersion(name)
 
   msg <- paste0("Updated ", name, " to ", newVersion, " (was ", currentVersion, ")")
