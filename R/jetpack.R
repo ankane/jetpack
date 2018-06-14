@@ -34,7 +34,8 @@ getStatus <- function() {
 }
 
 installHelper <- function(status, remove=c()) {
-  extlib <- c("httr", "curl")
+  extlib <- c("httr", "curl", "git2r")
+
 
   missing <- status[is.na(status$library.version), ]
   restore <- missing[!is.na(missing$packrat.version), ]
