@@ -1,4 +1,4 @@
-## 0.1.3 [unreleased]
+## 0.1.3
 
 - Added support for local repos
 - Allow commands to run in child directores

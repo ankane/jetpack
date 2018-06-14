@@ -16,7 +16,7 @@ Inspired by [Yarn](https://yarnpkg.com/) and [Bundler](https://bundler.io/)
 Download the Jetpack CLI
 
 ```sh
-curl https://raw.githubusercontent.com/ankane/jetpack/v0.1.2/bin/jetpack > /usr/local/bin/jetpack
+curl https://raw.githubusercontent.com/ankane/jetpack/v0.1.3/bin/jetpack > /usr/local/bin/jetpack
 chmod +x /usr/local/bin/jetpack
 ```
 
@@ -80,7 +80,7 @@ Add from a specific tag, branch, or commit
 jetpack add dplyr --remote=github::tidyverse/dplyr@v0.7.5
 ```
 
-Add from a local source [master]
+Add from a local source
 
 ```sh
 jetpack add dplyr --remote=local::/path/to/dplyr
