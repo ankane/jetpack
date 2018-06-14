@@ -90,12 +90,9 @@ pkgVersion <- function(status, name) {
   row$packrat.version
 }
 
-pkgInstalled <- function(name) {
-  name %in% rownames(installed.packages())
-}
-
+#' @importFrom utils installed.packages remove.packages
 pkgRemove <- function(name) {
-  if (pkgInstalled(name)) {
+  if (name %in% rownames(installed.packages())) {
     suppressMessages(remove.packages(name))
   }
 }
@@ -274,6 +271,7 @@ jetpack.remove <- function(packages, remotes=c()) {
 #' Update a package
 #'
 #' @param packages Packages to update
+#' @importFrom utils packageVersion
 #' @export
 jetpack.update <- function(packages) {
   prepCommand()

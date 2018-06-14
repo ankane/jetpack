@@ -161,7 +161,7 @@ There’s [ongoing work](https://github.com/virtualstaticvoid/heroku-buildpack-r
 
 ## History
 
-View the [changelog](https://github.com/ankane/jetpack/blob/master/CHANGELOG.md)
+View the [changelog](https://github.com/ankane/jetpack/blob/master/NEWS.md)
 
 ## Contributing
 

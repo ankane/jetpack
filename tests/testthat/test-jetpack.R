@@ -1,3 +1,5 @@
+options(repos=list(CRAN="https://cloud.r-project.org/"))
+
 test_that("init works", {
   jetpack.init()
   jetpack.add("jsonlite")
