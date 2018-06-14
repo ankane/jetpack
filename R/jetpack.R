@@ -98,8 +98,9 @@ pkgRemove <- function(name) {
 }
 
 prepCommand <- function() {
+  loadNamespace("packrat")
   packrat::off(print.banner=FALSE)
-  for (lib in c("packrat", "devtools", "desc", "crayon")) {
+  for (lib in c("devtools", "desc", "crayon")) {
     loadNamespace(lib)
   }
   if (packified()) {
