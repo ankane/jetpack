@@ -10,9 +10,7 @@ if (tryLoad("packrat")) {
   packrat::off()
 }
 
-currentVersion <- as.character(packageVersion("jetpack"))
-
-if (!tryLoad("jetpack") || compareVersion(currentVersion, version) < 0) {
+if (!tryLoad("jetpack") || compareVersion(as.character(packageVersion("jetpack")), version) < 0) {
   message("Upgrading Jetpack dependencies...")
   message("This may take a while, but only happens once.")
 
