@@ -192,6 +192,7 @@ jetpack.init <- function() {
     write("invisible(tryCatch(packrat::extlib(\"jetpack\"), error=function(err) {}))", file=".Rprofile", append=TRUE)
   }
 
+  # install in case there was a previous DESCRIPTION file
   installHelper(getStatus())
 
   success("Run 'jetpack add <package>' to add packages!")
