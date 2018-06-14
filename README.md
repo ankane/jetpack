@@ -102,6 +102,16 @@ jetpack remove dplyr --remote=github::tidyverse/dplyr
 
 Be sure to commit all files Jetpack generates to source control, except for the `packrat/lib*/` directories.
 
+## RStudio [master]
+
+Jetpack can also be used from within RStudio.
+
+```R
+library(jetpack)
+jetpack.init()
+jetpack.add("jsonlite")
+```
+
 ## Deployment
 
 ### Server

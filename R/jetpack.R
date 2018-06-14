@@ -149,7 +149,7 @@ warn <- function(msg) {
 #' Install packages for a project
 #'
 #' @export
-install <- function() {
+jetpack.install <- function() {
   prepCommand()
   status <- getStatus()
 
@@ -167,7 +167,7 @@ install <- function() {
 #' Set up Jetpack
 #'
 #' @export
-init <- function() {
+jetpack.init <- function() {
   prepCommand()
 
   # create description file
@@ -177,7 +177,7 @@ init <- function() {
 
   # install packrat
   if (!packified()) {
-    packrat::init(".", options=list(print.banner.on.startup=FALSE))
+    packrat::init(".", options=list(external.packages=c("jetpack"), print.banner.on.startup=FALSE))
     packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
   }
 
@@ -191,7 +191,7 @@ init <- function() {
 #' @param packages Packages to add
 #' @param remotes Remotes to add
 #' @export
-add <- function(packages, remotes=c()) {
+jetpack.add <- function(packages, remotes=c()) {
   prepCommand()
   checkJetpack()
 
@@ -233,7 +233,7 @@ add <- function(packages, remotes=c()) {
 #' @param packages Packages to remove
 #' @param remotes Remotes to remove
 #' @export
-remove <- function(packages, remotes) {
+jetpack.remove <- function(packages, remotes) {
   prepCommand()
   status <- getStatus()
 
@@ -264,7 +264,7 @@ remove <- function(packages, remotes) {
 #'
 #' @param packages Packages to update
 #' @export
-update <- function(packages) {
+jetpack.update <- function(packages) {
   prepCommand()
   status <- getStatus()
 

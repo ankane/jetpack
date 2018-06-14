@@ -27,8 +27,8 @@ loadDeps <- function() {
     }
 
     devtools::install_github("ankane/jetpack", repos="https://cloud.r-project.org/", quiet=TRUE)
-    tryLoad("jetpack")
   }
+  library(jetpack)
 
   tryLoad("crayon")
 }
@@ -65,19 +65,19 @@ main <- function() {
   })
 
   if (opts$init) {
-    jetpack::init()
+    jetpack.init()
   } else if (opts$add) {
-    jetpack::add(opts$package, opts$remote)
+    jetpack.add(opts$package, opts$remote)
   } else if (opts$remove) {
-    jetpack::remove(opts$package, opts$remote)
+    jetpack.remove(opts$package, opts$remote)
   } else if (opts$update) {
-    jetpack::update(opts$package)
+    jetpack.update(opts$package)
   } else if (opts$version) {
     version()
   } else if (opts$help) {
     message(doc)
   } else {
-    jetpack::install()
+    jetpack.install()
   }
 }
 
