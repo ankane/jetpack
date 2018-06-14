@@ -180,7 +180,7 @@ jetpack.init <- function() {
     write("Package: app", file="DESCRIPTION")
   }
 
-  # install packrat
+  # initialize packrat
   if (!packified()) {
     # don't include jetpack in external.packages
     # since packrat will require it to be installed
