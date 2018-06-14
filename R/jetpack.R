@@ -225,6 +225,7 @@ remove <- function(name, remote) {
   remote <- c(remote)
 
   for (n in name) {
+    pkgCheck(n)
     desc::desc_del_dep(n, "Imports")
   }
 
@@ -234,7 +235,6 @@ remove <- function(name, remote) {
     }
   }
 
-  pkgCheck(name)
   installHelper()
 
   success(paste0("Removed ", name, "!"))
@@ -242,9 +242,6 @@ remove <- function(name, remote) {
 
 update <- function(name) {
   checkJetpack()
-
-  currentVersion <- NULL
-
   pkgCheck(name)
 
   currentVersion <- packageVersion(name)
