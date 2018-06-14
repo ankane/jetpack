@@ -179,6 +179,7 @@ warn <- function(msg) {
 
 #' Install packages for a project
 #'
+#' @param deployment Use deployment mode
 #' @export
 jetpack.install <- function(deployment=FALSE) {
   prepCommand()

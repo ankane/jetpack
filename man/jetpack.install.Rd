@@ -6,6 +6,9 @@
 \usage{
 jetpack.install(deployment = FALSE)
 }
+\arguments{
+\item{deployment}{Use deployment mode}
+}
 \description{
 Install packages for a project
 }
