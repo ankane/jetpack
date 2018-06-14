@@ -74,6 +74,18 @@ jetpack add dplyr --remote=github::tidyverse/dplyr
 
 Supports [all of these remotes](https://cran.r-project.org/web/packages/devtools/vignettes/dependencies.html)
 
+Use a tag, branch, or commit
+
+```sh
+jetpack add dplyr --remote=github::tidyverse/dplyr@v0.7.5
+```
+
+For local sources, use: [master]
+
+```sh
+jetpack add dplyr --remote=local::/path/to/dplyr
+```
+
 ### Update
 
 Update a package
