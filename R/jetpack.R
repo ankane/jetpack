@@ -19,9 +19,13 @@ abortNotPackified <- function() {
   stop("This project has not yet been packified.\nRun 'jetpack init' to init.")
 }
 
+packified <- function() {
+  file.exists("packrat")
+}
+
 # more lightweight than getStatus
 checkJetpack <- function() {
-  if (!file.exists("packrat/init.R")) {
+  if (!packified()) {
     abortNotPackified()
   }
 }
@@ -111,7 +115,7 @@ loadDeps <- function() {
     }
   }
 
-  if (file.exists("packrat")) {
+  if (packified()) {
     packrat::on()
   }
 }
@@ -187,7 +191,7 @@ init <- function() {
   }
 
   # install packrat
-  if (!file.exists("packrat")) {
+  if (!packified()) {
     packrat::init(".", options=list(print.banner.on.startup=FALSE))
     packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
   }
