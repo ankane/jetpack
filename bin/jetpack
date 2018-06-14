@@ -2,8 +2,6 @@
 #
 # Jetpack
 
-jetpack_version <- "0.1.1"
-
 # helpers
 
 abort <- function(msg, color=TRUE) {
@@ -42,7 +40,7 @@ tryLoad <- function(lib) {
 # commands
 
 version <- function() {
-  message(paste0("Jetpack version ", jetpack_version))
+  message(paste0("Jetpack version ", packageVersion("jetpack")))
 }
 
 # main
