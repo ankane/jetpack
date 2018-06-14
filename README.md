@@ -21,12 +21,6 @@ devtools::install_github("ankane/jetpack")
 jetpack::createbin()
 ```
 
-With Homebrew, you can use:
-
-```sh
-brew install ankane/brew/jetpack
-```
-
 ## Getting Started
 
 In your project directory, run:
