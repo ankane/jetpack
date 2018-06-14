@@ -107,6 +107,7 @@ Be sure to commit all files Jetpack generates to source control, except for the 
 Jetpack can also be used from within RStudio.
 
 ```R
+packrat::off()
 library(jetpack)
 jetpack.init()
 jetpack.add("jsonlite")

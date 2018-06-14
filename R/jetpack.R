@@ -182,7 +182,9 @@ jetpack.init <- function() {
 
   # install packrat
   if (!packified()) {
-    packrat::init(".", options=list(external.packages=c("jetpack"), print.banner.on.startup=FALSE))
+    # don't include jetpack in external.packages
+    # since packrat will require it to be installed
+    packrat::init(".", options=list(print.banner.on.startup=FALSE))
     packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
   }
 
