@@ -4,7 +4,7 @@
 \alias{jetpack.install}
 \title{Install packages for a project}
 \usage{
-jetpack.install()
+jetpack.install(deployment = FALSE)
 }
 \description{
 Install packages for a project
