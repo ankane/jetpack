@@ -15,39 +15,59 @@ abort <- function(msg, color=TRUE) {
   quit(status=1)
 }
 
-handleVersionDeps <- function() {
-  deps <- desc::desc_get_deps()
-  deps <- deps[startsWith(deps$version, "== "), ]
-
-  if (nrow(deps) > 0) {
-    # only the case when package is not current version
-    warn("Due to a bug with devtools, packages with specific versions\nin the DESCRIPTION file are reinstalled every time jetpack is run.")
-
-    for (i in 1:nrow(deps)) {
-      row <- deps[i, ]
-      name <- row$package
-      version <- sub("== ", "", row$version)
-
-      if (!pkgInstalled(name) || as.character(packageVersion(name)) != version) {
-        extlib <- c("httr", "curl")
-        packrat::with_extlib(extlib, devtools::install_version(name, version=version))
-      }
-    }
+checkJetpack <- function() {
+  if (!file.exists("packrat/init.R")) {
+    abort("This project has not yet been packified.\nRun 'jetpack init' to init.")
   }
 }
 
 installHelper <- function() {
-  # in case we're missing any deps
-  # unfortunately, install_deps doesn't check version requirements
-  # https://github.com/r-lib/devtools/issues/1314
-  handleVersionDeps()
-
-  # use extlib for remote deps
   extlib <- c("httr", "curl")
-  packrat::with_extlib(extlib, devtools::install_deps(".", dependencies=TRUE, upgrade=FALSE))
 
-  suppressMessages(packrat::clean())
-  suppressMessages(packrat::snapshot())
+  tryCatch({
+    status <- suppressWarnings(packrat::status(quiet=TRUE))
+    missing <- status[is.na(status$library.version), ]
+    restore <- missing[!is.na(missing$packrat.version), ]
+    need <- missing[is.na(missing$packrat.version), ]
+
+    if (nrow(restore)) {
+      suppressWarnings(packrat::restore())
+    }
+
+    # in case we're missing any deps
+    # unfortunately, install_deps doesn't check version requirements
+    # https://github.com/r-lib/devtools/issues/1314
+    if (nrow(need) > 0) {
+      # use extlib for remote deps
+      packrat::with_extlib(extlib, devtools::install_deps(".", dependencies=TRUE, upgrade=FALSE))
+    }
+
+    # see if any version mismatches
+    deps <- desc::desc_get_deps()
+    specificDeps <- deps[startsWith(deps$version, "== "), ]
+    specificDeps$version <- sub("== ", "", specificDeps$version)
+    specificDeps <- merge(specificDeps, status, by="package")
+    mismatch <- specificDeps[!identical(specificDeps$version, specificDeps$packrat.version), ]
+    if (nrow(mismatch) > 0) {
+      for (i in 1:nrow(mismatch)) {
+        row <- mismatch[i, ]
+        packrat::with_extlib(extlib, devtools::install_version(row$package, version=row$version))
+
+        # remove from need
+        # need <- need[!identical(need$package, row$package), ]
+      }
+    }
+
+    suppressMessages(packrat::clean())
+    suppressMessages(packrat::snapshot())
+  }, error=function(err) {
+    msg <- conditionMessage(err)
+    if (grepl("This project has not yet been packified", msg)) {
+      abort("This project has not yet been packified.\nRun 'jetpack init' to init.")
+    } else {
+      abort(msg)
+    }
+  })
 }
 
 loadDeps <- function() {
@@ -83,7 +103,7 @@ loadDeps <- function() {
 }
 
 pkgCheck <- function(name) {
-  if (!pkgInstalled(name)) {
+  if (!desc::desc_has_dep(name)) {
     abort(paste0("Cannot find package '", name, "' in DESCRIPTION file"))
   }
 }
@@ -96,26 +116,6 @@ pkgRemove <- function(name) {
   if (pkgInstalled(name)) {
     suppressMessages(remove.packages(name))
   }
-}
-
-restore <- function() {
-  tryCatch({
-    status <- suppressWarnings(packrat::status(quiet=TRUE))
-    missing <- status[is.na(status$library.version), ]
-    restore <- missing[!is.na(missing$packrat.version), ]
-    need <- missing[is.na(missing$packrat.version), ]
-
-    if (nrow(restore)) {
-      suppressWarnings(packrat::restore())
-    }
-  }, error=function(err) {
-    msg <- conditionMessage(err)
-    if (grepl("This project has not yet been packified", msg)) {
-      abort("This project has not yet been packified.\nRun 'jetpack init' to init.")
-    } else {
-      abort(msg)
-    }
-  })
 }
 
 revertAdd <- function(err, original_deps, original_remotes) {
@@ -151,7 +151,7 @@ warn <- function(msg) {
 # commands
 
 install <- function() {
-  restore()
+  checkJetpack()
 
   tryCatch({
     installHelper()
@@ -182,7 +182,8 @@ init <- function() {
 }
 
 add <- function(name, remote=NULL) {
-  restore()
+  checkJetpack()
+
   remote <- c(remote)
 
   original_deps <- desc::desc_get_deps()
@@ -203,10 +204,6 @@ add <- function(name, remote=NULL) {
     }
 
     desc::desc_set_dep(n, "Imports", version=version_str)
-
-    if (length(remote) > 0 || !is.null(version)) {
-      pkgRemove(n)
-    }
   }
 
   tryCatch({
@@ -223,7 +220,8 @@ add <- function(name, remote=NULL) {
 }
 
 remove <- function(name, remote) {
-  restore()
+  checkJetpack()
+
   remote <- c(remote)
 
   for (n in name) {
@@ -243,7 +241,7 @@ remove <- function(name, remote) {
 }
 
 update <- function(name) {
-  restore()
+  checkJetpack()
 
   currentVersion <- NULL
 
