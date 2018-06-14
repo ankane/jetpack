@@ -13,7 +13,7 @@ Inspired by [Yarn](https://yarnpkg.com/) and [Bundler](https://bundler.io/)
 
 ## Installing
 
-Install Jetpack from an R session
+Install Jetpack
 
 ```R
 install.packages("devtools")
@@ -23,7 +23,7 @@ jetpack::createbin()
 
 ## Getting Started
 
-In your project directory, run:
+In your project directory (outside of R), run:
 
 ```sh
 jetpack init
