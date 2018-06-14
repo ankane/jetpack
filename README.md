@@ -118,7 +118,7 @@ jetpack.add("jsonlite")
 
 Install Jetpack on the server and run:
 
-```R
+```sh
 jetpack install
 ```
 
