@@ -46,7 +46,7 @@ installHelper <- function(status, remove=c()) {
   restore <- missing[!is.na(missing$packrat.version), ]
   need <- missing[is.na(missing$packrat.version), ]
 
-  if (nrow(restore)) {
+  if (nrow(restore) > 0) {
     suppressWarnings(packrat::restore())
   }
 
