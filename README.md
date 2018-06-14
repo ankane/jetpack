@@ -109,7 +109,7 @@ Jetpack can also be used from within RStudio.
 ```R
 packrat::off()
 library(jetpack)
-jetpack.init()
+jetpack.install()
 jetpack.add("jsonlite")
 ```
 
