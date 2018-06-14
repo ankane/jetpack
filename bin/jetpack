@@ -10,6 +10,7 @@ if (tryLoad("packrat")) {
 
 if (!tryLoad("jetpack")) {
   message("Installing Jetpack dependencies...")
+  message("This may take a while, but only happens once.")
 
   if (!tryLoad("devtools")) {
     install.packages("devtools", repos="https://cloud.r-project.org/", quiet=TRUE)
