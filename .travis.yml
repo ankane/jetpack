@@ -1,0 +1,8 @@
+language: r
+r: 3.5.0
+sudo: false
+cache: packages
+notifications:
+  email:
+    on_success: never
+    on_failure: change

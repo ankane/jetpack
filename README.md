@@ -11,6 +11,8 @@
 
 Inspired by [Yarn](https://yarnpkg.com/) and [Bundler](https://bundler.io/)
 
+[![Build Status](https://travis-ci.org/ankane/jetpack.svg?branch=master)](https://travis-ci.org/ankane/jetpack)
+
 ## Installation
 
 Install Jetpack
