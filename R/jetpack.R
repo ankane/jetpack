@@ -97,6 +97,14 @@ installHelper <- function(status, remove=c()) {
   suppressMessages(packrat::snapshot(prompt=FALSE))
 }
 
+loadDeps <- function() {
+  loadNamespace("packrat")
+  packrat::off(print.banner=FALSE)
+  for (lib in c("devtools", "desc", "crayon")) {
+    loadNamespace(lib)
+  }
+}
+
 packified <- function() {
   file.exists("packrat")
 }
@@ -117,11 +125,7 @@ pkgRemove <- function(name) {
 }
 
 prepCommand <- function(init=FALSE) {
-  loadNamespace("packrat")
-  packrat::off(print.banner=FALSE)
-  for (lib in c("devtools", "desc", "crayon")) {
-    loadNamespace(lib)
-  }
+  loadDeps()
 
   # work in child directories
   if (!init) {
@@ -336,6 +340,8 @@ jetpack.update <- function(packages) {
 #'
 #' @export
 jetpack.cli <- function() {
+  loadDeps()
+
   doc <- "Usage:
   jetpack [install] [--deployment]
   jetpack init
