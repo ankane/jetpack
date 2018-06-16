@@ -70,14 +70,6 @@ installHelper <- function(status, remove=c()) {
     }
   }
 
-  # in case we're missing any deps
-  # unfortunately, install_deps doesn't check version requirements
-  # https://github.com/r-lib/devtools/issues/1314
-  if (nrow(need) > 0 || length(remove) > 0) {
-    # use extlib for remote deps
-    packrat::with_extlib(extlib, devtools::install_deps(".", upgrade=FALSE))
-  }
-
   # see if any version mismatches
   deps <- desc::desc_get_deps()
   specificDeps <- deps[startsWith(deps$version, "== "), ]
@@ -91,6 +83,14 @@ installHelper <- function(status, remove=c()) {
         packrat::with_extlib(extlib, devtools::install_version(row$package, version=row$version))
       }
     }
+  }
+
+  # in case we're missing any deps
+  # unfortunately, install_deps doesn't check version requirements
+  # https://github.com/r-lib/devtools/issues/1314
+  if (nrow(need) > 0 || length(remove) > 0) {
+    # use extlib for remote deps
+    packrat::with_extlib(extlib, devtools::install_deps(".", upgrade=FALSE))
   }
 
   suppressMessages(packrat::clean())
