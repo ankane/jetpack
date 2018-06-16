@@ -19,7 +19,7 @@ Install Jetpack
 
 ```R
 install.packages("devtools")
-devtools::install_github("ankane/jetpack")
+devtools::install_github("ankane/jetpack", ref="v0.1.4")
 jetpack::createbin()
 ```
 
