@@ -101,7 +101,7 @@ installHelper <- function(status, remove=c()) {
 loadDeps <- function() {
   loadNamespace("packrat")
   packrat::off(print.banner=FALSE)
-  for (lib in c("devtools", "desc", "crayon")) {
+  for (lib in c("devtools", "desc", "crayon", "methods")) {
     loadNamespace(lib)
   }
 }
