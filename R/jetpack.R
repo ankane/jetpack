@@ -71,6 +71,7 @@ installHelper <- function(status, remove=c()) {
   }
 
   # see if any version mismatches
+  # TODO expand to all version specifications
   deps <- desc::desc_get_deps()
   specificDeps <- deps[startsWith(deps$version, "== "), ]
   if (nrow(specificDeps) > 0) {
