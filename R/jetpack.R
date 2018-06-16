@@ -196,11 +196,7 @@ jetpack.install <- function(deployment=FALSE) {
     }
     suppressWarnings(packrat::restore(prompt=FALSE))
   } else {
-    tryCatch({
-      installHelper(status)
-    }, warning=function(err) {
-      abort(conditionMessage(err))
-    })
+    installHelper(status)
   }
 
   showStatus()
@@ -270,8 +266,6 @@ jetpack.add <- function(packages, remotes=c()) {
 
   tryCatch({
     installHelper(getStatus())
-  }, warning=function(err) {
-    revertAdd(err, original_deps, original_remotes)
   }, error=function(err) {
     revertAdd(err, original_deps, original_remotes)
   })
