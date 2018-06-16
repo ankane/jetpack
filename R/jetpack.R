@@ -100,7 +100,7 @@ installHelper <- function(status, remove=c()) {
 
 loadDeps <- function() {
   # prevent warning
-  library(methods)
+  requireNamespace("methods")
 
   loadNamespace("packrat")
   packrat::off(print.banner=FALSE)
