@@ -14,5 +14,6 @@ test_that("it works", {
     jetpack.install()
     jetpack.update("jsonlite")
     jetpack.remove("jsonlite")
+    packrat::off()
   })
 })
