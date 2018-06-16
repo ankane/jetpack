@@ -99,9 +99,6 @@ installHelper <- function(status, remove=c()) {
 }
 
 loadDeps <- function() {
-  # prevent warning
-  requireNamespace("methods")
-
   loadNamespace("packrat")
   packrat::off(print.banner=FALSE)
   for (lib in c("devtools", "desc", "crayon")) {
@@ -336,6 +333,7 @@ jetpack.update <- function(packages) {
 
 #' Run CLI
 #'
+#' @import methods
 #' @export
 jetpack.cli <- function() {
   loadDeps()

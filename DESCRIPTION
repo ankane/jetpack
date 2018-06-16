@@ -10,5 +10,6 @@ BugReports: https://github.com/ankane/jetpack/issues
 License: MIT + file LICENSE
 LazyData: TRUE
 RoxygenNote: 6.0.1
-Imports: packrat, devtools, crayon, desc, docopt, methods
+Imports: packrat, devtools, crayon, desc, docopt
+Depends: methods
 Suggests: testthat, withr
