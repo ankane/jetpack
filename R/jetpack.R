@@ -81,7 +81,7 @@ installHelper <- function(status, remove=c()) {
     if (nrow(mismatch) > 0) {
       for (i in 1:nrow(mismatch)) {
         row <- mismatch[i, ]
-        packrat::with_extlib(extlib, devtools::install_version(row$package, version=row$version))
+        packrat::with_extlib(extlib, devtools::install_version(row$package, version=row$version, reload=FALSE))
       }
     }
   }
@@ -91,7 +91,7 @@ installHelper <- function(status, remove=c()) {
   # https://github.com/r-lib/devtools/issues/1314
   if (nrow(need) > 0 || length(remove) > 0) {
     # use extlib for remote deps
-    packrat::with_extlib(extlib, devtools::install_deps(".", upgrade=FALSE))
+    packrat::with_extlib(extlib, devtools::install_deps(".", upgrade=FALSE, reload=FALSE))
   }
 
   suppressMessages(packrat::clean())
