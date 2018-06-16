@@ -66,7 +66,7 @@ installHelper <- function(status, remove=c()) {
 
   if (length(remove) > 0) {
     for (name in remove) {
-      pkgRemove(name)
+      packrat::with_extlib(extlib, pkgRemove(name))
     }
   }
 
