@@ -1,7 +1,8 @@
-## 0.1.4 [unreleased]
+## 0.1.4
 
 - Added `--deployment` flag
 - Added `createbin` function
+- Fixed install issues
 
 ## 0.1.3
 
