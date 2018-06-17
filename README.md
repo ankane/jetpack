@@ -23,7 +23,7 @@ devtools::install_github("ankane/jetpack", ref="v0.1.4")
 jetpack::createbin()
 ```
 
-> If you already use Packrat, turn it off with `packrat::off()` before you run this
+If you already use Packrat, turn it off with `packrat::off()` before you run this.
 
 ## Getting Started
 
