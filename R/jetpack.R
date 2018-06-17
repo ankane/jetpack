@@ -99,10 +99,12 @@ installHelper <- function(status, remove=c()) {
 }
 
 loadDeps <- function() {
+  library(methods)
+
   loadNamespace("packrat")
   packrat::off(print.banner=FALSE)
   for (lib in c("devtools", "desc", "crayon")) {
-    suppressPackageStartupMessages(loadNamespace(lib))
+    loadNamespace(lib)
   }
 }
 
