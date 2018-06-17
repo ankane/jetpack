@@ -170,6 +170,10 @@ Also, add `packrat/lib*/` to your `.dockerignore`.
 
 There’s [ongoing work](https://github.com/virtualstaticvoid/heroku-buildpack-r/issues/110) to get Packrat working on Heroku.
 
+## Upgrading
+
+To upgrade, rerun the [installation steps](#installation).
+
 ## History
 
 View the [changelog](https://github.com/ankane/jetpack/blob/master/NEWS.md)
