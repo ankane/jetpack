@@ -167,7 +167,6 @@ prepCommand <- function() {
 }
 
 sandbox <- function(code) {
-  library(methods)
   invisible(packrat::with_extlib(c("withr", "devtools", "httr", "curl", "git2r", "desc", "docopt"), code))
 }
 
@@ -394,7 +393,7 @@ jetpack.cli <- function() {
 #' @param file The file to create
 #' @export
 createbin <- function(file="/usr/local/bin/jetpack") {
-  write("#!/usr/bin/env Rscript\n\nlibrary(jetpack)\njetpack.cli()", file=file)
+  write("#!/usr/bin/env Rscript\n\nlibrary(methods)\nlibrary(jetpack)\njetpack.cli()", file=file)
   Sys.chmod(file, "755")
   message(paste("Wrote", file))
 }
