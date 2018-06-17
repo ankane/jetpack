@@ -74,6 +74,8 @@ installHelper <- function(remove=c(), desc=NULL) {
   dir.create(dir)
   temp_desc <- file.path(dir, "DESCRIPTION")
   desc$write(temp_desc)
+  # need to read again to write later (bug with desc package?)
+  desc <- desc::desc(file=temp_desc)
   file.symlink(file.path(packrat::project_dir(), "packrat"), file.path(dir, "packrat"))
 
   # get status
@@ -126,8 +128,6 @@ installHelper <- function(remove=c(), desc=NULL) {
   suppressMessages(packrat::snapshot(project=dir, prompt=FALSE))
 
   # only write after successful
-  # need to read again (bug with desc package?)
-  desc <- desc::desc(file=temp_desc)
   desc$write(file.path(packrat::project_dir(), "DESCRIPTION"))
 }
 
