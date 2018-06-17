@@ -160,7 +160,8 @@ prepCommand <- function() {
   }
 
   options(packrat.project.dir=dir)
-  packrat::on(print.banner=FALSE)
+  clean_path <- Sys.getenv("TEST_JETPACK") == ""
+  packrat::on(clean.search.path=clean_path, print.banner=FALSE)
 
   checkInsecureRepos()
 }
@@ -230,9 +231,10 @@ jetpack.init <- function() {
     if (!packified()) {
       # don't include jetpack in external.packages
       # since packrat will require it to be installed
-      packrat::init(".", options=list(print.banner.on.startup=FALSE))
+      packrat::init(".", options=list(print.banner.on.startup=FALSE), enter=FALSE)
       packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
     }
+    prepCommand()
 
     # automatically load jetpack if it's found
     # so it's convenient to run commands from RStudio
