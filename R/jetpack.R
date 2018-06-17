@@ -1,15 +1,6 @@
 # helpers
 
-abort <- function(msg, color=TRUE) {
-  if (color) {
-    cat(crayon::red(paste0(msg, "\n")))
-  } else {
-    message(msg)
-  }
-  quit(status=1)
-}
-
-abortNotPackified <- function() {
+stopNotPackified <- function() {
   stop("This project has not yet been packified.\nRun 'jetpack init' to init.")
 }
 
@@ -44,7 +35,7 @@ getStatus <- function(project=NULL) {
   }, error=function(err) {
     msg <- conditionMessage(err)
     if (grepl("This project has not yet been packified", msg)) {
-      abortNotPackified()
+      stopNotPackified()
     } else {
       stop(msg)
     }
@@ -156,7 +147,7 @@ prepCommand <- function() {
   dir <- findDir(getwd())
 
   if (is.null(dir)) {
-    abortNotPackified()
+    stopNotPackified()
   }
 
   options(packrat.project.dir=dir)
@@ -384,7 +375,8 @@ jetpack.cli <- function() {
     tryCatch({
       opts <- docopt::docopt(doc)
     }, error=function(err) {
-      abort(doc, color=FALSE)
+      message(doc)
+      quit(status=1)
     })
 
     tryCatch({
@@ -408,7 +400,9 @@ jetpack.cli <- function() {
         jetpack.install(deployment=opts$deployment)
       }
     }, error=function(err) {
-      abort(conditionMessage(err))
+      msg <- conditionMessage(err)
+      cat(crayon::red(paste0(msg, "\n")))
+      quit(status=1)
     })
   })
 }
