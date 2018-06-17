@@ -164,6 +164,7 @@ prepCommand <- function() {
 }
 
 sandbox <- function(code) {
+  library(methods)
   invisible(packrat::with_extlib(c("withr", "devtools", "httr", "curl", "git2r", "desc", "docopt"), code))
 }
 
@@ -179,6 +180,7 @@ success <- function(msg) {
   cat(crayon::green(paste0(msg, "\n")))
 }
 
+#' @importFrom utils packageVersion
 version <- function() {
   message(paste0("Jetpack version ", packageVersion("jetpack")))
 }
