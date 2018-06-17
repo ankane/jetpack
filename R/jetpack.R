@@ -307,7 +307,6 @@ jetpack.remove <- function(packages, remotes=c()) {
 #' Update a package
 #'
 #' @param packages Packages to update
-#' @importFrom utils packageVersion
 #' @export
 jetpack.update <- function(packages) {
   sandbox({
@@ -321,10 +320,11 @@ jetpack.update <- function(packages) {
 
     installHelper(status, remove=packages)
 
+    status <- getStatus()
+
     for (package in packages) {
       currentVersion <- versions[package]
-      # TODO no longer reloaded
-      newVersion <- packageVersion(package)
+      newVersion <- pkgVersion(status, package)
       success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
     }
   })
