@@ -279,17 +279,15 @@ jetpack.add <- function(packages, remotes=c()) {
 jetpack.remove <- function(packages, remotes=c()) {
   sandbox({
     prepCommand()
-    status <- getStatus()
-
-    # make sure package exists
-    # possibly remove for speed
-    for (package in packages) {
-      pkgVersion(status, package)
-    }
 
     desc <- getDesc()
+
     for (package in packages) {
-      desc$del_dep(package, "Imports")
+      if (!desc$has_dep(package)) {
+        stop(paste0("Cannot find package '", package, "' in DESCRIPTION file"))
+      }
+
+      desc$del_dep(package)
     }
 
     if (length(remotes) > 0) {
