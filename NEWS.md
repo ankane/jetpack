@@ -1,3 +1,7 @@
+## 0.1.6 [unreleased]
+
+- Added check command
+
 ## 0.1.5
 
 - Don't update DESCRIPTION unless commands are successful

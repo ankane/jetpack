@@ -345,6 +345,25 @@ jetpack.update <- function(packages) {
   })
 }
 
+#' Check packages
+#'
+#' @export
+jetpack.check <- function() {
+  sandbox({
+    prepCommand()
+
+    status <- getStatus()
+    missing <- status[is.na(status$library.version), ]
+    if (nrow(missing) > 0) {
+      message(paste("Missing packages:", paste(missing$package, collapse=", ")))
+      warn("Run 'jetpack install' to install them")
+      quit(status=1)
+    } else {
+      success("All dependencies satisfied")
+    }
+  })
+}
+
 #' Run CLI
 #'
 #' @export
@@ -356,6 +375,7 @@ jetpack.cli <- function() {
     jetpack add <package>... [--remote=<remote>]...
     jetpack remove <package>... [--remote=<remote>]...
     jetpack update <package>...
+    jetpack check
     jetpack version
     jetpack help"
 
@@ -375,6 +395,8 @@ jetpack.cli <- function() {
         jetpack.remove(opts$package, opts$remote)
       } else if (opts$update) {
         jetpack.update(opts$package)
+      } else if (opts$check) {
+        jetpack.check()
       } else if (opts$version) {
         version()
       } else if (opts$help) {

@@ -109,6 +109,14 @@ Remove remotes as well
 jetpack remove dplyr --remote=github::tidyverse/dplyr
 ```
 
+### Check [master]
+
+Check that dependencies are installed
+
+```sh
+jetpack check
+```
+
 ## Source Control
 
 Be sure to commit all files Jetpack generates to source control, except for the `packrat/lib*/` directories.

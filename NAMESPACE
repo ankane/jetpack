@@ -2,6 +2,7 @@
 
 export(createbin)
 export(jetpack.add)
+export(jetpack.check)
 export(jetpack.cli)
 export(jetpack.init)
 export(jetpack.install)
