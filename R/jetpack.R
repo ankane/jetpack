@@ -357,9 +357,10 @@ jetpack.check <- function() {
     if (nrow(missing) > 0) {
       message(paste("Missing packages:", paste(missing$package, collapse=", ")))
       warn("Run 'jetpack install' to install them")
-      quit(status=1)
+      invisible(FALSE)
     } else {
       success("All dependencies satisfied")
+      invisible(TRUE)
     }
   })
 }
@@ -396,7 +397,9 @@ jetpack.cli <- function() {
       } else if (opts$update) {
         jetpack.update(opts$package)
       } else if (opts$check) {
-        jetpack.check()
+        if (!jetpack.check()) {
+          quit(status=1)
+        }
       } else if (opts$version) {
         version()
       } else if (opts$help) {
