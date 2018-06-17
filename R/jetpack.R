@@ -70,7 +70,7 @@ installHelper <- function(remove=c(), desc=NULL) {
   # use a temporary directly
   # this way, we don't update DESCRIPTION
   # until we know it was successful
-  dir <- file.path(tempdir(), "jetpack")
+  dir <- file.path(tempdir(), paste0("jetpack", sample.int(1000000000, 1)))
   dir.create(dir)
   temp_desc <- file.path(dir, "DESCRIPTION")
   desc$write(temp_desc)
