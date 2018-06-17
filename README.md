@@ -111,7 +111,7 @@ jetpack remove dplyr --remote=github::tidyverse/dplyr
 
 ### Check [master]
 
-Check that dependencies are installed
+Check that all dependencies are installed
 
 ```sh
 jetpack check

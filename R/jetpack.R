@@ -336,7 +336,7 @@ jetpack.update <- function(packages) {
   })
 }
 
-#' Check packages
+#' Check that all dependencies are installed
 #'
 #' @export
 jetpack.check <- function() {
