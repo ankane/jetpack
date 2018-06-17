@@ -375,6 +375,10 @@ jetpack.cli <- function() {
     tryCatch({
       opts <- docopt::docopt(doc)
     }, error=function(err) {
+      msg <- conditionMessage(err)
+      if (!grepl("usage:", msg)) {
+        warn(msg)
+      }
       message(doc)
       quit(status=1)
     })
