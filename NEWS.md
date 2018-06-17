@@ -1,6 +1,7 @@
-## 0.1.5 [unreleased]
+## 0.1.5
 
 - Don't update DESCRIPTION unless commands are successful
+- Trim trailing whitespace in DESCRIPTION
 - No longer modifies working directory when run from R
 
 ## 0.1.4
