@@ -311,17 +311,18 @@ jetpack.remove <- function(packages, remotes=c()) {
 jetpack.update <- function(packages) {
   sandbox({
     prepCommand()
-    status <- getStatus()
 
+    # store starting versions
+    status <- getStatus()
     versions <- list()
     for (package in packages) {
       versions[package] <- pkgVersion(status, package)
     }
 
-    installHelper(status, remove=packages)
+    installHelper(status=status, remove=packages)
 
+    # show updated versions
     status <- getStatus()
-
     for (package in packages) {
       currentVersion <- versions[package]
       newVersion <- pkgVersion(status, package)
