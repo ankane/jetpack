@@ -148,8 +148,7 @@ prepCommand <- function() {
     abortNotPackified()
   }
 
-  # TODO don't change global state
-  setwd(dir)
+  options(packrat.project.dir=dir)
   packrat::on(print.banner=FALSE)
 
   checkInsecureRepos()
