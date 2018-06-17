@@ -350,7 +350,7 @@ jetpack.check <- function() {
       warn("Run 'jetpack install' to install them")
       invisible(FALSE)
     } else {
-      success("All dependencies satisfied")
+      success("All dependencies are satisfied")
       invisible(TRUE)
     }
   })
