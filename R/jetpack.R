@@ -38,9 +38,9 @@ getDesc <- function() {
   desc::desc(file=packrat::project_dir())
 }
 
-getStatus <- function() {
+getStatus <- function(project=NULL) {
   tryCatch({
-    suppressWarnings(packrat::status(quiet=TRUE))
+    suppressWarnings(packrat::status(project=project, quiet=TRUE))
   }, error=function(err) {
     msg <- conditionMessage(err)
     if (grepl("This project has not yet been packified", msg)) {
@@ -51,21 +51,10 @@ getStatus <- function() {
   })
 }
 
-installHelper <- function(status=NULL, remove=c(), desc=NULL) {
+installHelper <- function(remove=c(), desc=NULL) {
   if (is.null(desc)) {
     desc <- getDesc()
   }
-
-  # TODO only do this after successful
-  desc$write()
-
-  if (is.null(status)) {
-    status <- getStatus()
-  }
-
-  missing <- status[is.na(status$library.version), ]
-  restore <- missing[!is.na(missing$packrat.version), ]
-  need <- missing[is.na(missing$packrat.version), ]
 
   # configure local repos
   remotes <- desc$get_remotes()
@@ -78,8 +67,23 @@ installHelper <- function(status=NULL, remove=c(), desc=NULL) {
   }
   packrat::set_opts(local.repos=repos, persist=FALSE)
 
+  # use a temporary directly
+  # this way, we don't update DESCRIPTION
+  # until we know it was successful
+  dir <- file.path(tempdir(), "jetpack")
+  dir.create(dir)
+  temp_desc <- file.path(dir, "DESCRIPTION")
+  desc$write(temp_desc)
+  file.symlink(file.path(packrat::project_dir(), "packrat"), file.path(dir, "packrat"))
+
+  # get status
+  status <- getStatus(project=dir)
+  missing <- status[is.na(status$library.version), ]
+  restore <- missing[!is.na(missing$packrat.version), ]
+  need <- missing[is.na(missing$packrat.version), ]
+
   if (nrow(restore) > 0) {
-    suppressWarnings(packrat::restore(prompt=FALSE))
+    suppressWarnings(packrat::restore(project=dir, prompt=FALSE))
 
     # non-vendor approach
     # for (i in 1:nrow(restore)) {
@@ -115,11 +119,16 @@ installHelper <- function(status=NULL, remove=c(), desc=NULL) {
   # unfortunately, install_deps doesn't check version requirements
   # https://github.com/r-lib/devtools/issues/1314
   if (nrow(need) > 0 || length(remove) > 0) {
-    devtools::install_deps(".", upgrade=FALSE, reload=FALSE)
+    devtools::install_deps(dir, upgrade=FALSE, reload=FALSE)
   }
 
-  suppressMessages(packrat::clean())
-  suppressMessages(packrat::snapshot(prompt=FALSE))
+  suppressMessages(packrat::clean(project=dir))
+  suppressMessages(packrat::snapshot(project=dir, prompt=FALSE))
+
+  # only write after successful
+  # need to read again (bug with desc package?)
+  desc <- desc::desc(file=temp_desc)
+  desc$write(file.path(packrat::project_dir(), "DESCRIPTION"))
 }
 
 packified <- function() {
@@ -185,16 +194,16 @@ warn <- function(msg) {
 jetpack.install <- function(deployment=FALSE) {
   sandbox({
     prepCommand()
-    status <- getStatus()
 
     if (deployment) {
+      status <- getStatus()
       missing <- status[is.na(status$packrat.version), ]
       if (nrow(missing) > 0) {
         stop(paste("Missing packages:", paste(missing$package, collapse=", ")))
       }
       suppressWarnings(packrat::restore(prompt=FALSE))
     } else {
-      installHelper(status)
+      installHelper()
     }
 
     showStatus()
@@ -319,7 +328,7 @@ jetpack.update <- function(packages) {
       versions[package] <- pkgVersion(status, package)
     }
 
-    installHelper(status=status, remove=packages)
+    installHelper(remove=packages)
 
     # show updated versions
     status <- getStatus()

@@ -1,3 +1,8 @@
+## 0.1.5 [unreleased]
+
+- Don't update DESCRIPTION unless commands are successful
+- No longer modifies working directory when run from R
+
 ## 0.1.4
 
 - Added `--deployment` flag
