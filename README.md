@@ -47,7 +47,7 @@ Install packages for a project
 jetpack install
 ```
 
-Whenever a teammate adds a new package, others just need to run this command to keep packages in sync. Do the same when a new member joins the project.
+Whenever a teammate adds a new package, others just need to run this command to keep packages in sync. New members who join should run this to get set up.
 
 `install` is optional.
 
