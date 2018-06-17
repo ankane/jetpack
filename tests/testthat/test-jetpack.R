@@ -1,5 +1,7 @@
 context("jetpack")
 
+skip_on_cran()
+
 library(withr)
 
 options(repos=list(CRAN="https://cloud.r-project.org/"))
