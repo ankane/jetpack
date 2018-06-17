@@ -11,5 +11,4 @@ License: MIT + file LICENSE
 LazyData: TRUE
 RoxygenNote: 6.0.1
 Imports: packrat, devtools, crayon, desc, docopt
-Depends: methods
 Suggests: testthat, withr

@@ -102,7 +102,7 @@ loadDeps <- function() {
   loadNamespace("packrat")
   packrat::off(print.banner=FALSE)
   for (lib in c("devtools", "desc", "crayon")) {
-    loadNamespace(lib)
+    suppressPackageStartupMessages(loadNamespace(lib))
   }
 }
 
@@ -333,7 +333,6 @@ jetpack.update <- function(packages) {
 
 #' Run CLI
 #'
-#' @import methods
 #' @export
 jetpack.cli <- function() {
   loadDeps()
