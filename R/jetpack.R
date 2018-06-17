@@ -13,14 +13,29 @@ abortNotPackified <- function() {
   stop("This project has not yet been packified.\nRun 'jetpack init' to init.")
 }
 
+checkInsecureRepos <- function() {
+  repos <- getOption("repos")
+  if (is.list(repos)) {
+    repos <- unlist(repos, use.names=FALSE)
+  }
+  insecure_repos <- repos[startsWith(repos, "http://")]
+  for (repo in insecure_repos) {
+    warn(paste0("Insecure CRAN repo: ", repo))
+  }
+}
+
 findDir <- function(path) {
   if (file.exists(file.path(path, "packrat"))) {
     path
   } else if (dirname(path) == path) {
-    abortNotPackified()
+    NULL
   } else {
     findDir(dirname(path))
   }
+}
+
+getDesc <- function() {
+  desc::desc(file=packrat::project_dir())
 }
 
 getStatus <- function() {
@@ -36,15 +51,24 @@ getStatus <- function() {
   })
 }
 
-installHelper <- function(status, remove=c()) {
-  extlib <- c("httr", "curl", "git2r")
+installHelper <- function(status=NULL, remove=c(), desc=NULL) {
+  if (is.null(desc)) {
+    desc <- getDesc()
+  }
+
+  # TODO only do this after successful
+  desc$write()
+
+  if (is.null(status)) {
+    status <- getStatus()
+  }
 
   missing <- status[is.na(status$library.version), ]
   restore <- missing[!is.na(missing$packrat.version), ]
   need <- missing[is.na(missing$packrat.version), ]
 
   # configure local repos
-  remotes <- desc::desc_get_remotes()
+  remotes <- desc$get_remotes()
   repos <- c()
   for (remote in remotes) {
     if (startsWith(remote, "local::")) {
@@ -60,19 +84,20 @@ installHelper <- function(status, remove=c()) {
     # non-vendor approach
     # for (i in 1:nrow(restore)) {
     #   row <- restore[i, ]
-    #   packrat::with_extlib(extlib, devtools::install_version(row$package, version=row$version, dependencies=FALSE))
+    #   devtools::install_version(row$package, version=row$version, dependencies=FALSE)
     # }
   }
 
   if (length(remove) > 0) {
     for (name in remove) {
-      packrat::with_extlib(extlib, pkgRemove(name))
+      pkgRemove(name)
     }
   }
 
   # see if any version mismatches
   # TODO expand to all version specifications
-  deps <- desc::desc_get_deps()
+  desc <- getDesc()
+  deps <- desc$get_deps()
   specificDeps <- deps[startsWith(deps$version, "== "), ]
   if (nrow(specificDeps) > 0) {
     specificDeps$version <- sub("== ", "", specificDeps$version)
@@ -81,7 +106,7 @@ installHelper <- function(status, remove=c()) {
     if (nrow(mismatch) > 0) {
       for (i in 1:nrow(mismatch)) {
         row <- mismatch[i, ]
-        packrat::with_extlib(extlib, devtools::install_version(row$package, version=row$version, reload=FALSE))
+        devtools::install_version(row$package, version=row$version, reload=FALSE)
       }
     }
   }
@@ -90,26 +115,15 @@ installHelper <- function(status, remove=c()) {
   # unfortunately, install_deps doesn't check version requirements
   # https://github.com/r-lib/devtools/issues/1314
   if (nrow(need) > 0 || length(remove) > 0) {
-    # use extlib for remote deps
-    packrat::with_extlib(extlib, devtools::install_deps(".", upgrade=FALSE, reload=FALSE))
+    devtools::install_deps(".", upgrade=FALSE, reload=FALSE)
   }
 
   suppressMessages(packrat::clean())
   suppressMessages(packrat::snapshot(prompt=FALSE))
 }
 
-loadDeps <- function() {
-  library(methods)
-
-  loadNamespace("packrat")
-  packrat::off(print.banner=FALSE)
-  for (lib in c("devtools", "desc", "crayon")) {
-    loadNamespace(lib)
-  }
-}
-
 packified <- function() {
-  file.exists("packrat")
+  file.exists(file.path(packrat::project_dir(), "packrat"))
 }
 
 pkgVersion <- function(status, name) {
@@ -127,37 +141,21 @@ pkgRemove <- function(name) {
   }
 }
 
-prepCommand <- function(init=FALSE) {
-  loadDeps()
+prepCommand <- function() {
+  dir <- findDir(getwd())
 
-  # work in child directories
-  if (!init) {
-    setwd(findDir(getwd()))
-  }
-
-  if (packified()) {
-    packrat::on(print.banner=FALSE)
+  if (is.null(dir)) {
+    abortNotPackified()
   }
 
-  # before each method
-  repos <- getOption("repos")
-  if (is.list(repos)) {
-    repos <- unlist(repos, use.names=FALSE)
-  }
-  insecure_repos <- repos[startsWith(repos, "http://")]
-  for (repo in insecure_repos) {
-    warn(paste0("Insecure CRAN repo: ", repo))
-  }
+  packrat::project_dir(dir)
+  packrat::on(print.banner=FALSE)
+
+  checkInsecureRepos()
 }
 
-revertAdd <- function(err, original_deps, original_remotes) {
-  desc::desc_set_deps(original_deps)
-  if (length(original_remotes) == 0) {
-    desc::desc_del("Remotes")
-  } else {
-    desc::desc_set_remotes(original_remotes)
-  }
-  stop(conditionMessage(err))
+sandbox <- function(code) {
+  invisible(packrat::with_extlib(c("withr", "devtools", "httr", "curl", "git2r", "desc", "docopt"), code))
 }
 
 showStatus <- function() {
@@ -170,10 +168,6 @@ showStatus <- function() {
 
 success <- function(msg) {
   cat(crayon::green(paste0(msg, "\n")))
-}
-
-tryLoad <- function(lib) {
-  requireNamespace(lib, quietly=TRUE)
 }
 
 version <- function() {
@@ -189,54 +183,56 @@ warn <- function(msg) {
 #' @param deployment Use deployment mode
 #' @export
 jetpack.install <- function(deployment=FALSE) {
-  prepCommand()
-  status <- getStatus()
+  sandbox({
+    prepCommand()
+    status <- getStatus()
 
-  if (deployment) {
-    missing <- status[is.na(status$packrat.version), ]
-    if (nrow(missing) > 0) {
-      stop(paste("Missing packages:", paste(missing$package, collapse=", ")))
+    if (deployment) {
+      missing <- status[is.na(status$packrat.version), ]
+      if (nrow(missing) > 0) {
+        stop(paste("Missing packages:", paste(missing$package, collapse=", ")))
+      }
+      suppressWarnings(packrat::restore(prompt=FALSE))
+    } else {
+      installHelper(status)
     }
-    suppressWarnings(packrat::restore(prompt=FALSE))
-  } else {
-    installHelper(status)
-  }
 
-  showStatus()
+    showStatus()
 
-  success("Pack complete!")
+    success("Pack complete!")
+  })
 }
 
 #' Set up Jetpack
 #'
 #' @export
 jetpack.init <- function() {
-  prepCommand(init=TRUE)
+  sandbox({
+    # create description file
+    if (!file.exists("DESCRIPTION")) {
+      write("Package: app", file="DESCRIPTION")
+    }
 
-  # create description file
-  if (!file.exists("DESCRIPTION")) {
-    write("Package: app", file="DESCRIPTION")
-  }
+    # initialize packrat
+    if (!packified()) {
+      # don't include jetpack in external.packages
+      # since packrat will require it to be installed
+      packrat::init(".", options=list(print.banner.on.startup=FALSE))
+      packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
+    }
 
-  # initialize packrat
-  if (!packified()) {
-    # don't include jetpack in external.packages
-    # since packrat will require it to be installed
-    packrat::init(".", options=list(print.banner.on.startup=FALSE))
-    packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
-  }
+    # automatically load jetpack if it's found
+    # so it's convenient to run commands from RStudio
+    # like jetpack.install()
+    if (file.exists(".Rprofile") && !any(grepl("jetpack", readLines(".Rprofile")))) {
+      write("invisible(tryCatch(packrat::extlib(\"jetpack\"), error=function(err) {}))", file=".Rprofile", append=TRUE)
+    }
 
-  # automatically load jetpack if it's found
-  # so it's convenient to run commands from RStudio
-  # like jetpack.install()
-  if (file.exists(".Rprofile") && !any(grepl("jetpack", readLines(".Rprofile")))) {
-    write("invisible(tryCatch(packrat::extlib(\"jetpack\"), error=function(err) {}))", file=".Rprofile", append=TRUE)
-  }
+    # install in case there was a previous DESCRIPTION file
+    installHelper()
 
-  # install in case there was a previous DESCRIPTION file
-  installHelper(getStatus())
-
-  success("Run 'jetpack add <package>' to add packages!")
+    success("Run 'jetpack add <package>' to add packages!")
+  })
 }
 
 #' Add a package
@@ -245,37 +241,34 @@ jetpack.init <- function() {
 #' @param remotes Remotes to add
 #' @export
 jetpack.add <- function(packages, remotes=c()) {
-  prepCommand()
+  sandbox({
+    prepCommand()
 
-  original_deps <- desc::desc_get_deps()
-  original_remotes <- desc::desc_get_remotes()
+    desc <- getDesc()
 
-  for (remote in remotes) {
-    desc::desc_add_remotes(remote)
-  }
-
-  for (package in packages) {
-    parts <- strsplit(package, "@")[[1]]
-    version <- NULL
-    version_str <- "*"
-    if (length(parts) != 1) {
-      package <- parts[1]
-      version <- parts[2]
-      version_str <- paste("==", version)
+    for (remote in remotes) {
+      desc$add_remotes(remote)
     }
 
-    desc::desc_set_dep(package, "Imports", version=version_str)
-  }
+    for (package in packages) {
+      parts <- strsplit(package, "@")[[1]]
+      version <- NULL
+      version_str <- "*"
+      if (length(parts) != 1) {
+        package <- parts[1]
+        version <- parts[2]
+        version_str <- paste("==", version)
+      }
 
-  tryCatch({
-    installHelper(getStatus())
-  }, error=function(err) {
-    revertAdd(err, original_deps, original_remotes)
+      desc$set_dep(package, "Imports", version=version_str)
+    }
+
+    installHelper(desc=desc)
+
+    showStatus()
+
+    success("Pack complete!")
   })
-
-  showStatus()
-
-  success("Pack complete!")
 }
 
 #' Remove a package
@@ -284,30 +277,33 @@ jetpack.add <- function(packages, remotes=c()) {
 #' @param remotes Remotes to remove
 #' @export
 jetpack.remove <- function(packages, remotes=c()) {
-  prepCommand()
-  status <- getStatus()
+  sandbox({
+    prepCommand()
+    status <- getStatus()
 
-  # make sure package exists
-  # possibly remove for speed
-  for (package in packages) {
-    pkgVersion(status, package)
-  }
-
-  for (package in packages) {
-    desc::desc_del_dep(package, "Imports")
-  }
-
-  if (length(remotes) > 0) {
-    for (remote in remotes) {
-      desc::desc_del_remotes(remote)
+    # make sure package exists
+    # possibly remove for speed
+    for (package in packages) {
+      pkgVersion(status, package)
     }
-  }
 
-  installHelper(getStatus())
+    desc <- getDesc()
+    for (package in packages) {
+      desc$del_dep(package, "Imports")
+    }
 
-  for (package in packages) {
-    success(paste0("Removed ", package, "!"))
-  }
+    if (length(remotes) > 0) {
+      for (remote in remotes) {
+        desc$del_remotes(remote)
+      }
+    }
+
+    installHelper(desc=desc)
+
+    for (package in packages) {
+      success(paste0("Removed ", package, "!"))
+    }
+  })
 }
 
 #' Update a package
@@ -316,63 +312,66 @@ jetpack.remove <- function(packages, remotes=c()) {
 #' @importFrom utils packageVersion
 #' @export
 jetpack.update <- function(packages) {
-  prepCommand()
-  status <- getStatus()
+  sandbox({
+    prepCommand()
+    status <- getStatus()
 
-  versions <- list()
-  for (package in packages) {
-    versions[package] <- pkgVersion(status, package)
-  }
+    versions <- list()
+    for (package in packages) {
+      versions[package] <- pkgVersion(status, package)
+    }
 
-  installHelper(status, remove=packages)
+    installHelper(status, remove=packages)
 
-  for (package in packages) {
-    currentVersion <- versions[package]
-    newVersion <- packageVersion(package)
-    success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
-  }
+    for (package in packages) {
+      currentVersion <- versions[package]
+      # TODO no longer reloaded
+      newVersion <- packageVersion(package)
+      success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
+    }
+  })
 }
 
 #' Run CLI
 #'
 #' @export
 jetpack.cli <- function() {
-  loadDeps()
+  sandbox({
+    doc <- "Usage:
+    jetpack [install] [--deployment]
+    jetpack init
+    jetpack add <package>... [--remote=<remote>]...
+    jetpack remove <package>... [--remote=<remote>]...
+    jetpack update <package>...
+    jetpack version
+    jetpack help"
 
-  doc <- "Usage:
-  jetpack [install] [--deployment]
-  jetpack init
-  jetpack add <package>... [--remote=<remote>]...
-  jetpack remove <package>... [--remote=<remote>]...
-  jetpack update <package>...
-  jetpack version
-  jetpack help"
+    opts <- NULL
+    tryCatch({
+      opts <- docopt::docopt(doc)
+    }, error=function(err) {
+      abort(doc, color=FALSE)
+    })
 
-  opts <- NULL
-  tryCatch({
-    opts <- docopt::docopt(doc)
-  }, error=function(err) {
-    abort(doc, color=FALSE)
-  })
-
-  tryCatch({
-    if (opts$init) {
-      jetpack.init()
-    } else if (opts$add) {
-      jetpack.add(opts$package, opts$remote)
-    } else if (opts$remove) {
-      jetpack.remove(opts$package, opts$remote)
-    } else if (opts$update) {
-      jetpack.update(opts$package)
-    } else if (opts$version) {
-      version()
-    } else if (opts$help) {
-      message(doc)
-    } else {
-      jetpack.install(deployment=opts$deployment)
-    }
-  }, error=function(err) {
-    abort(conditionMessage(err))
+    tryCatch({
+      if (opts$init) {
+        jetpack.init()
+      } else if (opts$add) {
+        jetpack.add(opts$package, opts$remote)
+      } else if (opts$remove) {
+        jetpack.remove(opts$package, opts$remote)
+      } else if (opts$update) {
+        jetpack.update(opts$package)
+      } else if (opts$version) {
+        version()
+      } else if (opts$help) {
+        message(doc)
+      } else {
+        jetpack.install(deployment=opts$deployment)
+      }
+    }, error=function(err) {
+      abort(conditionMessage(err))
+    })
   })
 }
 
