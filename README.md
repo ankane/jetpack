@@ -128,6 +128,8 @@ Jetpack can also be used in RStudio.
 ```R
 jetpack.install()
 jetpack.add("jsonlite")
+jetpack.update("curl")
+jetpack.remove("dplyr")
 ```
 
 To initialize a project in RStudio, use:
