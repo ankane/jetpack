@@ -2,10 +2,10 @@
 % Please edit documentation in R/jetpack.R
 \name{jetpack.check}
 \alias{jetpack.check}
-\title{Check packages}
+\title{Check that all dependencies are installed}
 \usage{
 jetpack.check()
 }
 \description{
-Check packages
+Check that all dependencies are installed
 }
