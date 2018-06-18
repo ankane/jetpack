@@ -109,7 +109,7 @@ Remove remotes as well
 jetpack remove dplyr --remote=github::tidyverse/dplyr
 ```
 
-### Check [master]
+### Check
 
 Check that all dependencies are installed
 
