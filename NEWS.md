@@ -1,3 +1,7 @@
+## 0.1.7 [unreleased]
+
+- Fixed `createbin` on Windows
+
 ## 0.1.6
 
 - Added check command
