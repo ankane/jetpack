@@ -25,7 +25,9 @@ jetpack::createbin()
 
 If you already use Packrat, turn it off with `packrat::off()` before you run this.
 
-For Windows, you’ll need to [run commands in RStudio](#rstudio).
+### Windows
+
+For Windows, you’ll need to [run Jetpack commands in RStudio](#rstudio) instead of the command line.
 
 ## Getting Started
 
