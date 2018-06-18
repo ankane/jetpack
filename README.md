@@ -123,14 +123,14 @@ Be sure to commit all files Jetpack generates to source control, except for the 
 
 ## RStudio
 
-Jetpack can also be used from within RStudio.
+Jetpack can also be used in RStudio.
 
 ```R
 jetpack.install()
 jetpack.add("jsonlite")
 ```
 
-To initialize a project in RStudio (not needed if you run `jetpack init`), use:
+To initialize a project in RStudio, use:
 
 ```R
 library(jetpack)
