@@ -253,6 +253,8 @@ jetpack.init <- function() {
     # install in case there was a previous DESCRIPTION file
     installHelper()
 
+    packrat::extlib("jetpack")
+
     success("Run 'jetpack add <package>' to add packages!")
   })
 }

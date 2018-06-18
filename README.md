@@ -130,6 +130,13 @@ jetpack.install()
 jetpack.add("jsonlite")
 ```
 
+To initialize a project in RStudio (not needed if you run `jetpack init`), use:
+
+```R
+library(jetpack)
+jetpack.init()
+```
+
 ## Deployment
 
 ### Server
