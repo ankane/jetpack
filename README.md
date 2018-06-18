@@ -59,6 +59,12 @@ Add a package
 jetpack add dplyr
 ```
 
+Add multiple packages
+
+```sh
+jetpack add jsonlite stringr
+```
+
 Add a specific version
 
 ```sh
@@ -95,12 +101,26 @@ Update a package
 jetpack update dplyr
 ```
 
+> For local packages, run this anytime the package code is changed
+
+Update multiple packages
+
+```sh
+jetpack update jsonlite stringr
+```
+
 ### Remove
 
 Remove a package
 
 ```sh
 jetpack remove dplyr
+```
+
+Remove multiple packages
+
+```sh
+jetpack remove jsonlite stringr
 ```
 
 Remove remotes as well
