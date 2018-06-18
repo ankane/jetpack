@@ -142,6 +142,10 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   }
 }
 
+isCLI <- function() {
+  any(getOption("jetpack_cli"))
+}
+
 packified <- function() {
   file.exists(file.path(packrat::project_dir(), "packrat"))
 }
@@ -255,7 +259,11 @@ jetpack.init <- function() {
 
     packrat::extlib("jetpack")
 
-    success("Run 'jetpack add <package>' to add packages!")
+    if (isCLI()) {
+      success("Run 'jetpack add <package>' to add packages!")
+    } else {
+      success("Run 'jetpack.add(package)' to add packages!")
+    }
   })
 }
 
@@ -364,7 +372,11 @@ jetpack.check <- function() {
     missing <- status[is.na(status$library.version), ]
     if (nrow(missing) > 0) {
       message(paste("Missing packages:", paste(missing$package, collapse=", ")))
-      warn("Run 'jetpack install' to install them")
+      if (isCLI()) {
+        warn("Run 'jetpack install' to install them")
+      } else {
+        warn("Run 'jetpack.install()' to install them")
+      }
       invisible(FALSE)
     } else {
       success("All dependencies are satisfied")
@@ -378,6 +390,8 @@ jetpack.check <- function() {
 #' @export
 jetpack.cli <- function() {
   sandbox({
+    options(jetpack_cli=TRUE)
+
     doc <- "Usage:
     jetpack [install] [--deployment]
     jetpack init
@@ -437,7 +451,5 @@ createbin <- function(file="/usr/local/bin/jetpack") {
     write("#!/usr/bin/env Rscript\n\nlibrary(methods)\nlibrary(jetpack)\njetpack.cli()", file=file)
     Sys.chmod(file, "755")
     message(paste("Wrote", file))
-  } else {
-    message("For Windows, run commands in RStudio")
   }
 }
