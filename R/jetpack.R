@@ -433,7 +433,11 @@ jetpack.cli <- function() {
 #' @param file The file to create
 #' @export
 createbin <- function(file="/usr/local/bin/jetpack") {
-  write("#!/usr/bin/env Rscript\n\nlibrary(methods)\nlibrary(jetpack)\njetpack.cli()", file=file)
-  Sys.chmod(file, "755")
-  message(paste("Wrote", file))
+  if (.Platform$OS.type == "unix") {
+    write("#!/usr/bin/env Rscript\n\nlibrary(methods)\nlibrary(jetpack)\njetpack.cli()", file=file)
+    Sys.chmod(file, "755")
+    message(paste("Wrote", file))
+  } else {
+    message("For Windows, run commands in RStudio")
+  }
 }
