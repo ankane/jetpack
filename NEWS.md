@@ -1,6 +1,7 @@
 ## 0.1.6 [unreleased]
 
 - Added check command
+- Big performance increase
 
 ## 0.1.5
 

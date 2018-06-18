@@ -42,7 +42,7 @@ getStatus <- function(project=NULL) {
   })
 }
 
-installHelper <- function(remove=c(), desc=NULL) {
+installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   if (is.null(desc)) {
     desc <- getDesc()
   }
@@ -77,6 +77,8 @@ installHelper <- function(remove=c(), desc=NULL) {
   restore <- missing[!is.na(missing$packrat.version), ]
   need <- missing[is.na(missing$packrat.version), ]
 
+  statusUpdated <- FALSE
+
   if (nrow(restore) > 0) {
     suppressWarnings(packrat::restore(project=dir, prompt=FALSE))
 
@@ -108,6 +110,7 @@ installHelper <- function(remove=c(), desc=NULL) {
         devtools::install_version(row$package, version=row$version, reload=FALSE)
       }
     }
+    statusUpdated <- TRUE
   }
 
   # in case we're missing any deps
@@ -115,13 +118,28 @@ installHelper <- function(remove=c(), desc=NULL) {
   # https://github.com/r-lib/devtools/issues/1314
   if (nrow(need) > 0 || length(remove) > 0) {
     devtools::install_deps(dir, upgrade=FALSE, reload=FALSE)
+    statusUpdated <- TRUE
   }
 
-  suppressMessages(packrat::clean(project=dir))
-  suppressMessages(packrat::snapshot(project=dir, prompt=FALSE))
+  if (statusUpdated || any(!status$currently.used)) {
+    suppressMessages(packrat::clean(project=dir))
+    statusUpdated <- TRUE
+  }
+
+  if (statusUpdated) {
+    suppressMessages(packrat::snapshot(project=dir, prompt=FALSE))
+  }
 
   # only write after successful
   file.copy(temp_desc, file.path(packrat::project_dir(), "DESCRIPTION"), overwrite=TRUE)
+
+  if (show_status) {
+    if (statusUpdated) {
+      status <- getStatus()
+    }
+
+    showStatus(status)
+  }
 }
 
 packified <- function() {
@@ -161,8 +179,7 @@ sandbox <- function(code) {
   invisible(packrat::with_extlib(c("withr", "devtools", "httr", "curl", "git2r", "desc", "docopt"), code))
 }
 
-showStatus <- function() {
-  status <- packrat::status(quiet=TRUE)
+showStatus <- function(status) {
   for (i in 1:nrow(status)) {
     row <- status[i, ]
     message(paste0("Using ", row$package, " ", row$packrat.version))
@@ -197,11 +214,11 @@ jetpack.install <- function(deployment=FALSE) {
         stop(paste("Missing packages:", paste(missing$package, collapse=", ")))
       }
       suppressWarnings(packrat::restore(prompt=FALSE))
+      showStatus(status)
     } else {
-      installHelper()
+      installHelper(show_status=TRUE)
     }
 
-    showStatus()
 
     success("Pack complete!")
   })
@@ -268,9 +285,7 @@ jetpack.add <- function(packages, remotes=c()) {
       desc$set_dep(package, "Imports", version=version_str)
     }
 
-    installHelper(desc=desc)
-
-    showStatus()
+    installHelper(desc=desc, show_status=TRUE)
 
     success("Pack complete!")
   })
