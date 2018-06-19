@@ -197,7 +197,7 @@ prepCommand <- function() {
 
   options(packrat.project.dir=dir)
   if (!packratOn()) {
-    stop("Packrat must be on to run this")
+    stop("Packrat must be on to run this. Run:\npackrat::on(); packrat::extlib(\"jetpack\")")
   }
 
   checkInsecureRepos()
