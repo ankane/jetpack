@@ -27,7 +27,7 @@ If you already use Packrat, turn it off with `packrat::off()` before you run thi
 
 ### Windows
 
-For Windows, you’ll need to [run Jetpack commands in RStudio](#rstudio) instead of the command line.
+Support for Windows is currently in-progress.
 
 ## Getting Started
 
