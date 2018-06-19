@@ -35,7 +35,7 @@ In your project directory (outside of R), run:
 jetpack init
 ```
 
-> Use Command Prompt or PowerShell on Windows or Terminal on Mac
+> Use Command Prompt or PowerShell on Windows and Terminal on Mac
 
 This sets up Packrat and creates a `DESCRIPTION` file to store your dependencies.
 
