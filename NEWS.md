@@ -1,6 +1,6 @@
 ## 0.1.7 [unreleased]
 
-- Fixed `createbin` on Windows
+- Fixes for Windows
 
 ## 0.1.6
 

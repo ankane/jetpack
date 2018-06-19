@@ -61,15 +61,21 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   # use a temporary directly
   # this way, we don't update DESCRIPTION
   # until we know it was successful
-  dir <- file.path(tempdir(), paste0("jetpack", as.numeric(Sys.time())))
-  dir.create(dir)
+  dir <- "."
+  if (!isWindows()) {
+    dir <- file.path(tempdir(), paste0("jetpack", as.numeric(Sys.time())))
+    dir.create(dir)
+  }
+
   temp_desc <- file.path(dir, "DESCRIPTION")
   desc$write(temp_desc)
   # strip trailing whitespace
   lines <- trimws(readLines(temp_desc), "r")
   writeLines(lines, temp_desc)
 
-  file.symlink(file.path(packrat::project_dir(), "packrat"), file.path(dir, "packrat"))
+  if (!isWindows()) {
+    file.symlink(file.path(packrat::project_dir(), "packrat"), file.path(dir, "packrat"))
+  }
 
   # get status
   status <- getStatus(project=dir)
@@ -128,10 +134,19 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
 
   if (statusUpdated) {
     suppressMessages(packrat::snapshot(project=dir, prompt=FALSE))
+
+    # loaded packages like curl can be missing on Windows
+    # so see if we need to restore again
+    status <- getStatus(project=dir)
+    if (any(is.na(status$library.version))) {
+      suppressWarnings(packrat::restore(project=dir, prompt=FALSE))
+    }
   }
 
   # only write after successful
-  file.copy(temp_desc, file.path(packrat::project_dir(), "DESCRIPTION"), overwrite=TRUE)
+  if (!isWindows()) {
+    file.copy(temp_desc, file.path(packrat::project_dir(), "DESCRIPTION"), overwrite=TRUE)
+  }
 
   if (show_status) {
     if (statusUpdated) {
@@ -144,6 +159,10 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
 
 isCLI <- function() {
   any(getOption("jetpack_cli"))
+}
+
+isWindows <- function() {
+  .Platform$OS.type != "unix"
 }
 
 packified <- function() {
@@ -165,6 +184,10 @@ pkgRemove <- function(name) {
   }
 }
 
+packratOn <- function() {
+  !is.na(Sys.getenv("R_PACKRAT_MODE", unset = NA))
+}
+
 prepCommand <- function() {
   dir <- findDir(getwd())
 
@@ -173,8 +196,9 @@ prepCommand <- function() {
   }
 
   options(packrat.project.dir=dir)
-  clean_path <- Sys.getenv("TEST_JETPACK") == ""
-  packrat::on(clean.search.path=clean_path, print.banner=FALSE)
+  if (!packratOn()) {
+    stop("Packrat must be on to run this")
+  }
 
   checkInsecureRepos()
 }
@@ -223,7 +247,6 @@ jetpack.install <- function(deployment=FALSE) {
       installHelper(show_status=TRUE)
     }
 
-
     success("Pack complete!")
   })
 }
@@ -245,7 +268,6 @@ jetpack.init <- function() {
       packrat::init(".", options=list(print.banner.on.startup=FALSE), enter=FALSE)
       packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
     }
-    prepCommand()
 
     # automatically load jetpack if it's found
     # so it's convenient to run commands from RStudio
@@ -254,16 +276,14 @@ jetpack.init <- function() {
       write("invisible(tryCatch(packrat::extlib(\"jetpack\"), error=function(err) {}))", file=".Rprofile", append=TRUE)
     }
 
-    # install in case there was a previous DESCRIPTION file
-    installHelper()
-
-    packrat::extlib("jetpack")
-
     if (isCLI()) {
       success("Run 'jetpack add <package>' to add packages!")
     } else {
       success("Run 'jetpack.add(package)' to add packages!")
+      suppressMessages(packrat::on(print.banner=FALSE))
+      packrat::extlib("jetpack")
     }
+    invisible()
   })
 }
 
@@ -447,7 +467,7 @@ jetpack.cli <- function() {
 #' @param file The file to create
 #' @export
 createbin <- function(file="/usr/local/bin/jetpack") {
-  if (.Platform$OS.type == "unix") {
+  if (!isWindows()) {
     write("#!/usr/bin/env Rscript\n\nlibrary(methods)\nlibrary(jetpack)\njetpack.cli()", file=file)
     Sys.chmod(file, "755")
     message(paste("Wrote", file))
