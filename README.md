@@ -19,7 +19,7 @@ Install Jetpack
 
 ```R
 install.packages("devtools")
-devtools::install_github("ankane/jetpack@v0.1.6")
+devtools::install_github("ankane/jetpack@v0.1.7")
 jetpack::createbin()
 ```
 
@@ -27,7 +27,7 @@ If you already use Packrat, turn it off with `packrat::off()` before you run thi
 
 ### Windows
 
-Support for Windows is currently in-progress.
+For Windows, you’ll need to [run Jetpack commands in RStudio](#rstudio) instead of the command line.
 
 ## Getting Started
 
