@@ -1,9 +1,5 @@
 # helpers
 
-stopNotPackified <- function() {
-  stop("This project has not yet been packified.\nRun 'jetpack init' to init.")
-}
-
 checkInsecureRepos <- function() {
   repos <- getOption("repos")
   if (is.list(repos)) {
@@ -212,6 +208,10 @@ showStatus <- function(status) {
     row <- status[i, ]
     message(paste0("Using ", row$package, " ", row$packrat.version))
   }
+}
+
+stopNotPackified <- function() {
+  stop("This project has not yet been packified.\nRun 'jetpack init' to init.")
 }
 
 success <- function(msg) {
