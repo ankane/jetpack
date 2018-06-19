@@ -227,6 +227,10 @@ warn <- function(msg) {
   cat(crayon::yellow(paste0(msg, "\n")))
 }
 
+windowsPath <- function(path) {
+  gsub("/", "\\\\", path)
+}
+
 #' Install packages for a project
 #'
 #' @param deployment Use deployment mode
@@ -466,8 +470,23 @@ jetpack.cli <- function() {
 #'
 #' @param file The file to create
 #' @export
-createbin <- function(file="/usr/local/bin/jetpack") {
-  if (!isWindows()) {
+createbin <- function(file=NULL) {
+  if (isWindows()) {
+    if (is.null(file)) {
+      file <- "C:/ProgramData/jetpack/bin/jetpack.cmd"
+    }
+    rscript <- file.path(R.home("bin"), "Rscript.exe")
+    dir <- dirname(file)
+    if (!file.exists(dir)) {
+      dir.create(dir, recursive=TRUE)
+    }
+    write(paste0("@", rscript, " -e \"library(methods); library(jetpack); jetpack.cli()\" %* "), file=file)
+    message(paste("Wrote", windowsPath(file)))
+    message(paste0("Be sure to add '", windowsPath(dir), "' to your PATH"))
+  } else {
+    if (is.null(file)) {
+      file <- "/usr/local/bin/jetpack"
+    }
     write("#!/usr/bin/env Rscript\n\nlibrary(methods)\nlibrary(jetpack)\njetpack.cli()", file=file)
     Sys.chmod(file, "755")
     message(paste("Wrote", file))

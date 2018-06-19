@@ -4,7 +4,7 @@
 \alias{createbin}
 \title{Create bin}
 \usage{
-createbin(file = "/usr/local/bin/jetpack")
+createbin(file = NULL)
 }
 \arguments{
 \item{file}{The file to create}

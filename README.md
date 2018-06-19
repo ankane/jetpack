@@ -25,9 +25,7 @@ jetpack::createbin()
 
 If you already use Packrat, turn it off with `packrat::off()` before you run this.
 
-### Windows
-
-For Windows, you’ll need to [run Jetpack commands in RStudio](#rstudio) instead of the command line.
+On Windows, you also need to add `C:\ProgramData\jetpack\bin` to your PATH. See [instructions](https://www.howtogeek.com/118594/how-to-edit-your-system-path-for-easy-command-line-access/) for how to do this.
 
 ## Getting Started
 
@@ -36,6 +34,8 @@ In your project directory (outside of R), run:
 ```sh
 jetpack init
 ```
+
+> Use the Command Prompt on Windows or Terminal on Mac
 
 This sets up Packrat and creates a `DESCRIPTION` file to store your dependencies.
 
