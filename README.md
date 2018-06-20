@@ -165,6 +165,14 @@ Remove a global package
 jetpack global remove dplyr
 ```
 
+### Global List [master]
+
+List global packages
+
+```sh
+jetpack global list
+```
+
 ## Source Control
 
 Be sure to commit all files Jetpack generates to source control, except for the `packrat/lib*/` directories.

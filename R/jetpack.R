@@ -82,6 +82,14 @@ globalInstallHelper <- function(packages, remotes=c()) {
   }
 }
 
+globalList <- function() {
+  packages <- installed.packages()
+  for (i in 1:nrow(packages)) {
+    row <- packages[i, ]
+    message(paste0("Using ", row["Package"], " ", row["Version"]))
+  }
+}
+
 globalRemove <- function(packages) {
   for (package in packages) {
     suppressMessages(remove.packages(package))
@@ -518,7 +526,8 @@ jetpack.cli <- function() {
     jetpack help
     jetpack global add <package>... [--remote=<remote>]...
     jetpack global remove <package>... [--remote=<remote>]...
-    jetpack global update <package>... [--remote=<remote>]..."
+    jetpack global update <package>... [--remote=<remote>]...
+    jetpack global list"
 
     opts <- NULL
     tryCatch({
@@ -542,8 +551,10 @@ jetpack.cli <- function() {
           # keep so it's consistent with remove
           # and easy to reverse global add
           globalRemove(opts$package)
-        } else {
+        } else if (opts$update) {
           globalUpdate(opts$package, opts$remote)
+        } else {
+          globalList()
         }
       } else if (opts$init) {
         jetpack.init()
