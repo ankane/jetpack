@@ -53,7 +53,7 @@ globalInstallHelper <- function(packages, remotes=c()) {
     if (length(parts) != 1) {
       package <- parts[1]
       version <- parts[2]
-      devtools::install_version(package, version=version)
+      devtools::install_version(package, version=version, reload=FALSE)
     } else {
       unversioned <- c(unversioned, package)
     }
@@ -78,7 +78,7 @@ globalInstallHelper <- function(packages, remotes=c()) {
       }
     }
 
-    devtools::install_deps(dir)
+    devtools::install_deps(dir, reload=FALSE)
   }
 }
 
@@ -103,12 +103,20 @@ globalRemove <- function(packages) {
 globalUpdate <- function(packages, remotes) {
   versions <- list()
   for (package in packages) {
+    parts <- strsplit(package, "@")[[1]]
+    if (length(parts) != 1) {
+      package <- parts[1]
+    }
     versions[package] <- as.character(packageVersion(package))
   }
 
   globalInstallHelper(packages, remotes)
 
   for (package in packages) {
+    parts <- strsplit(package, "@")[[1]]
+    if (length(parts) != 1) {
+      package <- parts[1]
+    }
     currentVersion <- versions[package]
     newVersion <- as.character(packageVersion(package))
     success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
