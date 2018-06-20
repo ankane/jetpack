@@ -448,7 +448,7 @@ jetpack.remove <- function(packages, remotes=c()) {
 #'
 #' @param packages Packages to update
 #' @export
-jetpack.update <- function(packages) {
+jetpack.update <- function(packages, remotes) {
   sandbox({
     prepCommand()
 
@@ -459,7 +459,12 @@ jetpack.update <- function(packages) {
       versions[package] <- pkgVersion(status, package)
     }
 
-    installHelper(remove=packages)
+    desc <- getDesc()
+    for (remote in remotes) {
+      desc$add_remotes(remote)
+    }
+
+    installHelper(remove=packages, desc=desc)
 
     # show updated versions
     status <- getStatus()
@@ -507,7 +512,7 @@ jetpack.cli <- function() {
     jetpack init
     jetpack add <package>... [--remote=<remote>]...
     jetpack remove <package>... [--remote=<remote>]...
-    jetpack update <package>...
+    jetpack update <package>... [--remote=<remote>]...
     jetpack check
     jetpack version
     jetpack help
@@ -544,7 +549,7 @@ jetpack.cli <- function() {
       } else if (opts$remove) {
         jetpack.remove(opts$package, opts$remote)
       } else if (opts$update) {
-        jetpack.update(opts$package)
+        jetpack.update(opts$package, opts$remote)
       } else if (opts$check) {
         if (!jetpack.check()) {
           quit(status=1)
