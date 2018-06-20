@@ -1,3 +1,7 @@
+## 0.1.10 [unreleased]
+
+- Fixed bugs with update
+
 ## 0.1.9
 
 - Added global commands
