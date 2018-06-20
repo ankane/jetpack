@@ -4,10 +4,12 @@
 \alias{jetpack.update}
 \title{Update a package}
 \usage{
-jetpack.update(packages)
+jetpack.update(packages, remotes)
 }
 \arguments{
 \item{packages}{Packages to update}
+
+\item{remotes}{Remotes to update}
 }
 \description{
 Update a package

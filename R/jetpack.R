@@ -83,10 +83,11 @@ globalInstallHelper <- function(packages, remotes=c()) {
 }
 
 globalList <- function() {
-  packages <- installed.packages()
+  packages <- as.data.frame(installed.packages())
+  packages <- packages[order(tolower(packages$Package)), ]
   for (i in 1:nrow(packages)) {
     row <- packages[i, ]
-    message(paste0("Using ", row["Package"], " ", row["Version"]))
+    message(paste0("Using ", row$Package, " ", row$Version))
   }
 }
 
@@ -455,6 +456,7 @@ jetpack.remove <- function(packages, remotes=c()) {
 #' Update a package
 #'
 #' @param packages Packages to update
+#' @param remotes Remotes to update
 #' @export
 jetpack.update <- function(packages, remotes) {
   sandbox({
