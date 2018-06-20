@@ -39,21 +39,47 @@ getStatus <- function(project=NULL) {
 }
 
 globalAdd <- function(packages) {
+  globalInstallHelper(packages)
+
+  for (package in packages) {
+    success(paste0("Installed ", package, " ", packageVersion(package)))
+  }
+}
+
+globalInstallHelper <- function(packages) {
   for (package in packages) {
     parts <- strsplit(package, "@")[[1]]
     if (length(parts) != 1) {
       package <- parts[1]
       version <- parts[2]
-      devtools::install_version(package, version=version, reload=FALSE)
+      devtools::install_version(package, version=version)
     } else {
-      install.packages(package, reload=FALSE)
+      install.packages(package)
     }
   }
 }
 
 globalRemove <- function(packages) {
   for (package in packages) {
-    remove.packages(package)
+    suppressMessages(remove.packages(package))
+  }
+  for (package in packages) {
+    success(paste0("Removed ", package, "!"))
+  }
+}
+
+globalUpdate <- function(packages) {
+  versions <- list()
+  for (package in packages) {
+    versions[package] <- as.character(packageVersion(package))
+  }
+
+  globalInstallHelper(packages)
+
+  for (package in packages) {
+    currentVersion <- versions[package]
+    newVersion <- as.character(packageVersion(package))
+    success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
   }
 }
 
@@ -458,7 +484,8 @@ jetpack.cli <- function() {
     jetpack version
     jetpack help
     jetpack global add <package>...
-    jetpack global remove <package>..."
+    jetpack global remove <package>...
+    jetpack global update <package>..."
 
     opts <- NULL
     tryCatch({
@@ -477,8 +504,10 @@ jetpack.cli <- function() {
         prepGlobal()
         if (opts$add) {
           globalAdd(opts$package)
-        } else {
+        } else if (opts$remove) {
           globalRemove(opts$package)
+        } else {
+          globalUpdate(opts$package)
         }
       } else if (opts$init) {
         jetpack.init()

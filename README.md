@@ -149,6 +149,14 @@ Add a global package
 jetpack global add dplyr
 ```
 
+### Global Update [master]
+
+Update a global package
+
+```sh
+jetpack global update dplyr
+```
+
 ### Global Remove [master]
 
 Remove a global package
