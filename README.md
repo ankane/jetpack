@@ -143,7 +143,7 @@ jetpack check
 
 ## Global Commands
 
-Global commands can be used for packages outside of projects.
+Global commands can be used to manage packages outside of projects.
 
 ### Global Add
 
