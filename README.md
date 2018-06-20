@@ -141,6 +141,10 @@ Check that all dependencies are installed
 jetpack check
 ```
 
+## Global Commands
+
+Global commands can be used for packages outside of projects.
+
 ### Global Add
 
 Add a global package
