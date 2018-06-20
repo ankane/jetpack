@@ -25,6 +25,14 @@ getDesc <- function() {
   desc::desc(file=packrat::project_dir())
 }
 
+getName <- function(package) {
+  parts <- strsplit(package, "@")[[1]]
+  if (length(parts) != 1) {
+    package <- parts[1]
+  }
+  package
+}
+
 getStatus <- function(project=NULL) {
   tryCatch({
     suppressWarnings(packrat::status(project=project, quiet=TRUE))
@@ -103,20 +111,14 @@ globalRemove <- function(packages) {
 globalUpdate <- function(packages, remotes) {
   versions <- list()
   for (package in packages) {
-    parts <- strsplit(package, "@")[[1]]
-    if (length(parts) != 1) {
-      package <- parts[1]
-    }
+    package <- getName(package)
     versions[package] <- as.character(packageVersion(package))
   }
 
   globalInstallHelper(packages, remotes)
 
   for (package in packages) {
-    parts <- strsplit(package, "@")[[1]]
-    if (length(parts) != 1) {
-      package <- parts[1]
-    }
+    package <- getName(package)
     currentVersion <- versions[package]
     newVersion <- as.character(packageVersion(package))
     success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
@@ -321,6 +323,29 @@ tempDir <- function() {
   dir
 }
 
+updateDesc <- function(packages, remotes) {
+  desc <- getDesc()
+
+  for (remote in remotes) {
+    desc$add_remotes(remote)
+  }
+
+  for (package in packages) {
+    parts <- strsplit(package, "@")[[1]]
+    version <- NULL
+    version_str <- "*"
+    if (length(parts) != 1) {
+      package <- parts[1]
+      version <- parts[2]
+      version_str <- paste("==", version)
+    }
+
+    desc$set_dep(package, "Imports", version=version_str)
+  }
+
+  desc
+}
+
 #' @importFrom utils packageVersion
 version <- function() {
   message(paste0("Jetpack version ", packageVersion("jetpack")))
@@ -403,24 +428,7 @@ jetpack.add <- function(packages, remotes=c()) {
   sandbox({
     prepCommand()
 
-    desc <- getDesc()
-
-    for (remote in remotes) {
-      desc$add_remotes(remote)
-    }
-
-    for (package in packages) {
-      parts <- strsplit(package, "@")[[1]]
-      version <- NULL
-      version_str <- "*"
-      if (length(parts) != 1) {
-        package <- parts[1]
-        version <- parts[2]
-        version_str <- paste("==", version)
-      }
-
-      desc$set_dep(package, "Imports", version=version_str)
-    }
+    desc <- updateDesc(packages, remotes)
 
     installHelper(desc=desc, show_status=TRUE)
 
@@ -474,19 +482,18 @@ jetpack.update <- function(packages, remotes) {
     status <- getStatus()
     versions <- list()
     for (package in packages) {
+      package <- getName(package)
       versions[package] <- pkgVersion(status, package)
     }
 
-    desc <- getDesc()
-    for (remote in remotes) {
-      desc$add_remotes(remote)
-    }
+    desc <- updateDesc(packages, remotes)
 
     installHelper(remove=packages, desc=desc)
 
     # show updated versions
     status <- getStatus()
     for (package in packages) {
+      package <- getName(package)
       currentVersion <- versions[package]
       newVersion <- pkgVersion(status, package)
       success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
