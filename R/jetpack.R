@@ -38,15 +38,16 @@ getStatus <- function(project=NULL) {
   })
 }
 
-globalAdd <- function(packages) {
-  globalInstallHelper(packages)
+globalAdd <- function(packages, remotes) {
+  globalInstallHelper(packages, remotes)
 
   for (package in packages) {
     success(paste0("Installed ", package, " ", packageVersion(package)))
   }
 }
 
-globalInstallHelper <- function(packages) {
+globalInstallHelper <- function(packages, remotes=c()) {
+  unversioned <- c()
   for (package in packages) {
     parts <- strsplit(package, "@")[[1]]
     if (length(parts) != 1) {
@@ -54,8 +55,30 @@ globalInstallHelper <- function(packages) {
       version <- parts[2]
       devtools::install_version(package, version=version)
     } else {
-      install.packages(package)
+      unversioned <- c(unversioned, package)
     }
+  }
+
+  if (length(unversioned) > 0) {
+    # create temporary directory, write description, install deps
+    dir <- tempDir()
+    desc <- desc::desc("!new")
+    for (remote in remotes) {
+      desc$add_remotes(remote)
+    }
+    for (package in unversioned) {
+      desc$set_dep(package, "Imports")
+    }
+    desc$write(file.path(dir, "DESCRIPTION"))
+
+    # TODO don't remove for add command
+    for (package in unversioned) {
+      if (package %in% installed.packages()) {
+        suppressMessages(remove.packages(package))
+      }
+    }
+
+    devtools::install_deps(dir)
   }
 }
 
@@ -68,13 +91,13 @@ globalRemove <- function(packages) {
   }
 }
 
-globalUpdate <- function(packages) {
+globalUpdate <- function(packages, remotes) {
   versions <- list()
   for (package in packages) {
     versions[package] <- as.character(packageVersion(package))
   }
 
-  globalInstallHelper(packages)
+  globalInstallHelper(packages, remotes)
 
   for (package in packages) {
     currentVersion <- versions[package]
@@ -104,8 +127,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   # until we know it was successful
   dir <- "."
   if (!isWindows()) {
-    dir <- file.path(tempdir(), paste0("jetpack", as.numeric(Sys.time())))
-    dir.create(dir)
+    dir <- tempDir()
   }
 
   temp_desc <- file.path(dir, "DESCRIPTION")
@@ -274,6 +296,12 @@ stopNotPackified <- function() {
 
 success <- function(msg) {
   cat(crayon::green(paste0(msg, "\n")))
+}
+
+tempDir <- function() {
+  dir <- file.path(tempdir(), paste0("jetpack", as.numeric(Sys.time())))
+  dir.create(dir)
+  dir
 }
 
 #' @importFrom utils packageVersion
@@ -483,9 +511,9 @@ jetpack.cli <- function() {
     jetpack check
     jetpack version
     jetpack help
-    jetpack global add <package>...
+    jetpack global add <package>... [--remote=<remote>]...
     jetpack global remove <package>...
-    jetpack global update <package>..."
+    jetpack global update <package>... [--remote=<remote>]..."
 
     opts <- NULL
     tryCatch({
@@ -503,11 +531,11 @@ jetpack.cli <- function() {
       if (opts$global) {
         prepGlobal()
         if (opts$add) {
-          globalAdd(opts$package)
+          globalAdd(opts$package, opts$remote)
         } else if (opts$remove) {
           globalRemove(opts$package)
         } else {
-          globalUpdate(opts$package)
+          globalUpdate(opts$package, opts$remote)
         }
       } else if (opts$init) {
         jetpack.init()
