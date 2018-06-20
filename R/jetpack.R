@@ -517,7 +517,7 @@ jetpack.cli <- function() {
     jetpack version
     jetpack help
     jetpack global add <package>... [--remote=<remote>]...
-    jetpack global remove <package>...
+    jetpack global remove <package>... [--remote=<remote>]...
     jetpack global update <package>... [--remote=<remote>]..."
 
     opts <- NULL
@@ -538,6 +538,9 @@ jetpack.cli <- function() {
         if (opts$add) {
           globalAdd(opts$package, opts$remote)
         } else if (opts$remove) {
+          # do nothing with remote
+          # keep so it's consistent with remove
+          # and easy to reverse global add
           globalRemove(opts$package)
         } else {
           globalUpdate(opts$package, opts$remote)
