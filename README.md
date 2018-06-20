@@ -141,6 +141,22 @@ Check that all dependencies are installed
 jetpack check
 ```
 
+### Global Add [master]
+
+Add a global package
+
+```sh
+jetpack global add dplyr
+```
+
+### Global Remove [master]
+
+Remove a global package
+
+```sh
+jetpack global remove dplyr
+```
+
 ## Source Control
 
 Be sure to commit all files Jetpack generates to source control, except for the `packrat/lib*/` directories.

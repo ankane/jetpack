@@ -38,6 +38,25 @@ getStatus <- function(project=NULL) {
   })
 }
 
+globalAdd <- function(packages) {
+  for (package in packages) {
+    parts <- strsplit(package, "@")[[1]]
+    if (length(parts) != 1) {
+      package <- parts[1]
+      version <- parts[2]
+      devtools::install_version(package, version=version, reload=FALSE)
+    } else {
+      install.packages(package, reload=FALSE)
+    }
+  }
+}
+
+globalRemove <- function(packages) {
+  for (package in packages) {
+    remove.packages(package)
+  }
+}
+
 installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   if (is.null(desc)) {
     desc <- getDesc()
@@ -194,6 +213,19 @@ prepCommand <- function() {
   options(packrat.project.dir=dir)
   if (!packratOn()) {
     stop("Packrat must be on to run this. Run:\npackrat::on(); packrat::extlib(\"jetpack\")")
+  }
+
+  checkInsecureRepos()
+}
+
+prepGlobal <- function() {
+  if (packratOn()) {
+    packrat::off()
+  }
+
+  repos <- getOption("repos")
+  if (repos["CRAN"] == "@CRAN@") {
+    options(repos=list(CRAN="https://cloud.r-project.org/"))
   }
 
   checkInsecureRepos()
@@ -424,7 +456,9 @@ jetpack.cli <- function() {
     jetpack update <package>...
     jetpack check
     jetpack version
-    jetpack help"
+    jetpack help
+    jetpack global add <package>...
+    jetpack global remove <package>..."
 
     opts <- NULL
     tryCatch({
@@ -439,7 +473,14 @@ jetpack.cli <- function() {
     })
 
     tryCatch({
-      if (opts$init) {
+      if (opts$global) {
+        prepGlobal()
+        if (opts$add) {
+          globalAdd(opts$package)
+        } else {
+          globalRemove(opts$package)
+        }
+      } else if (opts$init) {
         jetpack.init()
       } else if (opts$add) {
         jetpack.add(opts$package, opts$remote)

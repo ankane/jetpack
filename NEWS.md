@@ -1,3 +1,7 @@
+## 0.1.9 [unreleased]
+
+- Added global commands
+
 ## 0.1.8
 
 - Created script for Windows
