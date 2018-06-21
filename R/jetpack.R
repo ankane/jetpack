@@ -238,6 +238,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   }
 }
 
+#' @importFrom utils URLencode
 info <- function(package) {
   parts <- strsplit(package, "@")[[1]]
   version <- NULL
