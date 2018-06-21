@@ -325,7 +325,11 @@ sandbox <- function(code) {
 
 search <- function(query) {
   warn("WARNING: This command uses an insecure HTTP request")
-  r <- httr::GET(paste0("http://seer.r-pkg.org:9200/_search?size=1000&q=", URLencode(query)))
+  post_body <- list(
+    query=list(match=list(`_all`=query)),
+    size=1000
+  )
+  r <- httr::POST("http://seer.r-pkg.org:9200/_search", body=post_body, encode="json")
   error <- httr::http_error(r)
   if (error) {
     stop("Network error")
