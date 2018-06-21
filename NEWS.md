@@ -1,7 +1,7 @@
 ## 0.1.10 [unreleased]
 
 - Added info and search commands
-- Fixed segfaults
+- Fixed some segfaults
 - Fixed bugs with update
 
 ## 0.1.9

@@ -335,7 +335,7 @@ search <- function(query) {
   post_body <- list(
     query=list(
       function_score=list(
-        query=list(match = list(`_all`=query)),
+        query=list(multi_match = list(query=query, fields=c("Package^10", "_all"))),
         functions=list(list(script_score=list(script="cran_search_score")))
       )
     ),

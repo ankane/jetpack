@@ -192,7 +192,7 @@ jetpack info stringr
 Search for a package
 
 ```sh
-jetpack search database
+jetpack search xgboost
 ```
 
 ### Version
