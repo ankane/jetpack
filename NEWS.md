@@ -1,4 +1,4 @@
-## 0.1.10 [unreleased]
+## 0.1.10
 
 - Added info and search commands
 - Fixed some segfaults

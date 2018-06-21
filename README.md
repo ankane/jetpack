@@ -19,7 +19,7 @@ Install Jetpack
 
 ```R
 install.packages("devtools")
-devtools::install_github("ankane/jetpack@v0.1.9")
+devtools::install_github("ankane/jetpack@v0.1.10")
 jetpack::createbin()
 ```
 
@@ -179,7 +179,7 @@ jetpack global list
 
 ## Other Commands
 
-### Info [master]
+### Info
 
 Get info for a package
 
@@ -193,7 +193,7 @@ Get info for a specific version
 jetpack info stringr@1.0.0
 ```
 
-### Search [master]
+### Search
 
 Search for a package
 
@@ -300,7 +300,7 @@ There’s [ongoing work](https://github.com/virtualstaticvoid/heroku-buildpack-r
 To upgrade, run:
 
 ```sh
-jetpack global update jetpack --remote=github::ankane/jetpack@v0.1.9
+jetpack global update jetpack --remote=github::ankane/jetpack@v0.1.10
 ```
 
 ## History
