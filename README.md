@@ -195,13 +195,13 @@ jetpack info stringr@1.0.0
 
 ### Search
 
-Search for a package
+Search for packages
 
 ```sh
 jetpack search xgboost
 ```
 
-Search for multiple words
+Search multiple words
 
 ```sh
 jetpack search "neural network"
