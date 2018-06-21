@@ -238,12 +238,36 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   }
 }
 
+info <- function(package) {
+  r <- httr::GET(paste0("https://crandb.r-pkg.org/", URLencode(package)))
+  error <- httr::http_error(r)
+  if (error) {
+    stop("Package not found")
+  }
+  body <- httr::content(r, "parsed")
+  message(paste(body$Package, body$Version))
+  message(paste("Title:", body$Title))
+  message(paste("Date:", body$Date))
+  message(paste("Author:", body$Author))
+  message(paste("Maintainer:", body$Maintainer))
+  message(paste("License:", body$License))
+  if (any(body$releases)) {
+    message(paste("Releases:", paste0(body$releases, collapse=", ")))
+  }
+}
+
 isCLI <- function() {
   any(getOption("jetpack_cli"))
 }
 
 isWindows <- function() {
   .Platform$OS.type != "unix"
+}
+
+noPackrat <- function() {
+  if (packratOn()) {
+    packrat::off()
+  }
 }
 
 packified <- function() {
@@ -285,9 +309,7 @@ prepCommand <- function() {
 }
 
 prepGlobal <- function() {
-  if (packratOn()) {
-    packrat::off()
-  }
+  noPackrat()
 
   repos <- getOption("repos")
   if (repos["CRAN"] == "@CRAN@") {
@@ -538,6 +560,7 @@ jetpack.cli <- function() {
     jetpack remove <package>... [--remote=<remote>]...
     jetpack update <package>... [--remote=<remote>]...
     jetpack check
+    jetpack info <package>
     jetpack version
     jetpack help
     jetpack global add <package>... [--remote=<remote>]...
@@ -588,6 +611,9 @@ jetpack.cli <- function() {
         version()
       } else if (opts$help) {
         message(doc)
+      } else if (opts$info) {
+        noPackrat()
+        info(opts$package)
       } else {
         jetpack.install(deployment=opts$deployment)
       }

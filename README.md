@@ -177,6 +177,32 @@ List global packages
 jetpack global list
 ```
 
+## Other Commands
+
+### Info [master]
+
+Get info for a package
+
+```sh
+jetpack info stringr
+```
+
+### Version
+
+Get Jetpack version
+
+```sh
+jetpack version
+```
+
+### Help
+
+Show help
+
+```sh
+jetpack help
+```
+
 ## Source Control
 
 Be sure to commit all files Jetpack generates to source control, except for the `packrat/lib*/` directories.

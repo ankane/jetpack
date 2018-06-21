@@ -1,5 +1,6 @@
 ## 0.1.10 [unreleased]
 
+- Added info command
 - Fixed bugs with update
 
 ## 0.1.9
