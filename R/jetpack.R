@@ -248,12 +248,9 @@ info <- function(package) {
   message(paste(body$Package, body$Version))
   message(paste("Title:", body$Title))
   message(paste("Date:", body$Date))
-  message(paste("Author:", body$Author))
-  message(paste("Maintainer:", body$Maintainer))
+  message(paste("Author:", oneLine(body$Author)))
+  message(paste("Maintainer:", oneLine(body$Maintainer)))
   message(paste("License:", body$License))
-  if (any(body$releases)) {
-    message(paste("Releases:", paste0(body$releases, collapse=", ")))
-  }
 }
 
 isCLI <- function() {
@@ -262,6 +259,10 @@ isCLI <- function() {
 
 isWindows <- function() {
   .Platform$OS.type != "unix"
+}
+
+oneLine <- function(x) {
+  gsub("\n", " ", x)
 }
 
 noPackrat <- function() {
@@ -350,7 +351,7 @@ search <- function(query) {
   if (length(hits) > 0) {
     for (i in 1:length(hits)) {
       hit <- hits[i][[1]]
-      message(paste0(hit$`_id`, " ", hit$`_source`$Version, ": ", gsub("\n", " ", hit$`_source`$Title)))
+      message(paste0(hit$`_id`, " ", hit$`_source`$Version, ": ", oneLine(hit$`_source`$Title)))
     }
   }
 }
