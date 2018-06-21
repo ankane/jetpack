@@ -239,7 +239,17 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
 }
 
 info <- function(package) {
-  r <- httr::GET(paste0("https://crandb.r-pkg.org/", URLencode(package)))
+  parts <- strsplit(package, "@")[[1]]
+  version <- NULL
+  if (length(parts) != 1) {
+    package <- parts[1]
+    version <- parts[2]
+  }
+  url <- paste0("https://crandb.r-pkg.org/", URLencode(package))
+  if (!is.null(version)) {
+    url <- paste0(url, "/", URLencode(version))
+  }
+  r <- httr::GET(url)
   error <- httr::http_error(r)
   if (error) {
     stop("Package not found")
