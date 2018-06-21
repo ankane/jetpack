@@ -347,7 +347,7 @@ sandbox <- function(code) {
 }
 
 search <- function(query) {
-  warn("WARNING: This command uses an insecure HTTP request")
+  warn("NOTE: This command uses an insecure HTTP request")
   post_body <- list(
     query=list(
       function_score=list(
