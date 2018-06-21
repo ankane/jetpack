@@ -326,7 +326,12 @@ sandbox <- function(code) {
 search <- function(query) {
   warn("WARNING: This command uses an insecure HTTP request")
   post_body <- list(
-    query=list(match=list(`_all`=query)),
+    query=list(
+      function_score=list(
+        query=list(match = list(`_all`=query)),
+        functions=list(list(script_score=list(script="cran_search_score")))
+      )
+    ),
     size=1000
   )
   r <- httr::POST("http://seer.r-pkg.org:9200/_search", body=post_body, encode="json")
