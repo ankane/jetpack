@@ -201,6 +201,14 @@ Search for a package
 jetpack search xgboost
 ```
 
+Search for multiple words
+
+```sh
+jetpack search "neural network"
+```
+
+Works with title, description, authors, maintainers, and more
+
 ### Version
 
 Get Jetpack version
