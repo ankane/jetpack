@@ -323,6 +323,23 @@ sandbox <- function(code) {
   invisible(packrat::with_extlib(c("withr", "devtools", "httr", "curl", "git2r", "desc", "docopt"), code))
 }
 
+search <- function(query) {
+  warn("WARNING: This command uses an insecure HTTP request")
+  r <- httr::GET(paste0("http://seer.r-pkg.org:9200/_search?size=1000&q=", URLencode(query)))
+  error <- httr::http_error(r)
+  if (error) {
+    stop("Network error")
+  }
+  body <- httr::content(r, "parsed")
+  hits <- body$hits$hits
+  if (length(hits) > 0) {
+    for (i in 1:length(hits)) {
+      hit <- hits[i][[1]]
+      message(paste0(hit$`_id`, " ", hit$`_source`$Version, ": ", gsub("\n", " ", hit$`_source`$Title)))
+    }
+  }
+}
+
 showStatus <- function(status) {
   for (i in 1:nrow(status)) {
     row <- status[i, ]
@@ -561,6 +578,7 @@ jetpack.cli <- function() {
     jetpack update <package>... [--remote=<remote>]...
     jetpack check
     jetpack info <package>
+    jetpack search <query>
     jetpack version
     jetpack help
     jetpack global add <package>... [--remote=<remote>]...
@@ -614,6 +632,9 @@ jetpack.cli <- function() {
       } else if (opts$info) {
         noPackrat()
         info(opts$package)
+      } else if (opts$search) {
+        noPackrat()
+        search(opts$query)
       } else {
         jetpack.install(deployment=opts$deployment)
       }

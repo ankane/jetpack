@@ -187,6 +187,14 @@ Get info for a package
 jetpack info stringr
 ```
 
+### Search [master]
+
+Search for a package
+
+```sh
+jetpack search database
+```
+
 ### Version
 
 Get Jetpack version
