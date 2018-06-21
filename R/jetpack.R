@@ -332,12 +332,17 @@ prepGlobal <- function() {
 }
 
 sandbox <- function(code) {
-  libs <- c("withr", "devtools", "httr", "curl", "git2r", "desc", "docopt")
-  if (isCLI()) {
-    suppressMessages(packrat::extlib(libs))
-    invisible(eval(code))
+  if (!any(getOption("jetpack_sandboxed"))) {
+    options(jetpack_sandboxed=TRUE)
+    libs <- c("withr", "devtools", "httr", "curl", "git2r", "desc", "docopt")
+    if (isCLI()) {
+      suppressMessages(packrat::extlib(libs))
+      invisible(eval(code))
+    } else {
+      invisible(packrat::with_extlib(libs, code))
+    }
   } else {
-    invisible(packrat::with_extlib(libs, code))
+    eval(code)
   }
 }
 
