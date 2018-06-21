@@ -320,7 +320,13 @@ prepGlobal <- function() {
 }
 
 sandbox <- function(code) {
-  invisible(packrat::with_extlib(c("withr", "devtools", "httr", "curl", "git2r", "desc", "docopt"), code))
+  libs <- c("withr", "devtools", "httr", "curl", "git2r", "desc", "docopt")
+  if (isCLI()) {
+    suppressMessages(packrat::extlib(libs))
+    invisible(eval(code))
+  } else {
+    invisible(packrat::with_extlib(libs, code))
+  }
 }
 
 search <- function(query) {
@@ -576,9 +582,9 @@ jetpack.check <- function() {
 #'
 #' @export
 jetpack.cli <- function() {
-  sandbox({
-    options(jetpack_cli=TRUE)
+  options(jetpack_cli=TRUE)
 
+  sandbox({
     doc <- "Usage:
     jetpack [install] [--deployment]
     jetpack init
