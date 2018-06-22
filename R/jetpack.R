@@ -81,7 +81,7 @@ globalInstallHelper <- function(packages, remotes=c()) {
 
     # TODO don't remove for add command
     for (package in unversioned) {
-      if (package %in% installed.packages()) {
+      if (package %in% rownames(installed.packages())) {
         suppressMessages(remove.packages(package))
       }
     }
