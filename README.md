@@ -6,8 +6,7 @@
 - Designed for reproducibility (thanks to [Packrat](https://rstudio.github.io/packrat/), no more global installs!)
 - Great for collaboration
 - Secure by default
-
-![Screenshot](https://gist.githubusercontent.com/ankane/b6988db2802aca68a589b31e41b44195/raw/62d228452da6c0a54330de33c6068da23d271996/console.gif)
+- Use it from R or the command line
 
 Inspired by [Yarn](https://yarnpkg.com/) and [Bundler](https://bundler.io/)
 
@@ -17,25 +16,19 @@ Inspired by [Yarn](https://yarnpkg.com/) and [Bundler](https://bundler.io/)
 
 Install Jetpack
 
-```R
+```r
 install.packages("devtools")
 devtools::install_github("ankane/jetpack@v0.1.11")
-jetpack::createbin()
 ```
-
-If you already use Packrat, turn it off with `packrat::off()` before you run this.
-
-On Windows, you also need to add `C:\ProgramData\jetpack\bin` to your PATH. See [instructions](https://www.howtogeek.com/118594/how-to-edit-your-system-path-for-easy-command-line-access/) for how to do this.
 
 ## Getting Started
 
-In your project directory (outside of R), run:
+Open a project and run:
 
-```sh
-jetpack init
+```r
+library(jetpack)
+jetpack.init()
 ```
-
-> Use Command Prompt or PowerShell on Windows and Terminal on Mac
 
 This sets up Packrat and creates a `DESCRIPTION` file to store your dependencies.
 
@@ -47,52 +40,50 @@ If your project uses Git, `packrat/lib*/` is added to your `.gitignore`.
 
 Install packages for a project
 
-```sh
-jetpack install
+```r
+jetpack.install()
 ```
 
 Whenever a teammate adds a new package, others just need to run this command to keep packages in sync. New members who join should run this to get set up.
-
-`install` is optional.
 
 ### Add
 
 Add a package
 
-```sh
-jetpack add dplyr
+```r
+jetpack.add("dplyr")
 ```
 
 Add multiple packages
 
-```sh
-jetpack add jsonlite stringr
+```r
+jetpack.add(c("jsonlite", "stringr"))
 ```
 
 Add a specific version
 
-```sh
-jetpack add dplyr@0.7.5
+```r
+jetpack.add("dplyr@0.7.5")
 ```
 
 Add from GitHub or another remote source
 
-```sh
-jetpack add dplyr --remote=github::tidyverse/dplyr
+```r
+jetpack.add("dplyr", remote="github::tidyverse/dplyr")
 ```
 
 Supports [all of these remotes](https://cran.r-project.org/web/packages/devtools/vignettes/dependencies.html)
 
 Add from a specific tag, branch, or commit
 
-```sh
-jetpack add dplyr --remote=github::tidyverse/dplyr@v0.7.5
+```r
+jetpack.add("dplyr", remote="github::tidyverse/dplyr@v0.7.5")
 ```
 
 Add from a local source
 
-```sh
-jetpack add dplyr --remote=local::/path/to/dplyr
+```r
+jetpack.add("dplyr", remote="local::/path/to/dplyr")
 ```
 
 > The local directory must have the same name as the package
@@ -101,151 +92,79 @@ jetpack add dplyr --remote=local::/path/to/dplyr
 
 Update a package
 
-```sh
-jetpack update dplyr
+```r
+jetpack.update("dplyr")
 ```
 
 > For local packages, run this anytime the package code is changed
 
 Update multiple packages
 
-```sh
-jetpack update jsonlite stringr
+```r
+jetpack.update(c("jsonlite", "stringr"))
 ```
 
 ### Remove
 
 Remove a package
 
-```sh
-jetpack remove dplyr
+```r
+jetpack.remove("dplyr")
 ```
 
 Remove multiple packages
 
-```sh
-jetpack remove jsonlite stringr
+```r
+jetpack.remove(c("jsonlite", "stringr"))
 ```
 
 Remove remotes as well
 
-```sh
-jetpack remove dplyr --remote=github::tidyverse/dplyr
+```r
+jetpack.remove("dplyr", remote="github::tidyverse/dplyr")
 ```
 
 ### Check
 
 Check that all dependencies are installed
 
-```sh
-jetpack check
+```r
+jetpack.check()
 ```
-
-## Global Commands
-
-Global commands can be used to manage packages outside of projects.
-
-### Global Add
-
-Add a global package
-
-```sh
-jetpack global add dplyr
-```
-
-### Global Update
-
-Update a global package
-
-```sh
-jetpack global update dplyr
-```
-
-### Global Remove
-
-Remove a global package
-
-```sh
-jetpack global remove dplyr
-```
-
-### Global List
-
-List global packages
-
-```sh
-jetpack global list
-```
-
-## Other Commands
 
 ### Info
 
 Get info for a package
 
-```sh
-jetpack info stringr
+```r
+jetpack.info("stringr")
 ```
 
 Get info for a specific version
 
-```sh
-jetpack info stringr@1.0.0
+```r
+jetpack.info("stringr@1.0.0")
 ```
 
 ### Search
 
 Search for packages
 
-```sh
-jetpack search xgboost
+```r
+jetpack.search("xgboost")
 ```
 
 Search multiple words
 
-```sh
-jetpack search "neural network"
+```r
+jetpack.search("neural network")
 ```
 
 Works with title, description, authors, maintainers, and more
 
-### Version
-
-Get Jetpack version
-
-```sh
-jetpack version
-```
-
-### Help
-
-Show help
-
-```sh
-jetpack help
-```
-
 ## Source Control
 
 Be sure to commit all files Jetpack generates to source control, except for the `packrat/lib*/` directories.
-
-## RStudio
-
-Jetpack can also be used in RStudio.
-
-```R
-jetpack.install()
-jetpack.add("jsonlite")
-jetpack.update("curl")
-jetpack.remove("dplyr")
-```
-
-To initialize a project in RStudio, use:
-
-```R
-library(jetpack)
-jetpack.init()
-```
 
 ## Deployment
 
@@ -253,15 +172,15 @@ jetpack.init()
 
 Install Jetpack on the server and run:
 
-```sh
-jetpack install --deployment
+```r
+jetpack.install(deployment=TRUE)
 ```
 
 ### Docker
 
 Create an `init.R` with:
 
-```R
+```r
 install.packages("packrat")
 source("packrat/init.R")
 packrat::restore()
@@ -295,13 +214,53 @@ Also, add `packrat/lib*/` to your `.dockerignore`.
 
 There’s [ongoing work](https://github.com/virtualstaticvoid/heroku-buildpack-r/issues/110) to get Packrat working on Heroku.
 
-## Upgrading
+## CLI
 
-To upgrade, run:
+Jetpack can also be run from the command line. To set it up, use:
+
+```r
+jetpack::createbin()
+```
+
+On Windows, you need to add `C:\ProgramData\jetpack\bin` to your PATH. See [instructions](https://www.howtogeek.com/118594/how-to-edit-your-system-path-for-easy-command-line-access/) for how to do this.
 
 ```sh
-jetpack global update jetpack --remote=github::ankane/jetpack@v0.1.11
+jetpack init
+jetpack add dplyr
+jetpack add dplyr@0.7.5
+jetpack add dplyr --remote=github::tidyverse/dplyr
+jetpack update jsonlite
+jetpack remove stringr
+jetpack check
 ```
+
+You can also use it to manage global packages:
+
+```sh
+jetpack global add dplyr
+jetpack global update jsonlite
+jetpack global remove stringr
+jetpack global list
+```
+
+Or get info about packages:
+
+```sh
+jetpack info stringr
+jetpack info stringr@1.0.0
+jetpack search xgboost
+jetpack search "neural network"
+```
+
+For a full list of commands, use:
+
+```sh
+jetpack help
+```
+
+## Upgrading
+
+To upgrade, rerun the [installation instructions](#installation).
 
 ## History
 
