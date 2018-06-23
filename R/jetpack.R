@@ -531,8 +531,10 @@ check <- function() {
       } else {
         warn("Run 'jetpack::install()' to install them")
       }
+      invisible(FALSE)
     } else {
       success("All dependencies are satisfied")
+      invisible(TRUE)
     }
   })
 }
