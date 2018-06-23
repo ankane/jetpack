@@ -21,6 +21,10 @@ install.packages("devtools")
 devtools::install_github("ankane/jetpack@v0.2.0")
 ```
 
+## How It Works
+
+Jetpack stores your project dependencies in the `DESCRIPTION` file. It stores the specific versions of those packages in `packrat/packrat.lock` and the source code for each package in `packrat/src`. This makes it possible to have a reproducible environment. You can edit dependencies in `DESCRIPTION` file directly, but Jetpack provides functions to help with this.
+
 ## Getting Started
 
 Open a project and run:
@@ -43,7 +47,7 @@ Install packages for a project
 jetpack::install()
 ```
 
-Whenever a teammate adds a new package, others just need to run this command to keep packages in sync. New members who join should run this to get set up.
+This ensures all the right versions are installed. As dependencies change, collaborators can run this command to stay in sync.
 
 ### Add
 
