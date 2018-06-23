@@ -223,10 +223,11 @@ jetpack::cli()
 
 > On Windows, add `C:\ProgramData\jetpack\bin` to your PATH. See [instructions](https://www.howtogeek.com/118594/how-to-edit-your-system-path-for-easy-command-line-access/) for how to do this.
 
-You now have access to all the Jetpack commands
+All the Jetpack commands are now available
 
 ```sh
 jetpack init
+jetpack install
 jetpack add dplyr
 jetpack add dplyr@0.7.5
 jetpack add dplyr --remote=tidyverse/dplyr
