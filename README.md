@@ -47,7 +47,7 @@ Install packages for a project
 jetpack::install()
 ```
 
-This ensures all the right versions are installed. As dependencies change, collaborators can run this command to stay in sync.
+This ensures all the right versions are installed. As dependencies change, collaborators should run this command to stay synced.
 
 ### Add
 
