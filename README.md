@@ -23,7 +23,7 @@ devtools::install_github("ankane/jetpack@v0.2.0")
 
 ## How It Works
 
-Jetpack stores your project dependencies in the `DESCRIPTION` file. It stores the specific version of each package in `packrat/packrat.lock` and the source code in `packrat/src`. This makes it possible to have a reproducible environment. You can edit dependencies in `DESCRIPTION` file directly, but Jetpack provides functions to help with this.
+Jetpack stores your project dependencies in the `DESCRIPTION` file. It stores the specific version of each package in `packrat/packrat.lock` and the source code in `packrat/src`. This makes it possible to have a reproducible environment. You can edit dependencies in the `DESCRIPTION` file directly, but Jetpack provides functions to help with this.
 
 ## Getting Started
 
