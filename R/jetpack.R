@@ -323,7 +323,8 @@ showStatus <- function(status) {
 }
 
 stopNotPackified <- function() {
-  stop("This project has not yet been packified.\nRun 'jetpack init' to init.")
+  cmd <- if (isCLI()) "jetpack init" else "jetpack::init()"
+  stop(paste0("This project has not yet been packified.\nRun '", cmd, "' to init."))
 }
 
 success <- function(msg) {
@@ -376,7 +377,7 @@ windowsPath <- function(path) {
 #'
 #' @param deployment Use deployment mode
 #' @export
-jetpack.install <- function(deployment=FALSE) {
+install <- function(deployment=FALSE) {
   sandbox({
     prepCommand()
 
@@ -399,7 +400,7 @@ jetpack.install <- function(deployment=FALSE) {
 #' Set up Jetpack
 #'
 #' @export
-jetpack.init <- function() {
+init <- function() {
   sandbox({
     # create description file
     if (!file.exists("DESCRIPTION")) {
@@ -416,17 +417,17 @@ jetpack.init <- function() {
 
     # automatically load jetpack if it's found
     # so it's convenient to run commands from RStudio
-    # like jetpack.install()
+    # like jetpack::install()
     if (file.exists(".Rprofile") && !any(grepl("jetpack", readLines(".Rprofile")))) {
-      write("invisible(tryCatch(packrat::extlib(\"jetpack\"), error=function(err) {}))", file=".Rprofile", append=TRUE)
+      write("requireNamespace(\"jetpack\", lib.loc=packrat:::getDefaultLibPaths(), quietly=TRUE)", file=".Rprofile", append=TRUE)
     }
 
     if (isCLI()) {
       success("Run 'jetpack add <package>' to add packages!")
     } else {
-      success("Run 'jetpack.add(package)' to add packages!")
+      success("Run 'jetpack::add(package)' to add packages!")
       suppressMessages(packrat::on(print.banner=FALSE))
-      packrat::extlib("jetpack")
+      loadNamespace("jetpack", lib.loc=packrat:::getDefaultLibPaths())
     }
     invisible()
   })
@@ -437,7 +438,7 @@ jetpack.init <- function() {
 #' @param packages Packages to add
 #' @param remotes Remotes to add
 #' @export
-jetpack.add <- function(packages, remotes=c()) {
+add <- function(packages, remotes=c()) {
   sandbox({
     prepCommand()
 
@@ -454,7 +455,7 @@ jetpack.add <- function(packages, remotes=c()) {
 #' @param packages Packages to remove
 #' @param remotes Remotes to remove
 #' @export
-jetpack.remove <- function(packages, remotes=c()) {
+remove <- function(packages, remotes=c()) {
   sandbox({
     prepCommand()
 
@@ -487,7 +488,7 @@ jetpack.remove <- function(packages, remotes=c()) {
 #' @param packages Packages to update
 #' @param remotes Remotes to update
 #' @export
-jetpack.update <- function(packages, remotes) {
+update <- function(packages, remotes=c()) {
   sandbox({
     prepCommand()
 
@@ -517,7 +518,7 @@ jetpack.update <- function(packages, remotes) {
 #' Check that all dependencies are installed
 #'
 #' @export
-jetpack.check <- function() {
+check <- function() {
   sandbox({
     prepCommand()
 
@@ -528,20 +529,108 @@ jetpack.check <- function() {
       if (isCLI()) {
         warn("Run 'jetpack install' to install them")
       } else {
-        warn("Run 'jetpack.install()' to install them")
+        warn("Run 'jetpack::install()' to install them")
       }
-      invisible(FALSE)
     } else {
       success("All dependencies are satisfied")
-      invisible(TRUE)
     }
   })
 }
 
-#' Run CLI
+#' Get info for a package
+#'
+#' @param package Package to get info for
+#' @importFrom utils URLencode
+#' @export
+info <- function(package) {
+  sandbox({
+    parts <- strsplit(package, "@")[[1]]
+    version <- NULL
+    if (length(parts) != 1) {
+      package <- parts[1]
+      version <- parts[2]
+    }
+    url <- paste0("https://crandb.r-pkg.org/", URLencode(package))
+    if (!is.null(version)) {
+      url <- paste0(url, "/", URLencode(version))
+    }
+    r <- httr::GET(url)
+    error <- httr::http_error(r)
+    if (error) {
+      stop("Package not found")
+    }
+    body <- httr::content(r, "parsed")
+    message(paste(body$Package, body$Version))
+    message(paste("Title:", body$Title))
+    message(paste("Date:", body$Date))
+    message(paste("Author:", oneLine(body$Author)))
+    message(paste("Maintainer:", oneLine(body$Maintainer)))
+    message(paste("License:", body$License))
+  })
+}
+
+#' Search for packages
+#'
+#' @param query Search query
+#' @export
+search <- function(query) {
+  sandbox({
+    post_body <- list(
+      query=list(
+        function_score=list(
+          query=list(multi_match = list(query=query, fields=c("Package^10", "_all"), operator="and")),
+          functions=list(list(script_score=list(script="cran_search_score")))
+        )
+      ),
+      size=1000
+    )
+    r <- httr::POST("http://seer.r-pkg.org:9200/_search", body=post_body, encode="json")
+    error <- httr::http_error(r)
+    if (error) {
+      stop("Network error")
+    }
+    body <- httr::content(r, "parsed")
+    hits <- body$hits$hits
+    if (length(hits) > 0) {
+      for (i in 1:length(hits)) {
+        hit <- hits[i][[1]]
+        message(paste0(hit$`_id`, " ", hit$`_source`$Version, ": ", oneLine(hit$`_source`$Title)))
+      }
+    }
+  })
+}
+
+#' Install the CLI
+#'
+#' @param file The file to create
+#' @export
+cli <- function(file=NULL) {
+  if (isWindows()) {
+    if (is.null(file)) {
+      file <- "C:/ProgramData/jetpack/bin/jetpack.cmd"
+    }
+    rscript <- file.path(R.home("bin"), "Rscript.exe")
+    dir <- dirname(file)
+    if (!file.exists(dir)) {
+      dir.create(dir, recursive=TRUE)
+    }
+    write(paste0("@", rscript, " -e \"library(methods); jetpack::run()\" %* "), file=file)
+    message(paste("Wrote", windowsPath(file)))
+    message(paste0("Be sure to add '", windowsPath(dir), "' to your PATH"))
+  } else {
+    if (is.null(file)) {
+      file <- "/usr/local/bin/jetpack"
+    }
+    write("#!/usr/bin/env Rscript\n\nlibrary(methods)\njetpack::run()", file=file)
+    Sys.chmod(file, "755")
+    message(paste("Wrote", file))
+  }
+}
+
+#' Run the CLI
 #'
 #' @export
-jetpack.cli <- function() {
+run <- function() {
   options(jetpack_cli=TRUE)
 
   sandbox({
@@ -589,15 +678,15 @@ jetpack.cli <- function() {
           globalList()
         }
       } else if (opts$init) {
-        jetpack.init()
+        init()
       } else if (opts$add) {
-        jetpack.add(opts$package, opts$remote)
+        add(opts$package, opts$remote)
       } else if (opts$remove) {
-        jetpack.remove(opts$package, opts$remote)
+        remove(opts$package, opts$remote)
       } else if (opts$update) {
-        jetpack.update(opts$package, opts$remote)
+        update(opts$package, opts$remote)
       } else if (opts$check) {
-        if (!jetpack.check()) {
+        if (!check()) {
           quit(status=1)
         }
       } else if (opts$version) {
@@ -605,11 +694,11 @@ jetpack.cli <- function() {
       } else if (opts$help) {
         message(doc)
       } else if (opts$info) {
-        jetpack.info(opts$package)
+        info(opts$package)
       } else if (opts$search) {
-        jetpack.search(opts$query)
+        search(opts$query)
       } else {
-        jetpack.install(deployment=opts$deployment)
+        install(deployment=opts$deployment)
       }
     }, error=function(err) {
       msg <- conditionMessage(err)
@@ -617,96 +706,4 @@ jetpack.cli <- function() {
       quit(status=1)
     })
   })
-}
-
-#' Get info for a package
-#'
-#' @param package Package to get info for
-#' @importFrom utils URLencode
-#' @export
-jetpack.info <- function(package) {
-  sandbox({
-    parts <- strsplit(package, "@")[[1]]
-    version <- NULL
-    if (length(parts) != 1) {
-      package <- parts[1]
-      version <- parts[2]
-    }
-    url <- paste0("https://crandb.r-pkg.org/", URLencode(package))
-    if (!is.null(version)) {
-      url <- paste0(url, "/", URLencode(version))
-    }
-    r <- httr::GET(url)
-    error <- httr::http_error(r)
-    if (error) {
-      stop("Package not found")
-    }
-    body <- httr::content(r, "parsed")
-    message(paste(body$Package, body$Version))
-    message(paste("Title:", body$Title))
-    message(paste("Date:", body$Date))
-    message(paste("Author:", oneLine(body$Author)))
-    message(paste("Maintainer:", oneLine(body$Maintainer)))
-    message(paste("License:", body$License))
-    invisible()
-  })
-}
-
-#' Search for packages
-#'
-#' @param query Search query
-#' @export
-jetpack.search <- function(query) {
-  sandbox({
-    post_body <- list(
-      query=list(
-        function_score=list(
-          query=list(multi_match = list(query=query, fields=c("Package^10", "_all"), operator="and")),
-          functions=list(list(script_score=list(script="cran_search_score")))
-        )
-      ),
-      size=1000
-    )
-    r <- httr::POST("http://seer.r-pkg.org:9200/_search", body=post_body, encode="json")
-    error <- httr::http_error(r)
-    if (error) {
-      stop("Network error")
-    }
-    body <- httr::content(r, "parsed")
-    hits <- body$hits$hits
-    if (length(hits) > 0) {
-      for (i in 1:length(hits)) {
-        hit <- hits[i][[1]]
-        message(paste0(hit$`_id`, " ", hit$`_source`$Version, ": ", oneLine(hit$`_source`$Title)))
-      }
-    }
-    invisible()
-  })
-}
-
-#' Create bin
-#'
-#' @param file The file to create
-#' @export
-createbin <- function(file=NULL) {
-  if (isWindows()) {
-    if (is.null(file)) {
-      file <- "C:/ProgramData/jetpack/bin/jetpack.cmd"
-    }
-    rscript <- file.path(R.home("bin"), "Rscript.exe")
-    dir <- dirname(file)
-    if (!file.exists(dir)) {
-      dir.create(dir, recursive=TRUE)
-    }
-    write(paste0("@", rscript, " -e \"library(methods); library(jetpack); jetpack.cli()\" %* "), file=file)
-    message(paste("Wrote", windowsPath(file)))
-    message(paste0("Be sure to add '", windowsPath(dir), "' to your PATH"))
-  } else {
-    if (is.null(file)) {
-      file <- "/usr/local/bin/jetpack"
-    }
-    write("#!/usr/bin/env Rscript\n\nlibrary(methods)\nlibrary(jetpack)\njetpack.cli()", file=file)
-    Sys.chmod(file, "755")
-    message(paste("Wrote", file))
-  }
 }

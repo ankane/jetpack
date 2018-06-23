@@ -1,7 +1,12 @@
-## 0.1.11 [unreleased]
+## 0.2.0 [unreleased]
 
 - Added info and search to R interface
 - Fixed bugs with R interface
+
+Breaking changes
+
+- Removed `jetpack.` prefix from commands
+- Renamed `createbin` to `cli`
 
 ## 0.1.10
 
