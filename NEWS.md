@@ -1,6 +1,7 @@
 ## 0.1.11 [unreleased]
 
 - Added info and search to R interface
+- Fixed bugs with R interface
 
 ## 0.1.10
 
