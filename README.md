@@ -153,12 +153,6 @@ Search for packages
 jetpack::search("xgboost")
 ```
 
-Search multiple words
-
-```r
-jetpack::search("neural network")
-```
-
 Works with title, description, authors, maintainers, and more
 
 ## Source Control
