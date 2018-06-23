@@ -238,32 +238,6 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   }
 }
 
-#' @importFrom utils URLencode
-info <- function(package) {
-  parts <- strsplit(package, "@")[[1]]
-  version <- NULL
-  if (length(parts) != 1) {
-    package <- parts[1]
-    version <- parts[2]
-  }
-  url <- paste0("https://crandb.r-pkg.org/", URLencode(package))
-  if (!is.null(version)) {
-    url <- paste0(url, "/", URLencode(version))
-  }
-  r <- httr::GET(url)
-  error <- httr::http_error(r)
-  if (error) {
-    stop("Package not found")
-  }
-  body <- httr::content(r, "parsed")
-  message(paste(body$Package, body$Version))
-  message(paste("Title:", body$Title))
-  message(paste("Date:", body$Date))
-  message(paste("Author:", oneLine(body$Author)))
-  message(paste("Maintainer:", oneLine(body$Maintainer)))
-  message(paste("License:", body$License))
-}
-
 isCLI <- function() {
   any(getOption("jetpack_cli"))
 }
@@ -332,42 +306,12 @@ prepGlobal <- function() {
 }
 
 sandbox <- function(code) {
-  if (!any(getOption("jetpack_sandboxed"))) {
-    options(jetpack_sandboxed=TRUE)
-    libs <- c("withr", "devtools", "httr", "curl", "git2r", "desc", "docopt")
-    if (isCLI()) {
-      suppressMessages(packrat::extlib(libs))
-      invisible(eval(code))
-    } else {
-      invisible(packrat::with_extlib(libs, code))
-    }
+  libs <- c("jsonlite", "withr", "devtools", "httr", "curl", "git2r", "desc", "docopt")
+  if (isCLI()) {
+    suppressMessages(packrat::extlib(libs))
+    invisible(eval(code))
   } else {
-    eval(code)
-  }
-}
-
-search <- function(query) {
-  post_body <- list(
-    query=list(
-      function_score=list(
-        query=list(multi_match = list(query=query, fields=c("Package^10", "_all"), operator="and")),
-        functions=list(list(script_score=list(script="cran_search_score")))
-      )
-    ),
-    size=1000
-  )
-  r <- httr::POST("http://seer.r-pkg.org:9200/_search", body=post_body, encode="json")
-  error <- httr::http_error(r)
-  if (error) {
-    stop("Network error")
-  }
-  body <- httr::content(r, "parsed")
-  hits <- body$hits$hits
-  if (length(hits) > 0) {
-    for (i in 1:length(hits)) {
-      hit <- hits[i][[1]]
-      message(paste0(hit$`_id`, " ", hit$`_source`$Version, ": ", oneLine(hit$`_source`$Title)))
-    }
+    invisible(packrat::with_extlib(libs, code))
   }
 }
 
@@ -661,11 +605,9 @@ jetpack.cli <- function() {
       } else if (opts$help) {
         message(doc)
       } else if (opts$info) {
-        noPackrat()
-        info(opts$package)
+        jetpack.info(opts$package)
       } else if (opts$search) {
-        noPackrat()
-        search(opts$query)
+        jetpack.search(opts$query)
       } else {
         jetpack.install(deployment=opts$deployment)
       }
@@ -674,6 +616,71 @@ jetpack.cli <- function() {
       cat(crayon::red(paste0(msg, "\n")))
       quit(status=1)
     })
+  })
+}
+
+#' Get info for a package
+#'
+#' @param package Package to get info for
+#' @importFrom utils URLencode
+#' @export
+jetpack.info <- function(package) {
+  sandbox({
+    parts <- strsplit(package, "@")[[1]]
+    version <- NULL
+    if (length(parts) != 1) {
+      package <- parts[1]
+      version <- parts[2]
+    }
+    url <- paste0("https://crandb.r-pkg.org/", URLencode(package))
+    if (!is.null(version)) {
+      url <- paste0(url, "/", URLencode(version))
+    }
+    r <- httr::GET(url)
+    error <- httr::http_error(r)
+    if (error) {
+      stop("Package not found")
+    }
+    body <- httr::content(r, "parsed")
+    message(paste(body$Package, body$Version))
+    message(paste("Title:", body$Title))
+    message(paste("Date:", body$Date))
+    message(paste("Author:", oneLine(body$Author)))
+    message(paste("Maintainer:", oneLine(body$Maintainer)))
+    message(paste("License:", body$License))
+    invisible()
+  })
+}
+
+#' Search for packages
+#'
+#' @param query Search query
+#' @export
+jetpack.search <- function(query) {
+  sandbox({
+    post_body <- list(
+      query=list(
+        function_score=list(
+          query=list(multi_match = list(query=query, fields=c("Package^10", "_all"), operator="and")),
+          functions=list(list(script_score=list(script="cran_search_score")))
+        )
+      ),
+      size=1000
+    )
+    r <- httr::POST("http://seer.r-pkg.org:9200/_search", body=post_body, encode="json")
+    error <- httr::http_error(r)
+    if (error) {
+      stop("Network error")
+    }
+    body <- httr::content(r, "parsed")
+    hits <- body$hits$hits
+    if (length(hits) > 0) {
+      for (i in 1:length(hits)) {
+        hit <- hits[i][[1]]
+        message(paste0(hit$`_id`, " ", hit$`_source`$Version, ": ", oneLine(hit$`_source`$Title)))
+      }
+    }
+    invisible()
   })
 }
 
