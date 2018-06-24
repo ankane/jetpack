@@ -1,3 +1,7 @@
+## 0.2.1 [unreleased]
+
+- Fixed error in CLI with check command
+
 ## 0.2.0
 
 Breaking changes
