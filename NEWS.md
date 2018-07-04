@@ -1,5 +1,7 @@
 ## 0.2.1 [unreleased]
 
+- Added option to exclude `packrat/src` from version control
+- Fixed error about stale packages with remotes
 - Fixed error in CLI with check command
 
 ## 0.2.0

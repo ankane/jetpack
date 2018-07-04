@@ -4,7 +4,10 @@
 \alias{init}
 \title{Set up Jetpack}
 \usage{
-init()
+init(src = TRUE)
+}
+\arguments{
+\item{src}{Include packrat/src in version control}
 }
 \description{
 Set up Jetpack

@@ -214,7 +214,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   }
 
   if (statusUpdated) {
-    suppressMessages(packrat::snapshot(project=dir, prompt=FALSE))
+    suppressMessages(packrat::snapshot(project=dir, prompt=FALSE, ignore.stale=TRUE))
 
     # loaded packages like curl can be missing on Windows
     # so see if we need to restore again
@@ -287,21 +287,24 @@ prepCommand <- function() {
   }
 
   options(packrat.project.dir=dir)
-  if (!packratOn()) {
+  if (!packratOn() && !isCLI()) {
     stop("Packrat must be on to run this. Run:\npackrat::on(); packrat::extlib(\"jetpack\")")
   }
 
+  ensureRepos()
   checkInsecureRepos()
 }
 
-prepGlobal <- function() {
-  noPackrat()
-
+ensureRepos <- function() {
   repos <- getOption("repos")
   if (repos["CRAN"] == "@CRAN@") {
     options(repos=list(CRAN="https://cloud.r-project.org/"))
   }
+}
 
+prepGlobal <- function() {
+  noPackrat()
+  ensureRepos()
   checkInsecureRepos()
 }
 
@@ -332,7 +335,7 @@ success <- function(msg) {
 }
 
 tempDir <- function() {
-  dir <- file.path(tempdir(), paste0("jetpack", as.numeric(Sys.time())))
+  dir <- file.path(tempdir(), sub("\\.", "", paste0("jetpack", as.numeric(Sys.time()))))
   dir.create(dir)
   dir
 }
@@ -399,8 +402,9 @@ install <- function(deployment=FALSE) {
 
 #' Set up Jetpack
 #'
+#' @param src Include packrat/src in version control
 #' @export
-init <- function() {
+init <- function(src=TRUE) {
   sandbox({
     # create description file
     if (!file.exists("DESCRIPTION")) {
@@ -411,7 +415,7 @@ init <- function() {
     if (!packified()) {
       # don't include jetpack in external.packages
       # since packrat will require it to be installed
-      packrat::init(".", options=list(print.banner.on.startup=FALSE), enter=FALSE)
+      packrat::init(".", options=list(print.banner.on.startup=FALSE, vcs.ignore.src=!src), enter=FALSE)
       packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
     }
 
