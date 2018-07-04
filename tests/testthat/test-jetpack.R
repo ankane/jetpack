@@ -11,12 +11,12 @@ Sys.setenv(TEST_JETPACK = "true")
 
 test_that("it works", {
   with_dir(tempdir(), {
-    jetpack.init()
-    jetpack.add("jsonlite")
-    jetpack.check()
-    jetpack.install()
-    jetpack.update("jsonlite")
-    jetpack.remove("jsonlite")
+    jetpack::init()
+    jetpack::add("jsonlite")
+    jetpack::check()
+    jetpack::install()
+    jetpack::update("jsonlite")
+    jetpack::remove("jsonlite")
     packrat::off()
   })
 })
