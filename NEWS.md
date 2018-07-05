@@ -1,3 +1,7 @@
+## 0.3.1 [unreleased]
+
+- Fixed issue when init interrupted
+
 ## 0.3.0
 
 - Greatly reduced the number of files required

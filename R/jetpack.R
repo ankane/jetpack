@@ -12,7 +12,7 @@ checkInsecureRepos <- function() {
 }
 
 findDir <- function(path) {
-  if (file.exists(file.path(path, "packrat.lock"))) {
+  if (file.exists(file.path(path, "DESCRIPTION"))) {
     path
   } else if (dirname(path) == path) {
     NULL
