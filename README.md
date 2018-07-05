@@ -258,7 +258,7 @@ To upgrade, rerun the [installation instructions](#installation).
 
 ### 0.3.0
 
-Jetpack 0.3.0 greatly reduces the number of files required in your project. To upgrade:
+Jetpack 0.3.0 greatly reduces the number of files in your projects. To upgrade a project:
 
 1. Move `packrat/packrat.lock` to `packrat.lock`
 2. Delete the `packrat` directory
