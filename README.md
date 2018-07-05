@@ -3,6 +3,7 @@
 :fire: A friendly package manager for R
 
 - Designed for reproducibility (thanks to [Packrat](https://rstudio.github.io/packrat/), no more global installs!)
+- Lightweight (adds just three files to your project)
 - Secure by default
 - Works from both R and the command line
 
