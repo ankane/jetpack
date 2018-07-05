@@ -7,7 +7,7 @@
 - Secure by default
 - Works from both R and the command line
 
-![Screenshot](https://gist.github.com/ankane/b6988db2802aca68a589b31e41b44195/raw/04f556bdec33ae74f0cdaec3ae2476930986fd58/jetpack.png)
+![Screenshot](https://gist.github.com/ankane/b6988db2802aca68a589b31e41b44195/raw/bd6c163ef01a39aa3efc882fee5a82c75f002a61/jetpack.png)
 
 Inspired by [Yarn](https://yarnpkg.com/), [Bundler](https://bundler.io/), and [Pipenv](https://docs.pipenv.org/)
 
@@ -51,25 +51,25 @@ This ensures all the right versions are installed locally. As dependencies chang
 Add a package
 
 ```r
-jetpack::add("dplyr")
+jetpack::add("randomForest")
 ```
 
 Add multiple packages
 
 ```r
-jetpack::add(c("jsonlite", "stringr"))
+jetpack::add(c("randomForest", "DBI"))
 ```
 
 Add a specific version
 
 ```r
-jetpack::add("dplyr@0.7.5")
+jetpack::add("DBI@1.0.0")
 ```
 
 Add from GitHub or another remote source
 
 ```r
-jetpack::add("dplyr", remote="tidyverse/dplyr")
+jetpack::add("plyr", remote="hadley/plyr")
 ```
 
 Supports [all of these remotes](https://cran.r-project.org/web/packages/devtools/vignettes/dependencies.html)
@@ -77,13 +77,13 @@ Supports [all of these remotes](https://cran.r-project.org/web/packages/devtools
 Add from a specific tag, branch, or commit
 
 ```r
-jetpack::add("dplyr", remote="tidyverse/dplyr@v0.7.5")
+jetpack::add("plyr", remote="hadley/plyr@v1.8.4")
 ```
 
 Add from a local source
 
 ```r
-jetpack::add("dplyr", remote="local::/path/to/dplyr")
+jetpack::add("plyr", remote="local::/path/to/plyr")
 ```
 
 > The local directory must have the same name as the package
@@ -93,7 +93,7 @@ jetpack::add("dplyr", remote="local::/path/to/dplyr")
 Update a package
 
 ```r
-jetpack::update("dplyr")
+jetpack::update("randomForest")
 ```
 
 > For local packages, run this anytime the package code is changed
@@ -101,7 +101,7 @@ jetpack::update("dplyr")
 Update multiple packages
 
 ```r
-jetpack::update(c("jsonlite", "stringr"))
+jetpack::update(c("randomForest", "DBI"))
 ```
 
 ### Remove
@@ -109,19 +109,19 @@ jetpack::update(c("jsonlite", "stringr"))
 Remove a package
 
 ```r
-jetpack::remove("dplyr")
+jetpack::remove("randomForest")
 ```
 
 Remove multiple packages
 
 ```r
-jetpack::remove(c("jsonlite", "stringr"))
+jetpack::remove(c("randomForest", "DBI"))
 ```
 
 Remove remotes as well
 
 ```r
-jetpack::remove("dplyr", remote="tidyverse/dplyr")
+jetpack::remove("plyr", remote="hadley/plyr")
 ```
 
 ### Check
@@ -220,20 +220,20 @@ All the Jetpack commands are now available
 ```sh
 jetpack init
 jetpack install
-jetpack add dplyr
-jetpack add dplyr@0.7.5
-jetpack add dplyr --remote=tidyverse/dplyr
-jetpack update jsonlite
-jetpack remove stringr
+jetpack add randomForest
+jetpack add DBI@1.0.0
+jetpack add plyr --remote=hadley/plyr
+jetpack update randomForest
+jetpack remove DBI
 jetpack check
 ```
 
 You can also use it to manage global packages
 
 ```sh
-jetpack global add dplyr
-jetpack global update jsonlite
-jetpack global remove stringr
+jetpack global add randomForest
+jetpack global update DBI
+jetpack global remove plyr
 jetpack global list
 ```
 
