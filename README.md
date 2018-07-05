@@ -8,7 +8,7 @@
 
 ![Screenshot](https://gist.github.com/ankane/b6988db2802aca68a589b31e41b44195/raw/04f556bdec33ae74f0cdaec3ae2476930986fd58/jetpack.png)
 
-Inspired by [Yarn](https://yarnpkg.com/) and [Bundler](https://bundler.io/)
+Inspired by [Yarn](https://yarnpkg.com/), [Bundler](https://bundler.io/), and [Pipenv](https://docs.pipenv.org/)
 
 [![Build Status](https://travis-ci.org/ankane/jetpack.svg?branch=master)](https://travis-ci.org/ankane/jetpack)
 
@@ -18,12 +18,12 @@ Install Jetpack
 
 ```r
 install.packages("devtools")
-devtools::install_github("ankane/jetpack@v0.2.0")
+devtools::install_github("ankane/jetpack@v0.3.0")
 ```
 
 ## How It Works
 
-Jetpack creates a `DESCRIPTION` file to store your project dependencies. It stores the specific version of each package in `packrat/packrat.lock` and the source code in `packrat/src`. This makes it possible to have a reproducible environment. You can edit dependencies in the `DESCRIPTION` file directly, but Jetpack provides functions to help with this.
+Jetpack creates a `DESCRIPTION` file to store your project dependencies. It stores the specific version of each package in `packrat.lock`. This makes it possible to have a reproducible environment. You can edit dependencies in the `DESCRIPTION` file directly, but Jetpack provides functions to help with this.
 
 ## Getting Started
 
@@ -32,10 +32,6 @@ Open a project and run:
 ```r
 jetpack::init()
 ```
-
-This sets up Packrat and creates a `DESCRIPTION` file to store your dependencies.
-
-If your project uses Git, `packrat/lib*/` is added to your `.gitignore`.
 
 ## Commands
 
@@ -161,7 +157,7 @@ Works with title, description, authors, maintainers, and more
 
 ## Source Control
 
-Be sure to commit all files Jetpack generates to source control, except for the `packrat/lib*/` directories.
+Be sure to commit the files Jetpack generates to source control.
 
 ## Deployment
 
@@ -178,9 +174,9 @@ jetpack::install(deployment=TRUE)
 Create an `init.R` with:
 
 ```r
-install.packages("packrat")
-source("packrat/init.R")
-packrat::restore()
+install.packages("devtools")
+devtools::install_github("ankane/jetpack@v0.3.0")
+jetpack::install(deployment=TRUE)
 ```
 
 And add it into your `Dockerfile`:
@@ -189,13 +185,12 @@ And add it into your `Dockerfile`:
 FROM r-base
 
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
-  libxml2-dev libssl-dev libcurl4-openssl-dev
+  libxml2-dev libssl-dev libcurl4-openssl-dev libssh2-1-dev
 
 RUN mkdir -p /app
 WORKDIR /app
 
-COPY packrat ./packrat
-COPY init.R ./
+COPY init.R DESCRIPTION packrat.lock ./
 RUN Rscript init.R
 
 COPY . .
@@ -203,13 +198,11 @@ COPY . .
 CMD Rscript app.R
 ```
 
-(no need to install Jetpack on the image)
-
-Also, add `packrat/lib*/` to your `.dockerignore`.
-
 ### Heroku
 
-There’s [ongoing work](https://github.com/virtualstaticvoid/heroku-buildpack-r/issues/110) to get Packrat working on Heroku.
+There’s [ongoing work](https://github.com/virtualstaticvoid/heroku-buildpack-r/issues/110) to get Packrat working with the [R buildpack](https://github.com/virtualstaticvoid/heroku-buildpack-r).
+
+In the meantime, you can use [Docker Deploys on Heroku](https://devcenter.heroku.com/articles/container-registry-and-runtime).
 
 ## Command Line
 
@@ -261,6 +254,28 @@ jetpack help
 ## Upgrading
 
 To upgrade, rerun the [installation instructions](#installation).
+
+### 0.3.0
+
+Jetpack 0.3.0 greatly reduces the number of files required in your project. To upgrade:
+
+- Move `packrat/packrat.lock` to `packrat.lock`
+- Delete the `packrat` directory and `.Rbuildignore`
+- Replace all Jetpack and Packrat code in your `.Rprofile` with:
+
+```r
+if (requireNamespace("jetpack", quietly=TRUE)) {
+  jetpack::load()
+} else {
+  message("Install Jetpack to use a virtual environment for this project")
+}
+```
+
+Then, open R and run:
+
+```r
+jetpack::install()
+```
 
 ## History
 

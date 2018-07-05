@@ -12,7 +12,7 @@ checkInsecureRepos <- function() {
 }
 
 findDir <- function(path) {
-  if (file.exists(file.path(path, "packrat"))) {
+  if (file.exists(file.path(path, "packrat.lock"))) {
     path
   } else if (dirname(path) == path) {
     NULL
@@ -145,20 +145,12 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   # use a temporary directly
   # this way, we don't update DESCRIPTION
   # until we know it was successful
-  dir <- "."
-  if (!isWindows()) {
-    dir <- tempDir()
-  }
-
+  dir <- packrat::project_dir()
   temp_desc <- file.path(dir, "DESCRIPTION")
   desc$write(temp_desc)
   # strip trailing whitespace
   lines <- trimws(readLines(temp_desc), "r")
   writeLines(lines, temp_desc)
-
-  if (!isWindows()) {
-    file.symlink(file.path(packrat::project_dir(), "packrat"), file.path(dir, "packrat"))
-  }
 
   # get status
   status <- getStatus(project=dir)
@@ -225,10 +217,10 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
     }
   }
 
-  # only write after successful
-  if (!isWindows()) {
-    file.copy(temp_desc, file.path(packrat::project_dir(), "DESCRIPTION"), overwrite=TRUE)
-  }
+  # copy back after successful
+  jetpack_dir <- getOption("jetpack_dir")
+  file.copy(file.path(packrat::project_dir(), "DESCRIPTION"), file.path(jetpack_dir, "DESCRIPTION"), overwrite=TRUE)
+  file.copy(file.path(packrat::project_dir(), "packrat", "packrat.lock"), file.path(jetpack_dir, "packrat.lock"), overwrite=TRUE)
 
   if (show_status) {
     if (statusUpdated) {
@@ -237,10 +229,6 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
 
     showStatus(status)
   }
-}
-
-isCLI <- function() {
-  any(getOption("jetpack_cli"))
 }
 
 isWindows <- function() {
@@ -287,9 +275,19 @@ prepCommand <- function() {
     stopNotPackified()
   }
 
-  options(packrat.project.dir=dir)
-  if (!packratOn() && !isCLI()) {
-    stop("Packrat must be on to run this. Run:\npackrat::on(); packrat::extlib(\"jetpack\")")
+  options(jetpack_dir=dir)
+  venv_dir <- setupEnv(dir)
+
+  # copy files
+  file.copy(file.path(dir, "DESCRIPTION"), file.path(venv_dir, "DESCRIPTION"), overwrite=TRUE)
+  file.copy(file.path(dir, "packrat.lock"), file.path(venv_dir, "packrat", "packrat.lock"), overwrite=TRUE)
+
+  if (!packratOn()) {
+    if (interactive()) {
+      stop("Packrat must be on to run this. Run:\npackrat::on(); packrat::extlib(\"jetpack\")")
+    } else {
+      suppressMessages(packrat::on(print.banner=FALSE))
+    }
   }
 
   ensureRepos()
@@ -311,7 +309,7 @@ prepGlobal <- function() {
 
 sandbox <- function(code) {
   libs <- c("jsonlite", "withr", "devtools", "httr", "curl", "git2r", "desc", "docopt")
-  if (isCLI()) {
+  if (!interactive()) {
     suppressMessages(packrat::extlib(libs))
     invisible(eval(code))
   } else {
@@ -327,7 +325,7 @@ showStatus <- function(status) {
 }
 
 stopNotPackified <- function() {
-  cmd <- if (isCLI()) "jetpack init" else "jetpack::init()"
+  cmd <- if (!interactive()) "jetpack init" else "jetpack::init()"
   stop(paste0("This project has not yet been packified.\nRun '", cmd, "' to init."))
 }
 
@@ -401,33 +399,105 @@ install <- function(deployment=FALSE) {
   })
 }
 
+initRprofile <- function() {
+  rprofile <- file.exists(".Rprofile")
+  if (!rprofile || !any(grepl("jetpack", readLines(".Rprofile")))) {
+    str <- "if (requireNamespace(\"jetpack\", quietly=TRUE)) {
+  jetpack::load()
+} else {
+  message(\"Install Jetpack to use a virtual environment for this project\")
+}"
+
+    if (rprofile) {
+      # space it out
+      str <- paste0("\n", str)
+    }
+
+    write(str, file=".Rprofile", append=TRUE)
+  }
+}
+
+venvDir <- function(dir) {
+  # similar logic as Pipenv
+  if (isWindows()) {
+    venv_dir <- "~/.renvs"
+  } else {
+    venv_dir <- file.path(Sys.getenv("XDG_DATA_HOME", "~/.local/share"), "renvs")
+  }
+
+  # TODO better algorithm, but keep dependency free
+  dir_hash <- sum(utf8ToInt(dir))
+  venv_name <- paste0(basename(dir), "-", dir_hash)
+  file.path(venv_dir, venv_name)
+}
+
+setupEnv <- function(dir=getwd()) {
+  ensureRepos()
+
+  venv_dir <- venvDir(dir)
+  if (!file.exists(venv_dir)) {
+    dir.create(venv_dir, recursive=TRUE)
+  }
+
+  options(packrat.project.dir=venv_dir)
+
+  # initialize packrat
+  if (!packified()) {
+    message("Creating virtual environment...")
+
+    # don't include jetpack in external.packages
+    # since packrat will require it to be installed
+    utils::capture.output(suppressMessages(packrat::init(venv_dir, options=list(print.banner.on.startup=FALSE), enter=FALSE)))
+    packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
+  }
+
+  if (!file.exists("packrat.lock")) {
+    file.copy(file.path(packrat::project_dir(), "packrat", "packrat.lock"), "packrat.lock")
+  }
+
+  venv_dir
+}
+
+# Load Jetpack
+#
+#' @export
+load <- function() {
+  dir <- findDir(getwd())
+
+  if (is.null(dir)) {
+    stopNotPackified()
+  }
+
+  venv_dir <- setupEnv(dir)
+
+  # must source from virtualenv directory
+  # for RStudio for work properly
+  # this should probably be fixed in Packrat
+  wd <- getwd()
+  tryCatch({
+    setwd(venv_dir)
+    utils::capture.output(suppressMessages(source("packrat/init.R")))
+  }, finally={
+    setwd(wd)
+  })
+
+  invisible()
+}
+
 #' Set up Jetpack
 #'
-#' @param src Include packrat/src in version control
 #' @export
-init <- function(src=TRUE) {
+init <- function() {
   sandbox({
-    # create description file
     if (!file.exists("DESCRIPTION")) {
       write("Package: app", file="DESCRIPTION")
     }
 
-    # initialize packrat
-    if (!packified()) {
-      # don't include jetpack in external.packages
-      # since packrat will require it to be installed
-      packrat::init(".", options=list(print.banner.on.startup=FALSE, vcs.ignore.src=!src), enter=FALSE)
-      packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
-    }
+    initRprofile()
 
-    # automatically load jetpack if it's found
-    # so it's convenient to run commands from RStudio
-    # like jetpack::install()
-    if (file.exists(".Rprofile") && !any(grepl("jetpack", readLines(".Rprofile")))) {
-      write("requireNamespace(\"jetpack\", lib.loc=packrat:::getDefaultLibPaths(), quietly=TRUE)", file=".Rprofile", append=TRUE)
-    }
+    setupEnv()
 
-    if (isCLI()) {
+    if (!interactive()) {
       success("Run 'jetpack add <package>' to add packages!")
     } else {
       success("Run 'jetpack::add(package)' to add packages!")
@@ -531,7 +601,7 @@ check <- function() {
     missing <- status[is.na(status$library.version), ]
     if (nrow(missing) > 0) {
       message(paste("Missing packages:", paste(missing$package, collapse=", ")))
-      if (isCLI()) {
+      if (!interactive()) {
         warn("Run 'jetpack install' to install them")
       } else {
         warn("Run 'jetpack::install()' to install them")
@@ -638,8 +708,6 @@ cli <- function(file=NULL) {
 #'
 #' @export
 run <- function() {
-  options(jetpack_cli=TRUE)
-
   sandbox({
     doc <- "Usage:
     jetpack [install] [--deployment]

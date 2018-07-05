@@ -1,8 +1,9 @@
-## 0.2.1 [unreleased]
+## 0.3.0 [unreleased]
 
-- Added option to exclude `packrat/src` from version control
+- Greatly reduced the number of files required
 - Fixed error about stale packages with remotes
 - Fixed error in CLI with check command
+- Fixed error in CLI with global add command for specific version
 
 ## 0.2.0
 
