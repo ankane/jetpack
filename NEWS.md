@@ -1,4 +1,4 @@
-## 0.3.0 [unreleased]
+## 0.3.0
 
 - Greatly reduced the number of files required
 - Fixed error about stale packages with remotes
