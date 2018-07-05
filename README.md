@@ -46,6 +46,8 @@ jetpack::install()
 
 This ensures all the right versions are installed locally. As dependencies change, collaborators should run this command to stay synced.
 
+> Be sure to prefix commands with `jetpack::`. Jetpack isn’t installed in your virtual environment, so `library(jetpack)` won’t work.
+
 ### Add
 
 Add a package
