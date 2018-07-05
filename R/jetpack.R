@@ -458,8 +458,8 @@ setupEnv <- function(dir=getwd()) {
   venv_dir
 }
 
-# Load Jetpack
-#
+#' Load Jetpack
+#'
 #' @export
 load <- function() {
   dir <- findDir(getwd())
