@@ -259,24 +259,24 @@ To upgrade, rerun the [installation instructions](#installation).
 
 Jetpack 0.3.0 greatly reduces the number of files required in your project. To upgrade:
 
-- Move `packrat/packrat.lock` to `packrat.lock`
-- Delete the `packrat` directory
-- Delete `.Rbuildignore` and `.gitignore` if they only contain Packrat references
-- Replace all Jetpack and Packrat code in your `.Rprofile` with:
+1. Move `packrat/packrat.lock` to `packrat.lock`
+2. Delete the `packrat` directory
+3. Delete `.Rbuildignore` and `.gitignore` if they only contain Packrat references
+4. Replace all Jetpack and Packrat code in your `.Rprofile` with:
 
-```r
-if (requireNamespace("jetpack", quietly=TRUE)) {
-  jetpack::load()
-} else {
-  message("Install Jetpack to use a virtual environment for this project")
-}
-```
+  ```r
+  if (requireNamespace("jetpack", quietly=TRUE)) {
+    jetpack::load()
+  } else {
+    message("Install Jetpack to use a virtual environment for this project")
+  }
+  ```
 
-Then, open R and run:
+5. Open R and run:
 
-```r
-jetpack::install()
-```
+  ```r
+  jetpack::install()
+  ```
 
 ## History
 
