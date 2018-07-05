@@ -50,6 +50,7 @@ globalAdd <- function(packages, remotes) {
   globalInstallHelper(packages, remotes)
 
   for (package in packages) {
+    package <- getName(package)
     success(paste0("Installed ", package, " ", packageVersion(package)))
   }
 }
