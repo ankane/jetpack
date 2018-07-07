@@ -452,7 +452,7 @@ setupEnv <- function(dir=getwd()) {
 
     # don't include jetpack in external.packages
     # since packrat will require it to be installed
-    utils::capture.output(suppressMessages(packrat::init(venv_dir, options=list(print.banner.on.startup=FALSE, use.cache=TRUE), enter=FALSE, infer.dependencies=FALSE)))
+    utils::capture.output(suppressMessages(packrat::init(venv_dir, options=list(print.banner.on.startup=FALSE, use.cache=!isWindows()), enter=FALSE, infer.dependencies=FALSE)))
     packrat::set_lockfile_metadata(repos=list(CRAN="https://cloud.r-project.org/"))
   }
 
