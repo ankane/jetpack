@@ -11,6 +11,11 @@ checkInsecureRepos <- function() {
   }
 }
 
+enablePackrat <- function() {
+  clean <- !identical(Sys.getenv("TEST_JETPACK"), "true")
+  suppressMessages(packrat::on(print.banner=FALSE, clean.search.path=clean))
+}
+
 findDir <- function(path) {
   if (file.exists(file.path(path, "DESCRIPTION"))) {
     path
@@ -286,7 +291,7 @@ prepCommand <- function() {
     if (interactive()) {
       stop("Packrat must be on to run this. Run:\npackrat::on(); packrat::extlib(\"jetpack\")")
     } else {
-      suppressMessages(packrat::on(print.banner=FALSE))
+      enablePackrat()
     }
   }
 
@@ -501,7 +506,7 @@ init <- function() {
       success("Run 'jetpack add <package>' to add packages!")
     } else {
       success("Run 'jetpack::add(package)' to add packages!")
-      suppressMessages(packrat::on(print.banner=FALSE))
+      enablePackrat()
       loadNamespace("jetpack", lib.loc=packrat:::getDefaultLibPaths())
     }
     invisible()
