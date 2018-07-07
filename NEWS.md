@@ -1,6 +1,7 @@
 ## 0.3.1 [unreleased]
 
 - Fixed issue when init interrupted
+- Turn on Packrat cache for new virtual environments
 
 ## 0.3.0
 
