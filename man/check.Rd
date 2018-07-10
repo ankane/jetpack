@@ -9,3 +9,9 @@ check()
 \description{
 Check that all dependencies are installed
 }
+\examples{
+\dontrun{
+
+jetpack::check()
+}
+}

@@ -9,3 +9,9 @@ init()
 \description{
 Set up Jetpack
 }
+\examples{
+\dontrun{
+
+jetpack::init()
+}
+}

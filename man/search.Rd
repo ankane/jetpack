@@ -12,3 +12,9 @@ search(query)
 \description{
 Search for packages
 }
+\examples{
+\dontrun{
+
+jetpack::search("xgboost")
+}
+}

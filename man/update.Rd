@@ -14,3 +14,11 @@ update(packages, remotes = c())
 \description{
 Update a package
 }
+\examples{
+\dontrun{
+
+jetpack::update("randomForest")
+
+jetpack::update(c("randomForest", "DBI"))
+}
+}

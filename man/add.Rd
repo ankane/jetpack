@@ -14,3 +14,17 @@ add(packages, remotes = c())
 \description{
 Add a package
 }
+\examples{
+\dontrun{
+
+jetpack::add("randomForest")
+
+jetpack::add(c("randomForest", "DBI"))
+
+jetpack::add("DBI@1.0.0")
+
+jetpack::add("plyr", remote="hadley/plyr")
+
+jetpack::add("plyr", remote="local::/path/to/plyr")
+}
+}

@@ -14,3 +14,13 @@ remove(packages, remotes = c())
 \description{
 Remove a package
 }
+\examples{
+\dontrun{
+
+jetpack::remove("randomForest")
+
+jetpack::remove(c("randomForest", "DBI"))
+
+jetpack::remove("plyr", remote="hadley/plyr")
+}
+}

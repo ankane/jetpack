@@ -12,3 +12,9 @@ install(deployment = FALSE)
 \description{
 Install packages for a project
 }
+\examples{
+\dontrun{
+
+jetpack::install()
+}
+}

@@ -12,3 +12,9 @@ cli(file = NULL)
 \description{
 Install the CLI
 }
+\examples{
+\dontrun{
+
+jetpack::cli()
+}
+}

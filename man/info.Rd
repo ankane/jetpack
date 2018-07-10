@@ -12,3 +12,11 @@ info(package)
 \description{
 Get info for a package
 }
+\examples{
+\dontrun{
+
+jetpack::info("stringr")
+
+jetpack::info("stringr@1.0.0")
+}
+}

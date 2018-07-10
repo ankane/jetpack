@@ -386,6 +386,10 @@ windowsPath <- function(path) {
 #'
 #' @param deployment Use deployment mode
 #' @export
+#' @examples \dontrun{
+#'
+#' jetpack::install()
+#' }
 install <- function(deployment=FALSE) {
   sandbox({
     prepCommand()
@@ -494,6 +498,10 @@ load <- function() {
 #' Set up Jetpack
 #'
 #' @export
+#' @examples \dontrun{
+#'
+#' jetpack::init()
+#' }
 init <- function() {
   sandbox({
     if (!file.exists("DESCRIPTION")) {
@@ -520,6 +528,18 @@ init <- function() {
 #' @param packages Packages to add
 #' @param remotes Remotes to add
 #' @export
+#' @examples \dontrun{
+#'
+#' jetpack::add("randomForest")
+#'
+#' jetpack::add(c("randomForest", "DBI"))
+#'
+#' jetpack::add("DBI@1.0.0")
+#'
+#' jetpack::add("plyr", remote="hadley/plyr")
+#'
+#' jetpack::add("plyr", remote="local::/path/to/plyr")
+#' }
 add <- function(packages, remotes=c()) {
   sandbox({
     prepCommand()
@@ -537,6 +557,14 @@ add <- function(packages, remotes=c()) {
 #' @param packages Packages to remove
 #' @param remotes Remotes to remove
 #' @export
+#' @examples \dontrun{
+#'
+#' jetpack::remove("randomForest")
+#'
+#' jetpack::remove(c("randomForest", "DBI"))
+#'
+#' jetpack::remove("plyr", remote="hadley/plyr")
+#' }
 remove <- function(packages, remotes=c()) {
   sandbox({
     prepCommand()
@@ -570,6 +598,12 @@ remove <- function(packages, remotes=c()) {
 #' @param packages Packages to update
 #' @param remotes Remotes to update
 #' @export
+#' @examples \dontrun{
+#'
+#' jetpack::update("randomForest")
+#'
+#' jetpack::update(c("randomForest", "DBI"))
+#' }
 update <- function(packages, remotes=c()) {
   sandbox({
     prepCommand()
@@ -600,6 +634,10 @@ update <- function(packages, remotes=c()) {
 #' Check that all dependencies are installed
 #'
 #' @export
+#' @examples \dontrun{
+#'
+#' jetpack::check()
+#' }
 check <- function() {
   sandbox({
     prepCommand()
@@ -626,6 +664,12 @@ check <- function() {
 #' @param package Package to get info for
 #' @importFrom utils URLencode
 #' @export
+#' @examples \dontrun{
+#'
+#' jetpack::info("stringr")
+#'
+#' jetpack::info("stringr@1.0.0")
+#' }
 info <- function(package) {
   sandbox({
     parts <- strsplit(package, "@")[[1]]
@@ -657,6 +701,10 @@ info <- function(package) {
 #'
 #' @param query Search query
 #' @export
+#' @examples \dontrun{
+#'
+#' jetpack::search("xgboost")
+#' }
 search <- function(query) {
   sandbox({
     post_body <- list(
@@ -688,6 +736,10 @@ search <- function(query) {
 #'
 #' @param file The file to create
 #' @export
+#' @examples \dontrun{
+#'
+#' jetpack::cli()
+#' }
 cli <- function(file=NULL) {
   if (isWindows()) {
     if (is.null(file)) {
