@@ -295,6 +295,8 @@ prepCommand <- function() {
     }
   }
 
+  packrat::set_opts(use.cache=!isWindows())
+
   ensureRepos()
   checkInsecureRepos()
 }
