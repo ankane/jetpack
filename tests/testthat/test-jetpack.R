@@ -16,6 +16,8 @@ test_that("it works", {
       jetpack::init()
       expect(file.exists("DESCRIPTION"))
       expect(file.exists("packrat.lock"))
+      expect(file.exists(".Rprofile"))
+      expect(!file.exists("packrat"))
 
       jetpack::add("randomForest")
       expect(contains("DESCRIPTION", "randomForest"))
