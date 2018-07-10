@@ -283,7 +283,7 @@ Jetpack 0.3.0 greatly reduces the number of files in your projects. To upgrade a
 
 ## History
 
-View the [changelog](https://github.com/ankane/jetpack/blob/master/NEWS.md)
+View the [changelog](https://github.com/ankane/jetpack/blob/master/CHANGELOG.md)
 
 ## Contributing
 
