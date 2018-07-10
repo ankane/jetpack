@@ -6,6 +6,10 @@ options(repos=list(CRAN="https://cloud.r-project.org/"))
 
 Sys.setenv(TEST_JETPACK = "true")
 
+contains <- function(file, x) {
+  grepl(x, paste(readLines(file), collapse=""))
+}
+
 test_that("it works", {
   tryCatch({
     with_dir(tempdir(), {
@@ -14,8 +18,8 @@ test_that("it works", {
       expect(file.exists("packrat.lock"))
 
       jetpack::add("randomForest")
-      expect(grepl("randomForest", paste(readLines("DESCRIPTION"), collapse="")))
-      expect(grepl("randomForest", paste(readLines("packrat.lock"), collapse="")))
+      expect(contains("DESCRIPTION", "randomForest"))
+      expect(contains("packrat.lock", "randomForest"))
 
       check <- jetpack::check()
       expect(check)
@@ -24,8 +28,8 @@ test_that("it works", {
       jetpack::update("randomForest")
 
       jetpack::remove("randomForest")
-      expect(!grepl("randomForest", paste(readLines("packrat.lock"), collapse="")))
-      expect(!grepl("randomForest", paste(readLines("packrat.lock"), collapse="")))
+      expect(!contains("DESCRIPTION", "randomForest"))
+      expect(!contains("packrat.lock", "randomForest"))
     })
   }, finally={
     packrat::off()
