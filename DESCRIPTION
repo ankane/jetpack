@@ -1,8 +1,8 @@
 Package: jetpack
 Type: Package
 Title: A Friendly Package Manager
-Version: 0.3.0
-Date: 2018-07-05
+Version: 0.3.1
+Date: 2018-07-10
 Authors@R: person("Andrew", "Kane", email = "andrew@chartkick.com", role = c("aut", "cre"))
 Description: Provides a way to manage project dependencies.
 URL: https://github.com/ankane/jetpack

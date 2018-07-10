@@ -1,4 +1,4 @@
-## 0.3.1 [unreleased]
+## 0.3.1
 
 - Fixed issue when init interrupted
 - Turn on Packrat cache for Mac and Linux
