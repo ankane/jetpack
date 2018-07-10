@@ -4,7 +4,7 @@
 \alias{search}
 \title{Search for packages}
 \usage{
-search(query)
+search(query = NULL)
 }
 \arguments{
 \item{query}{Search query}

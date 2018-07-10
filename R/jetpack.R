@@ -712,7 +712,12 @@ info <- function(package) {
 #'
 #' jetpack::search("xgboost")
 #' }
-search <- function(query) {
+search <- function(query=NULL) {
+  # hack for R CMD check bug in share/R/examples-header.R
+  if (is.null(query) && exists("cleanEx")) {
+    return(base::search())
+  }
+
   sandbox({
     post_body <- list(
       query=list(
