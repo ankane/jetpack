@@ -26,6 +26,12 @@ findDir <- function(path) {
   }
 }
 
+# duplicate logic from
+# packrat:::getDefaultLibPaths()
+getDefaultLibPaths <- function() {
+  strsplit(Sys.getenv("R_PACKRAT_DEFAULT_LIBPATHS", unset = ""), .Platform$path.sep, fixed = TRUE)[[1]]
+}
+
 getDesc <- function() {
   desc::desc(file=packrat::project_dir())
 }
@@ -518,7 +524,7 @@ init <- function() {
     } else {
       success("Run 'jetpack::add(package)' to add packages!")
       enablePackrat()
-      loadNamespace("jetpack", lib.loc=packrat:::getDefaultLibPaths())
+      loadNamespace("jetpack", lib.loc=getDefaultLibPaths())
     }
     invisible()
   })
