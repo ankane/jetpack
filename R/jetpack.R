@@ -472,6 +472,7 @@ setupEnv <- function(dir=getwd()) {
 #' Load Jetpack
 #'
 #' @export
+#' @keywords internal
 load <- function() {
   dir <- findDir(getwd())
 
@@ -766,6 +767,7 @@ cli <- function(file=NULL) {
 #' Run the CLI
 #'
 #' @export
+#' @keywords internal
 run <- function() {
   sandbox({
     doc <- "Usage:

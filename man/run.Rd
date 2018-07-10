@@ -9,3 +9,4 @@ run()
 \description{
 Run the CLI
 }
+\keyword{internal}
