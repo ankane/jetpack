@@ -775,7 +775,7 @@ cli <- function(file=NULL) {
   }
 }
 
-#' Run the CLI
+#' Run the command line interface
 #'
 #' @export
 #' @keywords internal

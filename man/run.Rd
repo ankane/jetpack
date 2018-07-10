@@ -2,11 +2,11 @@
 % Please edit documentation in R/jetpack.R
 \name{run}
 \alias{run}
-\title{Run the CLI}
+\title{Run the command line interface}
 \usage{
 run()
 }
 \description{
-Run the CLI
+Run the command line interface
 }
 \keyword{internal}
