@@ -2,7 +2,7 @@
 % Please edit documentation in R/jetpack.R
 \name{cli}
 \alias{cli}
-\title{Install the CLI}
+\title{Install the command line interface}
 \usage{
 cli(file = NULL)
 }
@@ -10,7 +10,7 @@ cli(file = NULL)
 \item{file}{The file to create}
 }
 \description{
-Install the CLI
+Install the command line interface
 }
 \examples{
 \dontrun{

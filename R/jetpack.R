@@ -744,7 +744,7 @@ search <- function(query=NULL) {
   })
 }
 
-#' Install the CLI
+#' Install the command line interface
 #'
 #' @param file The file to create
 #' @export
