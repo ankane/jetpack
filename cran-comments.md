@@ -1,3 +1,9 @@
+## Resubmission
+
+This is a resubmission. In this version I have:
+
+* Updated the Description field
+
 ## Test environments
 
 * local OS X install, R 3.5.1
