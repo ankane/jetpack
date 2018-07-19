@@ -74,7 +74,7 @@ Add from GitHub or another remote source
 jetpack::add("plyr", remote="hadley/plyr")
 ```
 
-Supports [all of these remotes](https://cran.r-project.org/web/packages/devtools/vignettes/dependencies.html)
+Supports [all of these remotes](https://cran.r-project.org/package=devtools/vignettes/dependencies.html)
 
 Add from a specific tag, branch, or commit
 
