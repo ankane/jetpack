@@ -18,8 +18,7 @@ Inspired by [Yarn](https://yarnpkg.com/), [Bundler](https://bundler.io/), and [P
 Install Jetpack
 
 ```r
-install.packages("devtools")
-devtools::install_github("ankane/jetpack@v0.3.1")
+install.packages("jetpack")
 ```
 
 ## How It Works
