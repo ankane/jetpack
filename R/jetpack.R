@@ -458,6 +458,11 @@ setupEnv <- function(dir=getwd()) {
 
   options(packrat.project.dir=venv_dir)
 
+  src_dir <- file.path(dir, "packages")
+  if (file.exists(src_dir)) {
+    options(packrat.src.dir=src_dir)
+  }
+
   # initialize packrat
   if (!packified()) {
     message("Creating virtual environment...")
