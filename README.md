@@ -176,8 +176,7 @@ jetpack::install(deployment=TRUE)
 Create an `init.R` with:
 
 ```r
-install.packages("devtools")
-devtools::install_github("ankane/jetpack@v0.3.1")
+install.packages("jetpack")
 jetpack::install(deployment=TRUE)
 ```
 
