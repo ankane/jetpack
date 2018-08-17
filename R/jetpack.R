@@ -312,7 +312,8 @@ prepCommand <- function() {
 ensureRepos <- function() {
   repos <- getOption("repos")
   if (repos["CRAN"] == "@CRAN@") {
-    options(repos=list(CRAN="https://cloud.r-project.org/"))
+    repos["CRAN"] = "https://cloud.r-project.org/"
+    options(repos=repos)
   }
 }
 
