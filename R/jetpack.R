@@ -218,7 +218,8 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   }
 
   if (statusUpdated) {
-    suppressMessages(packrat::snapshot(project=dir, prompt=FALSE, ignore.stale=TRUE))
+    # Bioconductor packages fail to download source
+    suppressMessages(packrat::snapshot(project=dir, prompt=FALSE, ignore.stale=TRUE, snapshot.sources=FALSE))
 
     # loaded packages like curl can be missing on Windows
     # so see if we need to restore again
