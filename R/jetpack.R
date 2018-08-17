@@ -230,6 +230,10 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
     }
   }
 
+  if (any(status$packrat.source == "Bioconductor") && !("BioCsoft" %in% names(packrat::get_lockfile_metadata()$repos)) && requireNamespace("BiocInstaller", quietly=TRUE)) {
+    packrat::set_lockfile_metadata(repos=BiocInstaller::biocinstallRepos())
+  }
+
   # copy back after successful
   jetpack_dir <- getOption("jetpack_dir")
   file.copy(file.path(packrat::project_dir(), "DESCRIPTION"), file.path(jetpack_dir, "DESCRIPTION"), overwrite=TRUE)
