@@ -84,7 +84,7 @@ jetpack::add("plyr", remote="hadley/plyr@v1.8.4")
 Add from Bioconductor [master]
 
 ```r
-jetpack::add("Biobase", remotes="bioc::Biobase")
+jetpack::add("Biobase", remote="bioc::Biobase")
 ```
 
 Add from a local source
