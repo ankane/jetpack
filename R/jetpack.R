@@ -170,7 +170,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   need <- missing[is.na(missing$packrat.version), ]
   missing_packrat <- status[is.na(status$packrat.version), ]
 
-  statusUpdated <- FALSE
+  status_updated <- FALSE
 
   if (nrow(restore) > 0) {
     suppressWarnings(packrat::restore(project=dir, prompt=FALSE))
@@ -202,7 +202,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
         devtools::install_version(row$package, version=row$version, reload=FALSE)
       }
     }
-    statusUpdated <- TRUE
+    status_updated <- TRUE
   }
 
   # in case we're missing any deps
@@ -210,15 +210,15 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   # https://github.com/r-lib/devtools/issues/1314
   if (nrow(need) > 0 || length(remove) > 0) {
     devtools::install_deps(dir, upgrade=FALSE, reload=FALSE)
-    statusUpdated <- TRUE
+    status_updated <- TRUE
   }
 
-  if (statusUpdated || any(!status$currently.used)) {
+  if (status_updated || any(!status$currently.used)) {
     suppressMessages(packrat::clean(project=dir))
-    statusUpdated <- TRUE
+    status_updated <- TRUE
   }
 
-  if (statusUpdated || length(missing_packrat) > 0) {
+  if (status_updated || length(missing_packrat) > 0) {
     # Bioconductor packages fail to download source
     suppressMessages(packrat::snapshot(project=dir, prompt=FALSE, ignore.stale=TRUE, snapshot.sources=FALSE))
 
@@ -236,7 +236,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   file.copy(file.path(packrat::project_dir(), "packrat", "packrat.lock"), file.path(jetpack_dir, "packrat.lock"), overwrite=TRUE)
 
   if (show_status) {
-    if (statusUpdated) {
+    if (status_updated) {
       status <- getStatus()
     }
 
