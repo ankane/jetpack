@@ -168,6 +168,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   missing <- status[is.na(status$library.version), ]
   restore <- missing[!is.na(missing$packrat.version), ]
   need <- missing[is.na(missing$packrat.version), ]
+  missing_packrat <- status[is.na(status$packrat.version), ]
 
   statusUpdated <- FALSE
 
@@ -217,7 +218,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
     statusUpdated <- TRUE
   }
 
-  if (statusUpdated) {
+  if (statusUpdated || length(missing_packrat) > 0) {
     # Bioconductor packages fail to download source
     suppressMessages(packrat::snapshot(project=dir, prompt=FALSE, ignore.stale=TRUE, snapshot.sources=FALSE))
 
