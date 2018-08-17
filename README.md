@@ -73,18 +73,14 @@ Add from GitHub or another remote source
 jetpack::add("plyr", remote="hadley/plyr")
 ```
 
-Supports [all of these remotes](https://cran.r-project.org/package=devtools/vignettes/dependencies.html)
+Supports [these remotes](https://cran.r-project.org/package=devtools/vignettes/dependencies.html)
+
+> Bioconductor packages do not currently work
 
 Add from a specific tag, branch, or commit
 
 ```r
 jetpack::add("plyr", remote="hadley/plyr@v1.8.4")
-```
-
-Add from Bioconductor [master]
-
-```r
-jetpack::add("Biobase", remote="bioc::Biobase")
 ```
 
 Add from a local source
