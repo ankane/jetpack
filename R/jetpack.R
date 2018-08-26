@@ -73,7 +73,7 @@ globalInstallHelper <- function(packages, remotes=c()) {
     if (length(parts) != 1) {
       package <- parts[1]
       version <- parts[2]
-      devtools::install_version(package, version=version, reload=FALSE)
+      remotes::install_version(package, version=version, reload=FALSE)
     } else {
       unversioned <- c(unversioned, package)
     }
@@ -98,7 +98,7 @@ globalInstallHelper <- function(packages, remotes=c()) {
       }
     }
 
-    devtools::install_deps(dir, reload=FALSE)
+    remotes::install_deps(dir, reload=FALSE)
   }
 }
 
@@ -199,7 +199,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
     if (nrow(mismatch) > 0) {
       for (i in 1:nrow(mismatch)) {
         row <- mismatch[i, ]
-        devtools::install_version(row$package, version=row$version, reload=FALSE)
+        remotes::install_version(row$package, version=row$version, reload=FALSE)
       }
     }
     status_updated <- TRUE
@@ -209,7 +209,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   # unfortunately, install_deps doesn't check version requirements
   # https://github.com/r-lib/devtools/issues/1314
   if (nrow(need) > 0 || length(remove) > 0) {
-    devtools::install_deps(dir, upgrade=FALSE, reload=FALSE)
+    remotes::install_deps(dir, upgrade=FALSE, reload=FALSE)
     status_updated <- TRUE
   }
 
@@ -324,7 +324,7 @@ prepGlobal <- function() {
 }
 
 sandbox <- function(code) {
-  libs <- c("jsonlite", "withr", "devtools", "httr", "curl", "git2r", "desc", "docopt")
+  libs <- c("jsonlite", "withr", "remotes", "httr", "curl", "git2r", "desc", "docopt")
   if (!interactive()) {
     suppressMessages(packrat::extlib(libs))
     invisible(eval(code))
