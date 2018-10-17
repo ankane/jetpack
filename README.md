@@ -11,7 +11,7 @@
 
 Inspired by [Yarn](https://yarnpkg.com/), [Bundler](https://bundler.io/), and [Pipenv](https://docs.pipenv.org/)
 
-[![Build Status](https://travis-ci.org/ankane/jetpack.svg?branch=master)](https://travis-ci.org/ankane/jetpack)
+[![Build Status](https://travis-ci.org/ankane/jetpack.svg?branch=master)](https://travis-ci.org/ankane/jetpack) [![CRAN status](https://www.r-pkg.org/badges/version/jetpack)](https://cran.r-project.org/package=jetpack)
 
 ## Installation
 

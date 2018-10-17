@@ -120,20 +120,45 @@ globalRemove <- function(packages) {
   }
 }
 
-globalUpdate <- function(packages, remotes) {
-  versions <- list()
-  for (package in packages) {
-    package <- getName(package)
-    versions[package] <- as.character(packageVersion(package))
-  }
+globalUpdate <- function(packages, remotes, verbose) {
+  if (length(packages) == 0) {
+    oldPackages <- as.data.frame(old.packages())
+    packages <- rownames(oldPackages)
 
-  globalInstallHelper(packages, remotes)
+    updates <- FALSE
 
-  for (package in packages) {
-    package <- getName(package)
-    currentVersion <- versions[package]
-    newVersion <- as.character(packageVersion(package))
-    success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
+    for (package in packages) {
+      currentVersion <- as.character(packageVersion(package))
+
+      # double check, since old.packages() is sometimes wrong
+      repoVersion <- gsub("-", ".", oldPackages$ReposVer[package])
+
+      if (!identical(currentVersion, repoVersion)) {
+        install.packages(package, quiet=!verbose)
+        newVersion <- as.character(packageVersion(package))
+        success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
+        updates <- TRUE
+      }
+    }
+
+    if (!updates) {
+      success("All packages are up-to-date!")
+    }
+  } else {
+    versions <- list()
+    for (package in packages) {
+      package <- getName(package)
+      versions[package] <- as.character(packageVersion(package))
+    }
+
+    globalInstallHelper(packages, remotes)
+
+    for (package in packages) {
+      package <- getName(package)
+      currentVersion <- versions[package]
+      newVersion <- as.character(packageVersion(package))
+      success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
+    }
   }
 }
 
@@ -797,7 +822,7 @@ run <- function() {
     jetpack help
     jetpack global add <package>... [--remote=<remote>]...
     jetpack global remove <package>... [--remote=<remote>]...
-    jetpack global update <package>... [--remote=<remote>]...
+    jetpack global update [<package>...] [--remote=<remote>]... [--verbose]
     jetpack global list"
 
     opts <- NULL
@@ -823,7 +848,7 @@ run <- function() {
           # and easy to reverse global add
           globalRemove(opts$package)
         } else if (opts$update) {
-          globalUpdate(opts$package, opts$remote)
+          globalUpdate(opts$package, opts$remote, opts$verbose)
         } else {
           globalList()
         }
