@@ -121,19 +121,30 @@ globalRemove <- function(packages) {
 }
 
 globalUpdate <- function(packages, remotes) {
-  versions <- list()
-  for (package in packages) {
-    package <- getName(package)
-    versions[package] <- as.character(packageVersion(package))
-  }
+  if (length(packages) == 0) {
+    packages <- rownames(old.packages())
 
-  globalInstallHelper(packages, remotes)
+    for (package in packages) {
+      currentVersion <- as.character(packageVersion(package))
+      install.packages(package, quiet=TRUE)
+      newVersion <- as.character(packageVersion(package))
+      success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
+    }
+  } else {
+    versions <- list()
+    for (package in packages) {
+      package <- getName(package)
+      versions[package] <- as.character(packageVersion(package))
+    }
 
-  for (package in packages) {
-    package <- getName(package)
-    currentVersion <- versions[package]
-    newVersion <- as.character(packageVersion(package))
-    success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
+    globalInstallHelper(packages, remotes)
+
+    for (package in packages) {
+      package <- getName(package)
+      currentVersion <- versions[package]
+      newVersion <- as.character(packageVersion(package))
+      success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
+    }
   }
 }
 
@@ -797,7 +808,7 @@ run <- function() {
     jetpack help
     jetpack global add <package>... [--remote=<remote>]...
     jetpack global remove <package>... [--remote=<remote>]...
-    jetpack global update <package>... [--remote=<remote>]...
+    jetpack global update [<package>...] [--remote=<remote>]...
     jetpack global list"
 
     opts <- NULL
