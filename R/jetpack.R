@@ -122,16 +122,26 @@ globalRemove <- function(packages) {
 
 globalUpdate <- function(packages, remotes, verbose) {
   if (length(packages) == 0) {
-    packages <- rownames(old.packages())
+    oldPackages <- as.data.frame(old.packages())
+    packages <- rownames(oldPackages)
 
-    if (length(packages) > 0) {
-      for (package in packages) {
-        currentVersion <- as.character(packageVersion(package))
+    updates <- FALSE
+
+    for (package in packages) {
+      currentVersion <- as.character(packageVersion(package))
+
+      # double check, since old.packages() is sometimes wrong
+      repoVersion <- gsub("-", ".", oldPackages$ReposVer[package])
+
+      if (!identical(currentVersion, repoVersion)) {
         install.packages(package, quiet=!verbose)
         newVersion <- as.character(packageVersion(package))
         success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
+        updates <- TRUE
       }
-    } else {
+    }
+
+    if (!updates) {
       success("All packages are up-to-date!")
     }
   } else {
