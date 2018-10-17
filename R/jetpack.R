@@ -122,7 +122,7 @@ globalRemove <- function(packages) {
 
 globalUpdate <- function(packages, remotes, verbose) {
   if (length(packages) == 0) {
-    packages <- as.data.frame(old.packages())
+    packages <- rownames(old.packages())
 
     if (length(packages) > 0) {
       for (package in packages) {
