@@ -823,6 +823,7 @@ run <- function() {
     jetpack global add <package>... [--remote=<remote>]...
     jetpack global remove <package>... [--remote=<remote>]...
     jetpack global update [<package>...] [--remote=<remote>]... [--verbose]
+    jetpack global update [--remote=<remote>]... [--verbose]
     jetpack global list"
 
     opts <- NULL
