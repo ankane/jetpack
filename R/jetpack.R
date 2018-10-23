@@ -122,7 +122,7 @@ globalRemove <- function(packages) {
 
 globalUpdate <- function(packages, remotes, verbose) {
   if (length(packages) == 0) {
-    oldPackages <- as.data.frame(old.packages())
+    oldPackages <- as.data.frame(utils::old.packages())
     packages <- rownames(oldPackages)
 
     updates <- FALSE
@@ -134,7 +134,7 @@ globalUpdate <- function(packages, remotes, verbose) {
       repoVersion <- gsub("-", ".", oldPackages$ReposVer[package])
 
       if (!identical(currentVersion, repoVersion)) {
-        install.packages(package, quiet=!verbose)
+        utils::install.packages(package, quiet=!verbose)
         newVersion <- as.character(packageVersion(package))
         success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
         updates <- TRUE
