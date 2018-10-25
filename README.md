@@ -21,6 +21,8 @@ Install Jetpack
 install.packages("jetpack")
 ```
 
+**Note:** Jetpack requires devtools < 2.0 at the moment
+
 ## How It Works
 
 Jetpack creates a `DESCRIPTION` file to store your project dependencies. It stores the specific version of each package in `packrat.lock`. This makes it possible to have a reproducible environment. You can edit dependencies in the `DESCRIPTION` file directly, but Jetpack provides functions to help with this.
