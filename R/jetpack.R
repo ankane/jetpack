@@ -33,7 +33,7 @@ getDefaultLibPaths <- function() {
 }
 
 getDesc <- function() {
-  desc::desc(file=packrat::project_dir())
+  read.dcf(file=file.path(packrat::project_dir(), "DESCRIPTION"))
 }
 
 getName <- function(package) {
@@ -84,12 +84,13 @@ globalInstallHelper <- function(packages, remotes=c()) {
     dir <- tempDir()
     desc <- desc::desc("!new")
     for (remote in remotes) {
-      desc$add_remotes(remote)
+      descAddRemote(desc, remote)
     }
     for (package in unversioned) {
-      desc$set_dep(package, "Imports")
+      descSetDep(desc, package)
     }
-    desc$write(file.path(dir, "DESCRIPTION"))
+
+    descWrite(desc, file.path(dir, "DESCRIPTION"))
 
     # TODO don't remove for add command
     for (package in unversioned) {
@@ -162,13 +163,47 @@ globalUpdate <- function(packages, remotes, verbose) {
   }
 }
 
+descGetRemotes <- function(desc) {
+  # desc$get_remotes()
+  c()
+}
+
+descWrite <- function(desc, file) {
+  write.dcf(desc, file=file)
+}
+
+descGetDeps <- function(desc) {
+  # desc$get_deps()
+  data.frame(version=c("1.0.0"), boom=c("boom"), stringsAsFactors=FALSE)
+}
+
+descAddRemote <- function(desc, remote) {
+  desc$add_remotes(remote)
+}
+
+descSetDep <- function(desc, package, version=NULL) {
+  # desc$set_dep(package, "Imports", version=version)
+}
+
+descHasDep <- function(desc, package) {
+  desc$has_dep(package)
+}
+
+descDeleteDep <- function(desc, package) {
+  desc$del_dep(package)
+}
+
+descDeleteRemote <- function(desc, remote) {
+  desc$del_remotes(remote)
+}
+
 installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   if (is.null(desc)) {
     desc <- getDesc()
   }
 
   # configure local repos
-  remotes <- desc$get_remotes()
+  remotes <- descGetRemotes(desc)
   repos <- c()
   for (remote in remotes) {
     if (startsWith(remote, "local::")) {
@@ -183,10 +218,10 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   # until we know it was successful
   dir <- packrat::project_dir()
   temp_desc <- file.path(dir, "DESCRIPTION")
-  desc$write(temp_desc)
+  descWrite(desc, temp_desc)
   # strip trailing whitespace
-  lines <- trimws(readLines(temp_desc), "r")
-  writeLines(lines, temp_desc)
+  # lines <- trimws(readLines(temp_desc), "r")
+  # writeLines(lines, temp_desc)
 
   # get status
   status <- getStatus(project=dir)
@@ -215,7 +250,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
 
   # see if any version mismatches
   # TODO expand to all version specifications
-  deps <- desc$get_deps()
+  deps <- descGetDeps(desc)
   specificDeps <- deps[startsWith(deps$version, "== "), ]
   if (nrow(specificDeps) > 0) {
     specificDeps$version <- sub("== ", "", specificDeps$version)
@@ -390,7 +425,7 @@ updateDesc <- function(packages, remotes) {
   desc <- getDesc()
 
   for (remote in remotes) {
-    desc$add_remotes(remote)
+    descAddRemote(desc, remote)
   }
 
   for (package in packages) {
@@ -403,7 +438,7 @@ updateDesc <- function(packages, remotes) {
       version_str <- paste("==", version)
     }
 
-    desc$set_dep(package, "Imports", version=version_str)
+    descSetDep(desc, package, version_str)
   }
 
   desc
@@ -613,16 +648,16 @@ remove <- function(packages, remotes=c()) {
     desc <- getDesc()
 
     for (package in packages) {
-      if (!desc$has_dep(package)) {
+      if (!descHasDep(desc, package)) {
         stop(paste0("Cannot find package '", package, "' in DESCRIPTION file"))
       }
 
-      desc$del_dep(package)
+      descDeleteDep(desc, package)
     }
 
     if (length(remotes) > 0) {
       for (remote in remotes) {
-        desc$del_remotes(remote)
+        descDeleteRemote(remote)
       }
     }
 
