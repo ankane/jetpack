@@ -223,7 +223,7 @@ jetpack help
 
 To upgrade, rerun the [installation instructions](#installation).
 
-### 0.4.0 [unreleased]
+### 0.4.0
 
 Jetpack 0.4.0 reduces the number of dependencies from 42 to 9. As part of this, the `info` and `search` commands have been removed.
 

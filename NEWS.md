@@ -1,4 +1,4 @@
-## 0.4.0 [unreleased]
+## 0.4.0
 
 - Reduced the number of dependencies from 42 to 9
 - Added support for Bioconductor remotes
