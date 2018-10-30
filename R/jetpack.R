@@ -73,7 +73,7 @@ globalInstallHelper <- function(packages, remotes=c()) {
     if (length(parts) != 1) {
       package <- parts[1]
       version <- parts[2]
-      devtools::install_version(package, version=version, reload=FALSE)
+      remotes::install_version(package, version=version, reload=FALSE)
     } else {
       unversioned <- c(unversioned, package)
     }
@@ -98,7 +98,7 @@ globalInstallHelper <- function(packages, remotes=c()) {
       }
     }
 
-    devtools::install_deps(dir, reload=FALSE)
+    remotes::install_deps(dir, reload=FALSE)
   }
 }
 
@@ -224,7 +224,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
     if (nrow(mismatch) > 0) {
       for (i in 1:nrow(mismatch)) {
         row <- mismatch[i, ]
-        devtools::install_version(row$package, version=row$version, reload=FALSE)
+        remotes::install_version(row$package, version=row$version, reload=FALSE)
       }
     }
     status_updated <- TRUE
@@ -234,7 +234,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
   # unfortunately, install_deps doesn't check version requirements
   # https://github.com/r-lib/devtools/issues/1314
   if (nrow(need) > 0 || length(remove) > 0) {
-    devtools::install_deps(dir, upgrade=FALSE, reload=FALSE)
+    remotes::install_deps(dir, upgrade=FALSE, reload=FALSE)
     status_updated <- TRUE
   }
 
@@ -349,7 +349,13 @@ prepGlobal <- function() {
 }
 
 sandbox <- function(code) {
-  libs <- c("jsonlite", "withr", "devtools", "httr", "curl", "git2r", "desc", "docopt")
+  libs <- c("desc", "docopt")
+
+  # can't unload remotes during testing since devtools depends on it
+  if (!identical(Sys.getenv("TEST_JETPACK"), "true")) {
+    libs <- c("remotes", libs)
+  }
+
   if (!interactive()) {
     suppressMessages(packrat::extlib(libs))
     invisible(eval(code))
@@ -694,84 +700,6 @@ check <- function() {
   })
 }
 
-#' Get info for a package
-#'
-#' @param package Package to get info for
-#' @importFrom utils URLencode
-#' @export
-#' @examples \dontrun{
-#'
-#' jetpack::info("stringr")
-#'
-#' jetpack::info("stringr@1.0.0")
-#' }
-info <- function(package) {
-  sandbox({
-    parts <- strsplit(package, "@")[[1]]
-    version <- NULL
-    if (length(parts) != 1) {
-      package <- parts[1]
-      version <- parts[2]
-    }
-    url <- paste0("https://crandb.r-pkg.org/", URLencode(package))
-    if (!is.null(version)) {
-      url <- paste0(url, "/", URLencode(version))
-    }
-    r <- httr::GET(url)
-    error <- httr::http_error(r)
-    if (error) {
-      stop("Package not found")
-    }
-    body <- httr::content(r, "parsed")
-    message(paste(body$Package, body$Version))
-    message(paste("Title:", body$Title))
-    message(paste("Date:", body$Date))
-    message(paste("Author:", oneLine(body$Author)))
-    message(paste("Maintainer:", oneLine(body$Maintainer)))
-    message(paste("License:", body$License))
-  })
-}
-
-#' Search for packages
-#'
-#' @param query Search query
-#' @export
-#' @examples \dontrun{
-#'
-#' jetpack::search("xgboost")
-#' }
-search <- function(query=NULL) {
-  # hack for R CMD check bug in share/R/examples-header.R
-  if (is.null(query) && exists("cleanEx")) {
-    return(base::search())
-  }
-
-  sandbox({
-    post_body <- list(
-      query=list(
-        function_score=list(
-          query=list(multi_match = list(query=query, fields=c("Package^10", "_all"), operator="and")),
-          functions=list(list(script_score=list(script="cran_search_score")))
-        )
-      ),
-      size=1000
-    )
-    r <- httr::POST("http://seer.r-pkg.org:9200/_search", body=post_body, encode="json")
-    error <- httr::http_error(r)
-    if (error) {
-      stop("Network error")
-    }
-    body <- httr::content(r, "parsed")
-    hits <- body$hits$hits
-    if (length(hits) > 0) {
-      for (i in 1:length(hits)) {
-        hit <- hits[i][[1]]
-        message(paste0(hit$`_id`, " ", hit$`_source`$Version, ": ", oneLine(hit$`_source`$Title)))
-      }
-    }
-  })
-}
-
 #' Install the command line interface
 #'
 #' @param file The file to create
@@ -816,8 +744,6 @@ run <- function() {
     jetpack remove <package>... [--remote=<remote>]...
     jetpack update <package>... [--remote=<remote>]...
     jetpack check
-    jetpack info <package>
-    jetpack search <query>
     jetpack version
     jetpack help
     jetpack global add <package>... [--remote=<remote>]...
@@ -868,10 +794,6 @@ run <- function() {
         version()
       } else if (opts$help) {
         message(doc)
-      } else if (opts$info) {
-        info(opts$package)
-      } else if (opts$search) {
-        search(opts$query)
       } else {
         install(deployment=opts$deployment)
       }

@@ -135,30 +135,6 @@ Check that all dependencies are installed
 jetpack::check()
 ```
 
-### Info
-
-Get info for a package
-
-```r
-jetpack::info("stringr")
-```
-
-Get info for a specific version
-
-```r
-jetpack::info("stringr@1.0.0")
-```
-
-### Search
-
-Search for packages
-
-```r
-jetpack::search("xgboost")
-```
-
-Works with title, description, authors, maintainers, and more
-
 ## Source Control
 
 Be sure to commit the files Jetpack generates to source control.
@@ -239,15 +215,6 @@ jetpack global remove plyr
 jetpack global list
 ```
 
-Or get info about packages
-
-```sh
-jetpack info stringr
-jetpack info stringr@1.0.0
-jetpack search xgboost
-jetpack search "neural network"
-```
-
 For the full list of commands, use:
 
 ```sh
@@ -257,6 +224,10 @@ jetpack help
 ## Upgrading
 
 To upgrade, rerun the [installation instructions](#installation).
+
+### 0.4.0
+
+Jetpack 0.4.0 reduces the number of dependencies from 42 to 9. As part of this, the `info` and `search` commands have been removed.
 
 ### 0.3.0
 
