@@ -1,10 +1,3 @@
-## Resubmission
-
-This is a resubmission. In this version I have:
-
-* Updated the Description field
-* Fixed the NOTE about canonical URL
-
 ## Test environments
 
 * local OS X install, R 3.5.1
@@ -13,12 +6,8 @@ This is a resubmission. In this version I have:
 
 ## R CMD check results
 
-There were no ERRORs or WARNINGs.
-
-There was 1 NOTE:
-
-* This is a new submission
+There were no ERRORs, WARNINGs or NOTEs.
 
 ## Downstream dependencies
 
-This is a new submission.
+There are currently no downstream dependencies for this package.
