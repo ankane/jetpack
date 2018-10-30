@@ -349,12 +349,7 @@ prepGlobal <- function() {
 }
 
 sandbox <- function(code) {
-  libs <- c("desc", "docopt")
-
-  # can't unload remotes during testing since devtools depends on it
-  if (!identical(Sys.getenv("TEST_JETPACK"), "true")) {
-    libs <- c("remotes", libs)
-  }
+  libs <- c("remotes", "desc", "docopt")
 
   if (!interactive()) {
     suppressMessages(packrat::extlib(libs))
