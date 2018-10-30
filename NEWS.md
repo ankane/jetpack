@@ -1,6 +1,6 @@
 ## 0.4.0
 
-- Reduced the number of dependencies from 42 to 9
+- Greatly reduced the number of dependencies
 - Added support for Bioconductor remotes
 
 Breaking changes

@@ -225,7 +225,7 @@ To upgrade, rerun the [installation instructions](#installation).
 
 ### 0.4.0
 
-Jetpack 0.4.0 reduces the number of dependencies from 42 to 9. As part of this, the `info` and `search` commands have been removed.
+Jetpack 0.4.0 greatly reduces the number of dependencies. As part of this, the `info` and `search` commands have been removed.
 
 ### 0.3.0
 
