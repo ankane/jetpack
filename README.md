@@ -73,7 +73,7 @@ Add from GitHub or another remote source
 jetpack::add("plyr", remote="hadley/plyr")
 ```
 
-Supports [these remotes](https://cran.r-project.org/package=devtools/vignettes/dependencies.html)
+Supports [these remotes](https://cran.r-project.org/package=remotes/vignettes/dependencies.html)
 
 > Bioconductor packages do not currently work
 
@@ -225,7 +225,7 @@ jetpack help
 
 To upgrade, rerun the [installation instructions](#installation).
 
-### 0.4.0
+### 0.4.0 [unreleased]
 
 Jetpack 0.4.0 reduces the number of dependencies from 42 to 9. As part of this, the `info` and `search` commands have been removed.
 

@@ -1,4 +1,4 @@
-## 0.4.0
+## 0.4.0 [unreleased]
 
 - Reduced the number of dependencies from 42 to 9
 
