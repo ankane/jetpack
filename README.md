@@ -75,8 +75,6 @@ jetpack::add("plyr", remote="hadley/plyr")
 
 Supports [these remotes](https://cran.r-project.org/package=remotes/vignettes/dependencies.html)
 
-> Bioconductor packages do not currently work
-
 Add from a specific tag, branch, or commit
 
 ```r

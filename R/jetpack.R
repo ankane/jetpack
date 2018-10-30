@@ -169,14 +169,31 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
 
   # configure local repos
   remotes <- desc$get_remotes()
-  repos <- c()
+  local_repos <- c()
+  bioc <- FALSE
   for (remote in remotes) {
     if (startsWith(remote, "local::")) {
       repo <- dirname(substring(remote, 8))
-      repos <- c(repos, repo)
+      local_repos <- c(local_repos, repo)
+    } else if (startsWith(remote, "bioc::")) {
+      bioc <- TRUE
     }
   }
-  packrat::set_opts(local.repos=repos, persist=FALSE)
+  packrat::set_opts(local.repos=local_repos, persist=FALSE)
+
+  repos <- getOption("repos")
+  if (bioc && is.na(repos["BioCsoft"])) {
+    # not ideal, will hopefully be fixed with
+    # https://github.com/rstudio/packrat/issues/507
+    bioc_repos <- c(
+      BioCsoft="https://bioconductor.org/packages/3.7/bioc",
+      BioCann="https://bioconductor.org/packages/3.7/data/annotation",
+      BioCexp="https://bioconductor.org/packages/3.7/data/experiment",
+      BioCworkflows="https://bioconductor.org/packages/3.7/workflows"
+    )
+
+    packrat::set_lockfile_metadata(repos=c(repos, bioc_repos))
+  }
 
   # use a temporary directly
   # this way, we don't update DESCRIPTION
