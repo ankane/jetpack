@@ -1,6 +1,7 @@
 ## 0.4.1 [unreleased]
 
 - Added `jetpack::outdated()`
+- Added `jetpack global outdated`
 
 ## 0.4.0
 
