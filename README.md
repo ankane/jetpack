@@ -2,9 +2,8 @@
 
 :fire: A friendly package manager for R
 
-- Designed for reproducibility (thanks to [Packrat](https://rstudio.github.io/packrat/), no more global installs!)
-- Lightweight (adds just three files to your project)
-- Secure by default
+- Lightweight - adds just three files to your project
+- Designed for reproducibility - thanks to [Packrat](https://rstudio.github.io/packrat/), no more global installs!
 - Works from both R and the command line
 
 ![Screenshot](https://gist.github.com/ankane/b6988db2802aca68a589b31e41b44195/raw/bd6c163ef01a39aa3efc882fee5a82c75f002a61/jetpack.png)
@@ -23,7 +22,7 @@ install.packages("jetpack")
 
 ## How It Works
 
-Jetpack creates a `DESCRIPTION` file to store your project dependencies. It stores the specific version of each package in `packrat.lock`. This makes it possible to have a reproducible environment. You can edit dependencies in the `DESCRIPTION` file directly, but Jetpack provides functions to help with this.
+Jetpack uses the `DESCRIPTION` file to store your project dependencies. It stores the specific version of each package in `packrat.lock`. This makes it possible to have a reproducible environment. You can edit dependencies in the `DESCRIPTION` file directly, but Jetpack provides functions to help with this.
 
 ## Getting Started
 
