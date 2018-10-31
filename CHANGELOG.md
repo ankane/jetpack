@@ -3,6 +3,7 @@
 - Added ability to update all packages in a project
 - Added `jetpack::outdated()`
 - Added `jetpack global outdated`
+- Fixed issue with `jetpack::install()` updating package versions in `packrat.lock` when library gets ahead
 
 ## 0.4.0
 

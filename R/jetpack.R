@@ -228,10 +228,16 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
   restore <- missing[!is.na(missing$packrat.version), ]
   need <- missing[is.na(missing$packrat.version), ]
   missing_packrat <- status[is.na(status$packrat.version), ]
+  mismatch <- status[!is.na(status$library.version) & !is.na(status$packrat.version) & status$packrat.version != status$library.version, ]
+
+  # remove mismatch
+  for (name in mismatch$package) {
+    pkgRemove(name)
+  }
 
   status_updated <- FALSE
 
-  if (nrow(restore) > 0) {
+  if (nrow(restore) > 0 || nrow(mismatch) > 0) {
     suppressWarnings(packrat::restore(project=dir, prompt=FALSE))
 
     # non-vendor approach
