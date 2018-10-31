@@ -133,6 +133,14 @@ Check that all dependencies are installed
 jetpack::check()
 ```
 
+### Outdated [master]
+
+Show outdated packages
+
+```r
+jetpack::outdated()
+```
+
 ## Source Control
 
 Be sure to commit the files Jetpack generates to source control.

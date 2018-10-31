@@ -712,6 +712,35 @@ check <- function() {
   })
 }
 
+#' Show outdated dependencies
+#'
+#' @export
+#' @examples \dontrun{
+#'
+#' jetpack::outdated()
+#' }
+outdated <- function() {
+  sandbox({
+    prepCommand()
+
+    status <- getStatus()
+    packages <- status[status$currently.used, ]$package
+
+    deps <- remotes::package_deps(packages, repos=getOption("repos"), type=getOption("pkgType"))
+    # TODO decide what to do about uninstalled packages
+    outdated <- deps[deps$diff == -1, ]
+
+    if (nrow(outdated) > 0) {
+      for (i in 1:nrow(outdated)) {
+        row <- outdated[i, ]
+        message(paste0(row$package, " (latest ", row$available, ", installed ", row$installed, ")"))
+      }
+    } else {
+      success("All packages are up-to-date!")
+    }
+  })
+}
+
 #' Install the command line interface
 #'
 #' @param file The file to create
@@ -756,6 +785,7 @@ run <- function() {
     jetpack remove <package>... [--remote=<remote>]...
     jetpack update <package>... [--remote=<remote>]...
     jetpack check
+    jetpack outdated
     jetpack version
     jetpack help
     jetpack global add <package>... [--remote=<remote>]...
@@ -802,6 +832,8 @@ run <- function() {
         if (!check()) {
           quit(status=1)
         }
+      } else if (opts$outdated) {
+        outdated()
       } else if (opts$version) {
         version()
       } else if (opts$help) {

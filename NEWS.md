@@ -1,3 +1,7 @@
+## 0.4.1 [unreleased]
+
+- Added `jetpack::outdated()`
+
 ## 0.4.0
 
 - Greatly reduced the number of dependencies
