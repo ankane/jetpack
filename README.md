@@ -217,6 +217,7 @@ You can also use it to manage global packages
 ```sh
 jetpack global add randomForest
 jetpack global update DBI
+jetpack global update
 jetpack global remove plyr
 jetpack global list
 ```
