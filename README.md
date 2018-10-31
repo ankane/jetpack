@@ -105,6 +105,12 @@ Update multiple packages
 jetpack::update(c("randomForest", "DBI"))
 ```
 
+Update all packages [master]
+
+```r
+jetpack::update()
+```
+
 ### Remove
 
 Remove a package

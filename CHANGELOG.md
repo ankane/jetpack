@@ -1,5 +1,6 @@
 ## 0.4.1 [unreleased]
 
+- Added ability to update all packages in a project
 - Added `jetpack::outdated()`
 - Added `jetpack global outdated`
 

@@ -179,7 +179,7 @@ globalUpdate <- function(packages, remotes, verbose) {
   }
 }
 
-installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
+installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update=c()) {
   if (is.null(desc)) {
     desc <- getDesc()
   }
@@ -264,12 +264,16 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE) {
     status_updated <- TRUE
   }
 
-  # in case we're missing any deps
-  # unfortunately, install_deps doesn't check version requirements
-  # https://github.com/r-lib/devtools/issues/1314
-  if (nrow(need) > 0 || length(remove) > 0) {
-    remotes::install_deps(dir, upgrade=FALSE, reload=FALSE)
-    status_updated <- TRUE
+  if (length(update) > 0) {
+    remotes::update_packages(packages=update, upgrade=TRUE, reload=FALSE)
+  } else {
+    # in case we're missing any deps
+    # unfortunately, install_deps doesn't check version requirements
+    # https://github.com/r-lib/devtools/issues/1314
+    if (nrow(need) > 0 || length(remove) > 0) {
+      remotes::install_deps(dir, upgrade=FALSE, reload=FALSE)
+      status_updated <- TRUE
+    }
   }
 
   if (status_updated || any(!status$currently.used)) {
@@ -673,30 +677,58 @@ remove <- function(packages, remotes=c()) {
 #' jetpack::update("randomForest")
 #'
 #' jetpack::update(c("randomForest", "DBI"))
+#'
+#' jetpack::update()
 #' }
-update <- function(packages, remotes=c()) {
+update <- function(packages=c(), remotes=c()) {
   sandbox({
     prepCommand()
 
-    # store starting versions
-    status <- getStatus()
-    versions <- list()
-    for (package in packages) {
-      package <- getName(package)
-      versions[package] <- pkgVersion(status, package)
-    }
+    if (length(packages) == 0) {
+      status <- getStatus()
+      packages <- status[status$currently.used & status$package != "packrat", ]$package
 
-    desc <- updateDesc(packages, remotes)
+      deps <- remotes::package_deps(packages)
+      outdated <- deps[deps$diff < 0, ]
 
-    installHelper(remove=packages, desc=desc)
+      desc <- updateDesc(packages, remotes)
 
-    # show updated versions
-    status <- getStatus()
-    for (package in packages) {
-      package <- getName(package)
-      currentVersion <- versions[package]
-      newVersion <- pkgVersion(status, package)
-      success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
+      installHelper(update=outdated$package, desc=desc)
+
+      if (nrow(outdated) > 0) {
+        for (i in 1:nrow(outdated)) {
+          row <- outdated[i, ]
+          if (is.na(row$installed)) {
+            message(paste0("Installed ", row$package, " ", row$available))
+          } else {
+            message(paste0("Updated ", row$package, " to ", row$available, " (was ", row$installed, ")"))
+          }
+        }
+      } else {
+        success("All packages are up-to-date!")
+      }
+    } else {
+      # store starting versions
+      status <- getStatus()
+
+      versions <- list()
+      for (package in packages) {
+        package <- getName(package)
+        versions[package] <- pkgVersion(status, package)
+      }
+
+      desc <- updateDesc(packages, remotes)
+
+      installHelper(remove=packages, desc=desc)
+
+      # show updated versions
+      status <- getStatus()
+      for (package in packages) {
+        package <- getName(package)
+        currentVersion <- versions[package]
+        newVersion <- pkgVersion(status, package)
+        success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
+      }
     }
   })
 }
@@ -729,7 +761,7 @@ check <- function() {
   })
 }
 
-#' Show outdated dependencies
+#' Show outdated packages
 #'
 #' @export
 #' @examples \dontrun{
@@ -800,7 +832,7 @@ run <- function() {
     jetpack init
     jetpack add <package>... [--remote=<remote>]...
     jetpack remove <package>... [--remote=<remote>]...
-    jetpack update <package>... [--remote=<remote>]...
+    jetpack update [<package>...] [--remote=<remote>]...
     jetpack check
     jetpack outdated
     jetpack version
