@@ -1,12 +1,8 @@
-## 0.4.1 [unreleased]
-
-- Added `jetpack::outdated()`
-- Added `jetpack global outdated`
-
 ## 0.4.0
 
 - Greatly reduced the number of dependencies
 - Added support for Bioconductor remotes
+- Added ability to update all global packages
 
 Breaking changes
 

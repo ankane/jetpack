@@ -1,6 +1,17 @@
-## 0.3.2 [unreleased]
+## 0.4.1 [unreleased]
 
+- Added `jetpack::outdated()`
+- Added `jetpack global outdated`
+
+## 0.4.0
+
+- Greatly reduced the number of dependencies
+- Added support for Bioconductor
 - Added ability to update all global packages
+
+Breaking changes
+
+- Removed `info` and `search` commands to reduce dependencies
 
 ## 0.3.1
 
