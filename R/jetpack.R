@@ -179,7 +179,7 @@ globalUpdate <- function(packages, remotes, verbose) {
   }
 }
 
-installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update=c()) {
+installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=TRUE) {
   if (is.null(desc)) {
     desc <- getDesc()
   }
@@ -264,16 +264,12 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update=c()) 
     status_updated <- TRUE
   }
 
-  if (length(update) > 0) {
-    remotes::update_packages(packages=update, upgrade=TRUE, reload=FALSE)
-  } else {
-    # in case we're missing any deps
-    # unfortunately, install_deps doesn't check version requirements
-    # https://github.com/r-lib/devtools/issues/1314
-    if (nrow(need) > 0 || length(remove) > 0) {
-      remotes::install_deps(dir, upgrade=FALSE, reload=FALSE)
-      status_updated <- TRUE
-    }
+  # in case we're missing any deps
+  # unfortunately, install_deps doesn't check version requirements
+  # https://github.com/r-lib/devtools/issues/1314
+  if (nrow(need) > 0 || length(remove) > 0 || update_all) {
+    remotes::install_deps(dir, upgrade=update_all, reload=FALSE)
+    status_updated <- TRUE
   }
 
   if (status_updated || any(!status$currently.used)) {
@@ -693,7 +689,7 @@ update <- function(packages=c(), remotes=c()) {
 
       desc <- updateDesc(packages, remotes)
 
-      installHelper(update=outdated$package, desc=desc)
+      installHelper(update_all=TRUE, desc=desc)
 
       if (nrow(outdated) > 0) {
         for (i in 1:nrow(outdated)) {
