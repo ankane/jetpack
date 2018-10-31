@@ -179,7 +179,7 @@ globalUpdate <- function(packages, remotes, verbose) {
   }
 }
 
-installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=TRUE) {
+installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=FALSE) {
   if (is.null(desc)) {
     desc <- getDesc()
   }
@@ -687,17 +687,17 @@ update <- function(packages=c(), remotes=c()) {
       deps <- remotes::package_deps(packages)
       outdated <- deps[deps$diff < 0, ]
 
-      desc <- updateDesc(packages, remotes)
-
-      installHelper(update_all=TRUE, desc=desc)
-
       if (nrow(outdated) > 0) {
+        desc <- updateDesc(packages, remotes)
+
+        installHelper(update_all=TRUE, desc=desc)
+
         for (i in 1:nrow(outdated)) {
           row <- outdated[i, ]
           if (is.na(row$installed)) {
-            message(paste0("Installed ", row$package, " ", row$available))
+            success(paste0("Installed ", row$package, " ", row$available))
           } else {
-            message(paste0("Updated ", row$package, " to ", row$available, " (was ", row$installed, ")"))
+            success(paste0("Updated ", row$package, " to ", row$available, " (was ", row$installed, ")"))
           }
         }
       } else {
