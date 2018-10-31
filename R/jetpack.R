@@ -111,6 +111,23 @@ globalList <- function() {
   }
 }
 
+globalOutdated <- function() {
+  packages <- rownames(installed.packages())
+
+  deps <- remotes::package_deps(packages)
+  # TODO decide what to do about uninstalled packages
+  outdated <- deps[deps$diff == -1, ]
+
+  if (nrow(outdated) > 0) {
+    for (i in 1:nrow(outdated)) {
+      row <- outdated[i, ]
+      message(paste0(row$package, " (latest ", row$available, ", installed ", row$installed, ")"))
+    }
+  } else {
+    success("All packages are up-to-date!")
+  }
+}
+
 globalRemove <- function(packages) {
   for (package in packages) {
     suppressMessages(remove.packages(package))
@@ -726,7 +743,7 @@ outdated <- function() {
     status <- getStatus()
     packages <- status[status$currently.used, ]$package
 
-    deps <- remotes::package_deps(packages, repos=getOption("repos"), type=getOption("pkgType"))
+    deps <- remotes::package_deps(packages)
     # TODO decide what to do about uninstalled packages
     outdated <- deps[deps$diff == -1, ]
 
@@ -791,7 +808,8 @@ run <- function() {
     jetpack global add <package>... [--remote=<remote>]...
     jetpack global remove <package>... [--remote=<remote>]...
     jetpack global update [<package>...] [--remote=<remote>]... [--verbose]
-    jetpack global list"
+    jetpack global list
+    jetpack global outdated"
 
     opts <- NULL
     tryCatch({
@@ -817,8 +835,10 @@ run <- function() {
           globalRemove(opts$package)
         } else if (opts$update) {
           globalUpdate(opts$package, opts$remote, opts$verbose)
-        } else {
+        } else if (opts$list) {
           globalList()
+        } else {
+          globalOutdated()
         }
       } else if (opts$init) {
         init()
