@@ -260,7 +260,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
   if (nrow(specificDeps) > 0) {
     specificDeps$version <- sub("== ", "", specificDeps$version)
     specificDeps <- merge(specificDeps, status, by="package")
-    mismatch <- specificDeps[!identical(specificDeps$version, specificDeps$packrat.version), ]
+    mismatch <- specificDeps[is.na(specificDeps$packrat.version) | specificDeps$version != specificDeps$packrat.version, ]
     if (nrow(mismatch) > 0) {
       for (i in 1:nrow(mismatch)) {
         row <- mismatch[i, ]

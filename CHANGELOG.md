@@ -4,6 +4,7 @@
 - Added `jetpack::outdated()`
 - Added `jetpack global outdated`
 - Fixed issue with `jetpack::install()` updating package versions in `packrat.lock` when library gets ahead
+- Fixed unnecessary downloads with specific versions
 
 ## 0.4.0
 
