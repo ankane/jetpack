@@ -11,5 +11,5 @@ License: MIT + file LICENSE
 LazyData: TRUE
 RoxygenNote: 6.1.0
 Encoding: UTF-8
-Imports: packrat (>= 0.5.0), remotes (>= 2.0.2), crayon (>= 1.0.0), desc (>= 1.2.0), docopt (>= 0.4)
+Imports: packrat (>= 0.4.9), remotes (>= 2.0.2), crayon (>= 1.0.0), desc (>= 1.2.0), docopt (>= 0.4)
 Suggests: testthat, withr
