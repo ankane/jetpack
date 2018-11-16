@@ -111,12 +111,17 @@ globalList <- function() {
   }
 }
 
-globalOutdated <- function() {
+globalOutdatedPackages <- function() {
   packages <- rownames(installed.packages())
 
   deps <- remotes::package_deps(packages)
+
   # TODO decide what to do about uninstalled packages
-  outdated <- deps[deps$diff == -1, ]
+  deps[deps$diff == -1, ]
+}
+
+globalOutdated <- function() {
+  outdated <- globalOutdatedPackages()
 
   if (nrow(outdated) > 0) {
     for (i in 1:nrow(outdated)) {
@@ -139,26 +144,17 @@ globalRemove <- function(packages) {
 
 globalUpdate <- function(packages, remotes, verbose) {
   if (length(packages) == 0) {
-    oldPackages <- as.data.frame(utils::old.packages())
-    packages <- rownames(oldPackages)
+    outdated <- globalOutdatedPackages()
 
-    updates <- FALSE
-
-    for (package in packages) {
-      currentVersion <- as.character(packageVersion(package))
-
-      # double check, since old.packages() is sometimes wrong
-      repoVersion <- gsub("-", ".", oldPackages$ReposVer[package])
-
-      if (!identical(currentVersion, repoVersion)) {
+    if (nrow(outdated) > 0) {
+      for (i in 1:nrow(outdated)) {
+        row <- outdated[i, ]
+        package <- row$package
         utils::install.packages(package, quiet=!verbose)
         newVersion <- as.character(packageVersion(package))
-        success(paste0("Updated ", package, " to ", newVersion, " (was ", currentVersion, ")"))
-        updates <- TRUE
+        success(paste0("Updated ", package, " to ", newVersion, " (was ", row$installed, ")"))
       }
-    }
-
-    if (!updates) {
+    } else {
       success("All packages are up-to-date!")
     }
   } else {
