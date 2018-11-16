@@ -1,4 +1,4 @@
-## 0.4.1 [unreleased]
+## 0.4.1
 
 - Added ability to update all packages in a project
 - Added `jetpack::outdated()`

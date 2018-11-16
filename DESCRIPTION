@@ -1,15 +1,15 @@
 Package: jetpack
 Type: Package
 Title: A Friendly Package Manager
-Version: 0.4.0
-Date: 2018-10-30
+Version: 0.4.1
+Date: 2018-11-16
 Authors@R: person("Andrew", "Kane", email = "andrew@chartkick.com", role = c("aut", "cre"))
 Description: Manage project dependencies from your DESCRIPTION file. Create a reproducible virtual environment with minimal additional files in your project. Provides tools to add, remove, and update dependencies as well as install existing dependencies with a single function.
 URL: https://github.com/ankane/jetpack
 BugReports: https://github.com/ankane/jetpack/issues
 License: MIT + file LICENSE
 LazyData: TRUE
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Encoding: UTF-8
 Imports: packrat (>= 0.4.9), remotes (>= 2.0.2), crayon (>= 1.0.0), desc (>= 1.2.0), docopt (>= 0.4)
 Suggests: testthat, withr

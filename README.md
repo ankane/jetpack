@@ -104,7 +104,7 @@ Update multiple packages
 jetpack::update(c("randomForest", "DBI"))
 ```
 
-Update all packages [master]
+Update all packages
 
 ```r
 jetpack::update()
@@ -138,7 +138,7 @@ Check that all dependencies are installed
 jetpack::check()
 ```
 
-### Outdated [master]
+### Outdated
 
 Show outdated packages
 
@@ -215,6 +215,7 @@ jetpack add plyr --remote=hadley/plyr
 jetpack update randomForest
 jetpack remove DBI
 jetpack check
+jetpack outdated
 ```
 
 You can also use it to manage global packages
@@ -225,6 +226,7 @@ jetpack global update DBI
 jetpack global update
 jetpack global remove plyr
 jetpack global list
+jetpack global outdated
 ```
 
 You can even use it to update itself
