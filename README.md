@@ -227,6 +227,12 @@ jetpack global remove plyr
 jetpack global list
 ```
 
+You can even use jetpack to update itself
+
+```sh
+jetpack global update jetpack
+```
+
 For the full list of commands, use:
 
 ```sh
