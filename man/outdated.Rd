@@ -2,12 +2,12 @@
 % Please edit documentation in R/jetpack.R
 \name{outdated}
 \alias{outdated}
-\title{Show outdated dependencies}
+\title{Show outdated packages}
 \usage{
 outdated()
 }
 \description{
-Show outdated dependencies
+Show outdated packages
 }
 \examples{
 \dontrun{

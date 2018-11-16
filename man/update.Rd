@@ -4,7 +4,7 @@
 \alias{update}
 \title{Update a package}
 \usage{
-update(packages, remotes = c())
+update(packages = c(), remotes = c())
 }
 \arguments{
 \item{packages}{Packages to update}
@@ -20,5 +20,7 @@ Update a package
 jetpack::update("randomForest")
 
 jetpack::update(c("randomForest", "DBI"))
+
+jetpack::update()
 }
 }
