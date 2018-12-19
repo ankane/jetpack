@@ -28,3 +28,7 @@ cli <- function(file=NULL) {
     message(paste("Wrote", file))
   }
 }
+
+windowsPath <- function(path) {
+  gsub("/", "\\\\", path)
+}

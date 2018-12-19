@@ -77,3 +77,7 @@ run <- function() {
     })
   })
 }
+
+version <- function() {
+  message(paste0("Jetpack version ", utils::packageVersion("jetpack")))
+}

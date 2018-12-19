@@ -313,34 +313,8 @@ updateDesc <- function(packages, remotes) {
   desc
 }
 
-version <- function() {
-  message(paste0("Jetpack version ", utils::packageVersion("jetpack")))
-}
-
 warn <- function(msg) {
   cat(crayon::yellow(paste0(msg, "\n")))
-}
-
-windowsPath <- function(path) {
-  gsub("/", "\\\\", path)
-}
-
-initRprofile <- function() {
-  rprofile <- file.exists(".Rprofile")
-  if (!rprofile || !any(grepl("jetpack", readLines(".Rprofile")))) {
-    str <- "if (requireNamespace(\"jetpack\", quietly=TRUE)) {
-  jetpack::load()
-} else {
-  message(\"Install Jetpack to use a virtual environment for this project\")
-}"
-
-    if (rprofile) {
-      # space it out
-      str <- paste0("\n", str)
-    }
-
-    write(str, file=".Rprofile", append=TRUE)
-  }
 }
 
 venvDir <- function(dir) {
