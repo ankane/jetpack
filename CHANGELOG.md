@@ -1,6 +1,7 @@
 ## 0.4.2 [unreleased]
 
 - Fixed error with empty repos
+- Fixed warning messages
 
 ## 0.4.1
 

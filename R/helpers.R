@@ -264,8 +264,18 @@ sandbox <- function(code) {
     suppressMessages(packrat::extlib(libs))
     invisible(eval(code))
   } else {
-    invisible(packrat::with_extlib(libs, code))
+    invisible(silenceWarnings("so cannot be unloaded", packrat::with_extlib(libs, code)))
   }
+}
+
+silenceWarnings <- function(msgs, code) {
+  warn2 <- function(w) {
+    if (any(sapply(msgs, function(x) { grepl(x, conditionMessage(w), fixed=TRUE) }))) {
+      warn("Command successful despite error message (unsolved Jetpack issue)")
+      invokeRestart("muffleWarning")
+    }
+  }
+  withCallingHandlers(code, warning=warn2)
 }
 
 showStatus <- function(status) {
