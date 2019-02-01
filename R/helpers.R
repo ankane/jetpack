@@ -269,13 +269,20 @@ sandbox <- function(code) {
 }
 
 silenceWarnings <- function(msgs, code) {
+  unsolved_error <- FALSE
   muffle <- function(w) {
     if (any(sapply(msgs, function(x) { grepl(x, conditionMessage(w), fixed=TRUE) }))) {
-      warn("Command successful despite error below (unsolved Jetpack issue)")
+      unsolved_error <<- TRUE
       invokeRestart("muffleWarning")
     }
   }
-  withCallingHandlers(code, warning=muffle)
+  res <- withCallingHandlers(code, warning=muffle)
+
+  if (unsolved_error) {
+    warn("Command successful despite error above (unsolved Jetpack issue)")
+  }
+
+  res
 }
 
 showStatus <- function(status) {
