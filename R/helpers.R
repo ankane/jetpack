@@ -9,8 +9,12 @@ checkInsecureRepos <- function() {
   }
 }
 
+isTesting <- function() {
+  identical(Sys.getenv("TEST_JETPACK"), "true")
+}
+
 enablePackrat <- function() {
-  clean <- !identical(Sys.getenv("TEST_JETPACK"), "true")
+  clean <- !isTesting()
   suppressMessages(packrat::on(print.banner=FALSE, clean.search.path=clean))
 }
 
@@ -336,7 +340,9 @@ warn <- function(msg) {
 
 venvDir <- function(dir) {
   # similar logic as Pipenv
-  if (isWindows()) {
+  if (isTesting()) {
+    venv_dir <- file.path(tempdir(), "renvs")
+  } else if (isWindows()) {
     venv_dir <- "~/.renvs"
   } else {
     venv_dir <- file.path(Sys.getenv("XDG_DATA_HOME", "~/.local/share"), "renvs")

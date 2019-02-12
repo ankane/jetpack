@@ -4,7 +4,7 @@ library(withr)
 
 options(repos=list(CRAN="https://cloud.r-project.org/"))
 
-Sys.setenv(TEST_JETPACK = "true")
+Sys.setenv(TEST_JETPACK="true")
 
 contains <- function(file, x) {
   grepl(x, paste(readLines(file), collapse=""))
