@@ -1,3 +1,8 @@
+## 0.4.2
+
+- Fixed error with empty repos
+- Fixed warning messages
+
 ## 0.4.1
 
 - Added ability to update all packages in a project

@@ -1,4 +1,4 @@
-## 0.4.2 [unreleased]
+## 0.4.2
 
 - Fixed error with empty repos
 - Fixed warning messages
