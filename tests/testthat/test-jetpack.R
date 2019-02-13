@@ -2,8 +2,6 @@ context("jetpack")
 
 library(withr)
 
-options(repos=list(CRAN="https://cloud.r-project.org/"))
-
 Sys.setenv(TEST_JETPACK="true")
 
 contains <- function(file, x) {
