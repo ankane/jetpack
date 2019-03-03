@@ -31,7 +31,7 @@ findDir <- function(path) {
 # duplicate logic from
 # packrat:::getDefaultLibPaths()
 getDefaultLibPaths <- function() {
-  strsplit(Sys.getenv("R_PACKRAT_DEFAULT_LIBPATHS", unset = ""), .Platform$path.sep, fixed = TRUE)[[1]]
+  strsplit(Sys.getenv("R_PACKRAT_DEFAULT_LIBPATHS", unset=""), .Platform$path.sep, fixed=TRUE)[[1]]
 }
 
 getDesc <- function() {
@@ -222,7 +222,7 @@ pkgRemove <- function(name) {
 }
 
 packratOn <- function() {
-  !is.na(Sys.getenv("R_PACKRAT_MODE", unset = NA))
+  !is.na(Sys.getenv("R_PACKRAT_MODE", unset=NA))
 }
 
 prepCommand <- function() {
@@ -256,7 +256,7 @@ prepCommand <- function() {
 ensureRepos <- function() {
   repos <- getOption("repos", list())
   if (repos["CRAN"] == "@CRAN@") {
-    repos["CRAN"] = "https://cloud.r-project.org/"
+    repos["CRAN"] <- "https://cloud.r-project.org/"
     options(repos=repos)
   }
 }
