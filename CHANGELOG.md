@@ -1,3 +1,7 @@
+## 0.4.3
+
+- Made tests self-contained
+
 ## 0.4.2
 
 - Fixed error with empty repos
