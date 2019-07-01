@@ -1,5 +1,5 @@
 language: r
-r: 3.5.0
+r: 3.6.0
 sudo: false
 cache: packages
 notifications:
