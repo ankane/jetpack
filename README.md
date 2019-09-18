@@ -190,7 +190,7 @@ CMD Rscript app.R
 
 ### Heroku
 
-There’s [ongoing work](https://github.com/virtualstaticvoid/heroku-buildpack-r/issues/110) to get Packrat working with the [R buildpack](https://github.com/virtualstaticvoid/heroku-buildpack-r).
+There’s [ongoing work](https://github.com/virtualstaticvoid/heroku-buildpack-r/pull/123) to get Packrat working with the [R buildpack](https://github.com/virtualstaticvoid/heroku-buildpack-r).
 
 In the meantime, you can use [Docker Deploys on Heroku](https://devcenter.heroku.com/articles/container-registry-and-runtime).
 
