@@ -13,7 +13,7 @@ init <- function() {
 
     initRprofile()
 
-    setupEnv()
+    setupEnv(init=TRUE)
 
     if (!interactive()) {
       success("Run 'jetpack add <package>' to add packages!")

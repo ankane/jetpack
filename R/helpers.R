@@ -354,10 +354,14 @@ venvDir <- function(dir) {
   file.path(venv_dir, venv_name)
 }
 
-setupEnv <- function(dir=getwd()) {
+setupEnv <- function(dir=getwd(), init=FALSE) {
   ensureRepos()
 
   venv_dir <- venvDir(dir)
+  if (init && file.exists(venv_dir) && !file.exists("packrat.lock")) {
+    # remove previous virtual env
+    unlink(venv_dir, recursive=TRUE)
+  }
   if (!file.exists(venv_dir)) {
     dir.create(venv_dir, recursive=TRUE)
   }
