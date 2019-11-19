@@ -67,29 +67,36 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
   # configure local repos
   remotes <- desc$get_remotes()
   local_repos <- c()
-  bioc <- FALSE
+  bioc_remote <- FALSE
   for (remote in remotes) {
     if (startsWith(remote, "local::")) {
       repo <- dirname(substring(remote, 8))
       local_repos <- c(local_repos, repo)
     } else if (startsWith(remote, "bioc::")) {
-      bioc <- TRUE
+      bioc_remote <- TRUE
     }
   }
   packrat::set_opts(local.repos=local_repos, persist=FALSE)
 
+  # configure bioc
+  bioc_manager <- desc$has_dep("BiocManager")
   repos <- getOption("repos")
-  if (bioc && is.na(repos["BioCsoft"])) {
+  if ((bioc_remote || bioc_manager) && is.na(repos["BioCsoft"])) {
     # not ideal, will hopefully be fixed with
     # https://github.com/rstudio/packrat/issues/507
-    bioc_repos <- c(
-      BioCsoft="https://bioconductor.org/packages/3.7/bioc",
-      BioCann="https://bioconductor.org/packages/3.7/data/annotation",
-      BioCexp="https://bioconductor.org/packages/3.7/data/experiment",
-      BioCworkflows="https://bioconductor.org/packages/3.7/workflows"
-    )
+    message("Setting up Bioconductor...")
 
-    packrat::set_lockfile_metadata(repos=c(repos, bioc_repos))
+    # ideally use version specified in DESCRIPTION
+    # but this should work for now
+    if (!requireNamespace("BiocManager", quietly=TRUE)) {
+      message("Installing BiocManager...")
+      install.packages("BiocManager", quiet=TRUE)
+    }
+
+    new_repos <- mergeRepos(repos, BiocManager::repositories())
+    packrat::set_lockfile_metadata(repos=new_repos)
+    # TODO revert this on failure
+    options(repos=new_repos)
   }
 
   # use a temporary directly
@@ -187,6 +194,17 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
 
     showStatus(status)
   }
+}
+
+mergeRepos <- function(repos, repos2) {
+  new_repos <- c(repos) # dup
+  for (i in 1:length(repos2)) {
+    name <- names(repos2)[i]
+    if (is.na(new_repos[name])) {
+      new_repos[name] <- repos2[name]
+    }
+  }
+  new_repos
 }
 
 isWindows <- function() {
