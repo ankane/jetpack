@@ -1,3 +1,7 @@
+## 0.4.4 (unreleased)
+
+- Fixed error when CRAN repo not specified
+
 ## 0.4.3 (2019-07-01)
 
 - Made tests self-contained
