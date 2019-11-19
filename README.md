@@ -150,6 +150,18 @@ jetpack::outdated()
 
 Be sure to commit the files Jetpack generates to source control.
 
+## Bioconductor
+
+For Bioconductor, add the Bioconductor repos to the `Repos:` section in `packrat.lock`:
+
+```txt
+Repos: CRAN=https://cloud.r-project.org/,
+    BioCsoft=https://bioconductor.org/packages/3.10/bioc,
+    BioCann=https://bioconductor.org/packages/3.10/data/annotation,
+    BioCexp=https://bioconductor.org/packages/3.10/data/experiment,
+    BioCworkflows=https://bioconductor.org/packages/3.10/workflows
+```
+
 ## Deployment
 
 ### Server

@@ -89,6 +89,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
       BioCworkflows="https://bioconductor.org/packages/3.7/workflows"
     )
 
+    # TODO need to set options(repos=...) as well for the snapshot to work
     packrat::set_lockfile_metadata(repos=c(repos, bioc_repos))
   }
 
