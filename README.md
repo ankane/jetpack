@@ -174,7 +174,7 @@ jetpack::install(deployment=TRUE)
 
 ### Docker
 
-Create an `init.R` with:
+Create `init.R` with:
 
 ```r
 install.packages("jetpack")
@@ -202,9 +202,14 @@ CMD Rscript app.R
 
 ### Heroku
 
-There’s [ongoing work](https://github.com/virtualstaticvoid/heroku-buildpack-r/pull/123) to get Packrat working with the [R buildpack](https://github.com/virtualstaticvoid/heroku-buildpack-r).
+For the [R buildpack](https://github.com/virtualstaticvoid/heroku-buildpack-r), create `init.R` with:
 
-In the meantime, you can use [Docker Deploys on Heroku](https://devcenter.heroku.com/articles/container-registry-and-runtime).
+```r
+install.packages("jetpack")
+jetpack::install(deployment=TRUE)
+```
+
+Alternatively, you can use [Docker Deploys on Heroku](https://devcenter.heroku.com/articles/container-registry-and-runtime).
 
 ## Command Line
 
