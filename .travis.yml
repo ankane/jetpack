@@ -1,6 +1,8 @@
 language: r
-r: 3.6.0
-sudo: false
+r:
+  - release
+  - oldrel
+  - devel
 cache: packages
 notifications:
   email:
