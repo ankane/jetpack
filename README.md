@@ -10,7 +10,7 @@
 
 Inspired by [Yarn](https://yarnpkg.com/), [Bundler](https://bundler.io/), and [Pipenv](https://docs.pipenv.org/)
 
-[![Build Status](https://travis-ci.org/ankane/jetpack.svg?branch=master)](https://travis-ci.org/ankane/jetpack) [![CRAN status](https://www.r-pkg.org/badges/version/jetpack)](https://cran.r-project.org/package=jetpack)
+[![Build Status](https://github.com/ankane/jetpack/workflows/build/badge.svg?branch=master)](https://github.com/ankane/jetpack/actions) [![CRAN status](https://www.r-pkg.org/badges/version/jetpack)](https://cran.r-project.org/package=jetpack)
 
 ## Installation
 
