@@ -6,8 +6,6 @@
 - Designed for reproducibility - thanks to [Packrat](https://rstudio.github.io/packrat/), no more global installs!
 - Works from both R and the command line
 
-![Screenshot](https://gist.github.com/ankane/b6988db2802aca68a589b31e41b44195/raw/bd6c163ef01a39aa3efc882fee5a82c75f002a61/jetpack.png)
-
 Inspired by [Yarn](https://yarnpkg.com/), [Bundler](https://bundler.io/), and [Pipenv](https://docs.pipenv.org/)
 
 [![Build Status](https://github.com/ankane/jetpack/workflows/build/badge.svg?branch=master)](https://github.com/ankane/jetpack/actions) [![CRAN status](https://www.r-pkg.org/badges/version/jetpack)](https://cran.r-project.org/package=jetpack)
