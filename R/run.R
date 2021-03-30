@@ -25,7 +25,7 @@ run <- function() {
       opts <- docopt::docopt(doc)
     }, error=function(err) {
       msg <- conditionMessage(err)
-      if (!grepl("usage:", msg)) {
+      if (!grepl("Usage:", msg)) {
         warn(msg)
       }
       message(doc)
