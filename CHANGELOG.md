@@ -1,5 +1,6 @@
 ## 0.4.4 (unreleased)
 
+- Removed dependency on crayon
 - Fixed error when CRAN repo not specified
 
 ## 0.4.3 (2019-07-01)

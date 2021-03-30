@@ -303,7 +303,16 @@ stopNotPackified <- function() {
 }
 
 success <- function(msg) {
-  cat(crayon::green(paste0(msg, "\n")))
+  cat(color(paste0(msg, "\n"), "green"))
+}
+
+color <- function(message, color) {
+  if (interactive() || isatty(stdout())) {
+    color_codes = list(red=31, green=32, yellow=33)
+    paste0("\033[", color_codes[color], "m", message, "\033[0m")
+  } else {
+    message
+  }
 }
 
 tempDir <- function() {
@@ -336,7 +345,7 @@ updateDesc <- function(packages, remotes) {
 }
 
 warn <- function(msg) {
-  cat(crayon::yellow(paste0(msg, "\n")))
+  cat(color(paste0(msg, "\n"), "yellow"))
 }
 
 venvDir <- function(dir) {

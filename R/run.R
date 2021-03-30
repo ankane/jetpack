@@ -72,7 +72,7 @@ run <- function() {
       }
     }, error=function(err) {
       msg <- conditionMessage(err)
-      cat(crayon::red(paste0(msg, "\n")))
+      cat(color(paste0(msg, "\n"), "red"))
       quit(status=1)
     })
   })
