@@ -8,7 +8,6 @@ Description: Manage project dependencies from your DESCRIPTION file. Create a re
 URL: https://github.com/ankane/jetpack
 BugReports: https://github.com/ankane/jetpack/issues
 License: MIT + file LICENSE
-LazyData: TRUE
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 Imports: renv (>= 0.13.1), remotes (>= 2.0.3), desc (>= 1.2.0), docopt (>= 0.4)
