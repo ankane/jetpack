@@ -41,19 +41,19 @@ test_that("it works", {
       expectFile("renv.lock")
       expectFile(".Rprofile")
 
-      jetpack::add("randomForest")
-      expectContains("DESCRIPTION", "randomForest")
-      expectContains("renv.lock", "randomForest")
+      jetpack::add("DBI")
+      expectContains("DESCRIPTION", "DBI")
+      expectContains("renv.lock", "DBI")
 
       check <- jetpack::check()
       expect(check, "Check should return true")
 
       jetpack::install()
-      jetpack::update("randomForest")
+      jetpack::update("DBI")
 
-      jetpack::remove("randomForest")
-      refuteContains("DESCRIPTION", "randomForest")
-      refuteContains("renv.lock", "randomForest")
+      jetpack::remove("DBI")
+      refuteContains("DESCRIPTION", "DBI")
+      refuteContains("renv.lock", "DBI")
     })
   }, finally={
     renv::deactivate()
