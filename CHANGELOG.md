@@ -1,5 +1,6 @@
-## 0.4.4 (unreleased)
+## 0.5.0 (unreleased)
 
+- Switched from Packrat to renv
 - Removed dependency on crayon
 - Fixed error when CRAN repo not specified
 

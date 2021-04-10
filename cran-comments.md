@@ -1,7 +1,7 @@
 ## Test environments
 
-* local OS X install, R 3.6.0
-* ubuntu 14.04 (on travis-ci), R 3.6.0
+* local OS X install, R 4.0.4
+* ubuntu 20.04 (on GitHub Actions), R 4.0.4
 * win-builder
 
 ## R CMD check results

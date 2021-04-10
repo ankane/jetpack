@@ -3,7 +3,7 @@
 :fire: A friendly package manager for R
 
 - Lightweight - adds just three files to your project
-- Designed for reproducibility - thanks to [Packrat](https://rstudio.github.io/packrat/), no more global installs!
+- Designed for reproducibility - thanks to [renv](https://rstudio.github.io/renv/), no more global installs!
 - Works from both R and the command line
 
 Inspired by [Yarn](https://yarnpkg.com/), [Bundler](https://bundler.io/), and [Pipenv](https://docs.pipenv.org/)
@@ -20,7 +20,7 @@ install.packages("jetpack")
 
 ## How It Works
 
-Jetpack uses the `DESCRIPTION` file to store your project dependencies. It stores the specific version of each package in `packrat.lock`. This makes it possible to have a reproducible environment. You can edit dependencies in the `DESCRIPTION` file directly, but Jetpack provides functions to help with this.
+Jetpack uses the `DESCRIPTION` file to store your project dependencies. It stores the specific version of each package in `renv.lock`. This makes it possible to have a reproducible environment. You can edit dependencies in the `DESCRIPTION` file directly, but Jetpack provides functions to help with this.
 
 ## Getting Started
 
@@ -150,14 +150,16 @@ Be sure to commit the files Jetpack generates to source control.
 
 ## Bioconductor
 
-For Bioconductor, add the Bioconductor repos to the `Repos:` section in `packrat.lock`:
+For Bioconductor, add the BiocManager package first:
 
-```txt
-Repos: CRAN=https://cloud.r-project.org/,
-    BioCsoft=https://bioconductor.org/packages/3.10/bioc,
-    BioCann=https://bioconductor.org/packages/3.10/data/annotation,
-    BioCexp=https://bioconductor.org/packages/3.10/data/experiment,
-    BioCworkflows=https://bioconductor.org/packages/3.10/workflows
+```r
+jetpack::add("BiocManager")
+```
+
+Then add other packages:
+
+```r
+jetpack::add("Biobase", remote="bioc::release/Biobase")
 ```
 
 ## Deployment
@@ -190,7 +192,7 @@ RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 RUN mkdir -p /app
 WORKDIR /app
 
-COPY init.R DESCRIPTION packrat.lock ./
+COPY init.R DESCRIPTION renv.lock ./
 RUN Rscript init.R
 
 COPY . .
@@ -259,6 +261,14 @@ jetpack help
 ## Upgrading
 
 To upgrade, rerun the [installation instructions](#installation).
+
+### 0.5.0
+
+Jetpack 0.5.0 uses renv instead of Packrat. To upgrade a project:
+
+1. Run `jetpack::migrate()`
+2. Delete `packrat.lock`
+3. Run `jetpack::install()`
 
 ### 0.4.0
 

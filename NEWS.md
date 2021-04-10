@@ -1,3 +1,9 @@
+## 0.5.0
+
+- Switched from Packrat to renv
+- Removed dependency on crayon
+- Fixed error when CRAN repo not specified
+
 ## 0.4.3
 
 - Made tests self-contained

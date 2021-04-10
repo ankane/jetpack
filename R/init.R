@@ -19,8 +19,6 @@ init <- function() {
       success("Run 'jetpack add <package>' to add packages!")
     } else {
       success("Run 'jetpack::add(package)' to add packages!")
-      enablePackrat()
-      loadNamespace("jetpack", lib.loc=getDefaultLibPaths())
     }
     invisible()
   })

@@ -25,25 +25,25 @@ refuteContains <- function(name, str) {
 }
 
 app_dir <- file.path(tempdir(), "app")
-packrat_dir <- file.path(tempdir(), "packrat")
+renv_dir <- file.path(tempdir(), "renv")
 
 createDir(app_dir)
-createDir(packrat_dir)
+createDir(renv_dir)
 
 Sys.setenv(TEST_JETPACK="true")
-Sys.setenv(R_PACKRAT_CACHE_DIR=packrat_dir)
+Sys.setenv(RENV_PATHS_ROOT=renv_dir)
 
 test_that("it works", {
   tryCatch({
     with_dir(app_dir, {
       jetpack::init()
       expectFile("DESCRIPTION")
-      expectFile("packrat.lock")
+      expectFile("renv.lock")
       expectFile(".Rprofile")
 
       jetpack::add("randomForest")
       expectContains("DESCRIPTION", "randomForest")
-      expectContains("packrat.lock", "randomForest")
+      expectContains("renv.lock", "randomForest")
 
       check <- jetpack::check()
       expect(check, "Check should return true")
@@ -53,9 +53,9 @@ test_that("it works", {
 
       jetpack::remove("randomForest")
       refuteContains("DESCRIPTION", "randomForest")
-      refuteContains("packrat.lock", "randomForest")
+      refuteContains("renv.lock", "randomForest")
     })
   }, finally={
-    packrat::off()
+    renv::deactivate()
   })
 })

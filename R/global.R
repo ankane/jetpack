@@ -1,5 +1,5 @@
 prepGlobal <- function() {
-  noPackrat()
+  noRenv()
   ensureRepos()
   checkInsecureRepos()
 }

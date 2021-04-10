@@ -17,7 +17,8 @@ update <- function(packages=c(), remotes=c()) {
 
     if (length(packages) == 0) {
       status <- getStatus()
-      packages <- status[status$currently.used & status$package != "packrat", ]$package
+      packages <- names(status$lockfile$Package)
+      packages <- packages[!packages %in% c("renv")]
 
       deps <- remotes::package_deps(packages)
       outdated <- deps[deps$diff < 0, ]

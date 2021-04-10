@@ -10,7 +10,7 @@ outdated <- function() {
     prepCommand()
 
     status <- getStatus()
-    packages <- status[status$currently.used, ]$package
+    packages <- names(status$lockfile$Package)
 
     deps <- remotes::package_deps(packages)
     # TODO decide what to do about uninstalled packages

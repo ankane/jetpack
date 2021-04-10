@@ -12,6 +12,7 @@ run <- function() {
     jetpack update [<package>...] [--remote=<remote>]...
     jetpack check
     jetpack outdated
+    jetpack migrate
     jetpack version
     jetpack help
     jetpack global add <package>... [--remote=<remote>]...
@@ -63,6 +64,8 @@ run <- function() {
         }
       } else if (opts$outdated) {
         outdated()
+      } else if (opts$migrate) {
+        migrate()
       } else if (opts$version) {
         version()
       } else if (opts$help) {

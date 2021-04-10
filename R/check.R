@@ -10,9 +10,9 @@ check <- function() {
     prepCommand()
 
     status <- getStatus()
-    missing <- status[is.na(status$library.version), ]
-    if (nrow(missing) > 0) {
-      message(paste("Missing packages:", paste(missing$package, collapse=", ")))
+    missing <- getMissing(status)
+    if (length(missing) > 0) {
+      message(paste("Missing packages:", paste(missing, collapse=", ")))
       if (!interactive()) {
         warn("Run 'jetpack install' to install them")
       } else {
