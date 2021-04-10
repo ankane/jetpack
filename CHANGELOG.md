@@ -1,4 +1,4 @@
-## 0.5.0 (unreleased)
+## 0.5.0 (2021-04-10)
 
 - Switched from Packrat to renv
 - Removed dependency on crayon
