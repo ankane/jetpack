@@ -353,7 +353,7 @@ setupEnv <- function(dir=getwd(), init=FALSE) {
     dir.create(venv_dir, recursive=TRUE)
   }
 
-  options(renv.verbose=FALSE, renv.config.synchronized.check = FALSE, jetpack_venv=venv_dir, jetpack_lib=.libPaths())
+  options(renv.verbose=FALSE, renv.config.synchronized.check=FALSE, renv.config.sandbox.enabled=TRUE, jetpack_venv=venv_dir, jetpack_lib=.libPaths())
 
   # initialize renv
   if (!packified()) {

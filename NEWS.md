@@ -1,5 +1,6 @@
 ## 0.5.1 (unreleased)
 
+- Fixed error with renv 0.15
 - Fixed CRAN note
 
 ## 0.5.0 (2021-04-10)
