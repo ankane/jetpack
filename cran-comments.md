@@ -1,7 +1,7 @@
 ## Test environments
 
-* local OS X install, R 4.0.4
-* ubuntu 20.04 (on GitHub Actions), R 4.0.4
+* local OS X install, R 4.1.1
+* ubuntu 20.04 (on GitHub Actions), R 4.1.2
 * win-builder
 
 ## R CMD check results
