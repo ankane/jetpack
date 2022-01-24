@@ -6,7 +6,7 @@
 - Designed for reproducibility - thanks to [renv](https://rstudio.github.io/renv/), no more global installs!
 - Works from both R and the command line
 
-Inspired by [Yarn](https://yarnpkg.com/), [Bundler](https://bundler.io/), and [Pipenv](https://docs.pipenv.org/)
+Inspired by [Yarn](https://yarnpkg.com/), [Bundler](https://bundler.io/), and [Pipenv](https://pipenv.pypa.io/en/latest/)
 
 [![Build Status](https://github.com/ankane/jetpack/workflows/build/badge.svg?branch=master)](https://github.com/ankane/jetpack/actions) [![CRAN status](https://www.r-pkg.org/badges/version/jetpack)](https://cran.r-project.org/package=jetpack)
 
