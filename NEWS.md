@@ -1,3 +1,7 @@
+## 0.5.1 (unreleased)
+
+- Fixed CRAN note
+
 ## 0.5.0 (2021-04-10)
 
 - Switched from Packrat to renv
