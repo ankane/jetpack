@@ -24,20 +24,24 @@ refuteContains <- function(name, str) {
   expect(!contains(name, str), paste(name, "contains", str))
 }
 
-app_dir <- file.path(tempdir(), "app")
-renv_dir <- file.path(tempdir(), "renv")
-library_dir <- file.path(tempdir(), "library")
+setup <- function(code) {
+  app_dir <- file.path(tempdir(), "app")
+  renv_dir <- file.path(tempdir(), "renv")
+  library_dir <- file.path(tempdir(), "library")
 
-createDir(app_dir)
-createDir(renv_dir)
-createDir(library_dir)
+  createDir(app_dir)
+  createDir(renv_dir)
+  createDir(library_dir)
 
-Sys.setenv(TEST_JETPACK="true")
-Sys.setenv(RENV_PATHS_ROOT=renv_dir)
-Sys.setenv(RENV_PATHS_LIBRARY_ROOT=library_dir)
+  Sys.setenv(TEST_JETPACK="true")
+  Sys.setenv(RENV_PATHS_ROOT=renv_dir)
+  Sys.setenv(RENV_PATHS_LIBRARY_ROOT=library_dir)
+
+  with_dir(app_dir, code)
+}
 
 test_that("it works", {
-  with_dir(app_dir, {
+  setup({
     on.exit(renv::deactivate())
 
     jetpack::init()
