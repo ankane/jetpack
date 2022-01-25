@@ -29,7 +29,7 @@ isWindows <- function() {
 run <- function(cli, command) {
   if (!isWindows()) {
     # https://stat.ethz.ch/pipermail/r-devel/2018-February/075507.html
-    rscript <- file.path(Sys.getenv("R_HOME"), "bin", "Rscript")
+    rscript <- file.path(R.home("bin"), "Rscript")
     cli <- paste(rscript, cli)
   }
 
