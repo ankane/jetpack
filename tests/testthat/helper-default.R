@@ -7,7 +7,11 @@ createDir <- function(path) {
 }
 
 contains <- function(file, x) {
-  grepl(x, paste(readLines(file), collapse=""))
+  containsStr(paste(readLines(file), collapse=""), x)
+}
+
+containsStr <- function(str, x) {
+  grepl(x, str)
 }
 
 expectFile <- function(name) {
@@ -20,6 +24,10 @@ expectContains <- function(name, str) {
 
 refuteContains <- function(name, str) {
   expect(!contains(name, str), paste(name, "contains", str))
+}
+
+expectContainsStr <- function(name, str) {
+  expect(containsStr(name, str), paste(name, "does not contain", str))
 }
 
 setup <- function(code) {
@@ -41,5 +49,5 @@ setup <- function(code) {
 run <- function(cli, command) {
   # https://stat.ethz.ch/pipermail/r-devel/2018-February/075507.html
   rscript <- file.path(Sys.getenv("R_HOME"), "bin", "Rscript")
-  system(paste(rscript, cli, command))
+  paste(system(paste(rscript, cli, command, "2>&1"), intern=TRUE), collapse="\n")
 }
