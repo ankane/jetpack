@@ -199,7 +199,7 @@ pkgVersion <- function(status, name) {
 }
 
 pkgRemove <- function(name) {
-  if (name %in% rownames(utils::installed.packages())) {
+  if (length(find.package(name, quiet=TRUE)) > 0) {
     suppressMessages(utils::remove.packages(name))
   }
 }
