@@ -46,8 +46,16 @@ setup <- function(code) {
   with_dir(app_dir, code)
 }
 
+isWindows <- function() {
+  .Platform$OS.type != "unix"
+}
+
 run <- function(cli, command) {
-  # https://stat.ethz.ch/pipermail/r-devel/2018-February/075507.html
-  rscript <- file.path(Sys.getenv("R_HOME"), "bin", "Rscript")
-  paste(system(paste(rscript, cli, command, "2>&1"), intern=TRUE), collapse="\n")
+  if (!isWindows()) {
+    # https://stat.ethz.ch/pipermail/r-devel/2018-February/075507.html
+    rscript <- file.path(Sys.getenv("R_HOME"), "bin", "Rscript")
+    cli <- paste(rscript, cli)
+  }
+
+  paste(system(paste(cli, command, "2>&1"), intern=TRUE), collapse="\n")
 }
