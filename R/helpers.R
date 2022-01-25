@@ -168,7 +168,8 @@ isWindows <- function() {
 
 keepwd <- function(code) {
   wd <- getwd()
-  tryCatch(code, finally={ setwd(wd) })
+  on.exit(setwd(wd))
+  eval(code)
 }
 
 loadExternal <- function(package) {
