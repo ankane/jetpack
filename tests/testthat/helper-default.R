@@ -6,30 +6,6 @@ createDir <- function(path) {
   }
 }
 
-fileContains <- function(file, x) {
-  contains(paste(readLines(file), collapse=""), x)
-}
-
-contains <- function(str, x) {
-  grepl(x, str)
-}
-
-expectFile <- function(name) {
-  expect(file.exists(name), paste(name, "does not exist"))
-}
-
-expectFileContains <- function(name, str) {
-  expect(fileContains(name, str), paste(name, "does not contain", str))
-}
-
-refuteFileContains <- function(name, str) {
-  expect(!fileContains(name, str), paste(name, "contains", str))
-}
-
-expectContains <- function(name, str) {
-  expect(contains(name, str), paste(name, "does not contain", str))
-}
-
 setup <- function(code) {
   app_dir <- file.path(tempdir(), "app")
   renv_dir <- file.path(tempdir(), "renv")
