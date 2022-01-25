@@ -37,28 +37,26 @@ Sys.setenv(RENV_PATHS_ROOT=renv_dir)
 Sys.setenv(RENV_PATHS_LIBRARY_ROOT=library_dir)
 
 test_that("it works", {
-  tryCatch({
-    with_dir(app_dir, {
-      jetpack::init()
-      expectFile("DESCRIPTION")
-      expectFile("renv.lock")
-      expectFile(".Rprofile")
+  with_dir(app_dir, {
+    on.exit(renv::deactivate())
 
-      jetpack::add("DBI")
-      expectContains("DESCRIPTION", "DBI")
-      expectContains("renv.lock", "DBI")
+    jetpack::init()
+    expectFile("DESCRIPTION")
+    expectFile("renv.lock")
+    expectFile(".Rprofile")
 
-      check <- jetpack::check()
-      expect(check, "Check should return true")
+    jetpack::add("DBI")
+    expectContains("DESCRIPTION", "DBI")
+    expectContains("renv.lock", "DBI")
 
-      jetpack::install()
-      jetpack::update("DBI")
+    check <- jetpack::check()
+    expect(check, "Check should return true")
 
-      jetpack::remove("DBI")
-      refuteContains("DESCRIPTION", "DBI")
-      refuteContains("renv.lock", "DBI")
-    })
-  }, finally={
-    renv::deactivate()
+    jetpack::install()
+    jetpack::update("DBI")
+
+    jetpack::remove("DBI")
+    refuteContains("DESCRIPTION", "DBI")
+    refuteContains("renv.lock", "DBI")
   })
 })
