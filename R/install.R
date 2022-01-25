@@ -1,6 +1,7 @@
 #' Install packages for a project
 #'
 #' @param deployment Use deployment mode
+#' @return No return value
 #' @export
 #' @examples \dontrun{
 #'

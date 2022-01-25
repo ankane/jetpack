@@ -11,6 +11,9 @@ add(packages, remotes = c())
 
 \item{remotes}{Remotes to add}
 }
+\value{
+No return value
+}
 \description{
 Add a package
 }

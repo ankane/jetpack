@@ -11,6 +11,9 @@ remove(packages, remotes = c())
 
 \item{remotes}{Remotes to remove}
 }
+\value{
+No return value
+}
 \description{
 Remove a package
 }

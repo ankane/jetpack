@@ -1,5 +1,6 @@
 #' Load Jetpack
 #'
+#' @return No return value
 #' @export
 #' @keywords internal
 load <- function() {

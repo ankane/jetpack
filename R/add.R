@@ -2,6 +2,7 @@
 #'
 #' @param packages Packages to add
 #' @param remotes Remotes to add
+#' @return No return value
 #' @export
 #' @examples \dontrun{
 #'

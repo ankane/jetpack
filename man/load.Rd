@@ -6,6 +6,9 @@
 \usage{
 load()
 }
+\value{
+No return value
+}
 \description{
 Load Jetpack
 }

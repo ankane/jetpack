@@ -9,6 +9,9 @@ cli(file = NULL)
 \arguments{
 \item{file}{The file to create}
 }
+\value{
+No return value
+}
 \description{
 Install the command line interface
 }

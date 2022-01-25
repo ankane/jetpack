@@ -1,6 +1,7 @@
 #' Set up Jetpack
 #'
 #' @export
+#' @return No return value
 #' @examples \dontrun{
 #'
 #' jetpack::init()

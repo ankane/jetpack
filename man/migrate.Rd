@@ -6,6 +6,9 @@
 \usage{
 migrate()
 }
+\value{
+No return value
+}
 \description{
 Migrate from packrat to renv
 }

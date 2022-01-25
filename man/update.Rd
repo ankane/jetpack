@@ -11,6 +11,9 @@ update(packages = c(), remotes = c())
 
 \item{remotes}{Remotes to update}
 }
+\value{
+No return value
+}
 \description{
 Update a package
 }

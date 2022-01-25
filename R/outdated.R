@@ -1,5 +1,6 @@
 #' Show outdated packages
 #'
+#' @return No return value
 #' @export
 #' @examples \dontrun{
 #'

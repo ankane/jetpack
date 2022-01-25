@@ -6,6 +6,9 @@
 \usage{
 init()
 }
+\value{
+No return value
+}
 \description{
 Set up Jetpack
 }

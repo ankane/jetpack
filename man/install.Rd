@@ -9,6 +9,9 @@ install(deployment = FALSE)
 \arguments{
 \item{deployment}{Use deployment mode}
 }
+\value{
+No return value
+}
 \description{
 Install packages for a project
 }

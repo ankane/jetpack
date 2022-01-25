@@ -6,6 +6,9 @@
 \usage{
 outdated()
 }
+\value{
+No return value
+}
 \description{
 Show outdated packages
 }

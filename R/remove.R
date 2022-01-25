@@ -2,6 +2,7 @@
 #'
 #' @param packages Packages to remove
 #' @param remotes Remotes to remove
+#' @return No return value
 #' @export
 #' @examples \dontrun{
 #'

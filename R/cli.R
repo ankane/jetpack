@@ -1,6 +1,7 @@
 #' Install the command line interface
 #'
 #' @param file The file to create
+#' @return No return value
 #' @export
 #' @examples \dontrun{
 #'

@@ -6,6 +6,9 @@
 \usage{
 run()
 }
+\value{
+No return value
+}
 \description{
 Run the command line interface
 }

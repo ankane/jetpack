@@ -1,5 +1,6 @@
 #' Run the command line interface
 #'
+#' @return No return value
 #' @export
 #' @keywords internal
 run <- function() {

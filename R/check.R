@@ -1,5 +1,6 @@
 #' Check that all dependencies are installed
 #'
+#' @return `TRUE` if all dependencies are installed, `FALSE` otherwise, invisibly
 #' @export
 #' @examples \dontrun{
 #'

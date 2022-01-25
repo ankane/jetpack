@@ -6,6 +6,9 @@
 \usage{
 check()
 }
+\value{
+\code{TRUE} if all dependencies are installed, \code{FALSE} otherwise, invisibly
+}
 \description{
 Check that all dependencies are installed
 }

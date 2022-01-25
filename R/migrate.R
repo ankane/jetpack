@@ -1,5 +1,6 @@
 #' Migrate from packrat to renv
 #'
+#' @return No return value
 #' @export
 #' @examples \dontrun{
 #'
