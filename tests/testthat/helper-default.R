@@ -6,11 +6,11 @@ createDir <- function(path) {
   }
 }
 
-contains <- function(file, x) {
-  containsStr(paste(readLines(file), collapse=""), x)
+fileContains <- function(file, x) {
+  contains(paste(readLines(file), collapse=""), x)
 }
 
-containsStr <- function(str, x) {
+contains <- function(str, x) {
   grepl(x, str)
 }
 
@@ -18,16 +18,16 @@ expectFile <- function(name) {
   expect(file.exists(name), paste(name, "does not exist"))
 }
 
+expectFileContains <- function(name, str) {
+  expect(fileContains(name, str), paste(name, "does not contain", str))
+}
+
+refuteFileContains <- function(name, str) {
+  expect(!fileContains(name, str), paste(name, "contains", str))
+}
+
 expectContains <- function(name, str) {
   expect(contains(name, str), paste(name, "does not contain", str))
-}
-
-refuteContains <- function(name, str) {
-  expect(!contains(name, str), paste(name, "contains", str))
-}
-
-expectContainsStr <- function(name, str) {
-  expect(containsStr(name, str), paste(name, "does not contain", str))
 }
 
 setup <- function(code) {

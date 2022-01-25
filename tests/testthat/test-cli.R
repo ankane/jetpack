@@ -11,8 +11,8 @@ test_that("it works", {
     expectFile(".Rprofile")
 
     run(cli, "add DBI")
-    expectContains("DESCRIPTION", "DBI")
-    expectContains("renv.lock", "DBI")
+    expectFileContains("DESCRIPTION", "DBI")
+    expectFileContains("renv.lock", "DBI")
 
     run(cli, "check")
 
@@ -20,7 +20,7 @@ test_that("it works", {
     run(cli, "update DBI")
 
     run(cli, "remove DBI")
-    refuteContains("DESCRIPTION", "DBI")
-    refuteContains("renv.lock", "DBI")
+    refuteFileContains("DESCRIPTION", "DBI")
+    refuteFileContains("renv.lock", "DBI")
   })
 })

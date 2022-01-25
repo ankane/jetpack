@@ -5,6 +5,6 @@ test_that("it works", {
     cli <- file.path(tempdir(), "jetpack")
     jetpack::cli(file=cli)
 
-    expectContainsStr(run(cli, "global list"), "Using")
+    expectContains(run(cli, "global list"), "Using")
   })
 })

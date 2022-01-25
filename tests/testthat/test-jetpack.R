@@ -10,8 +10,8 @@ test_that("it works", {
     expectFile(".Rprofile")
 
     jetpack::add("DBI")
-    expectContains("DESCRIPTION", "DBI")
-    expectContains("renv.lock", "DBI")
+    expectFileContains("DESCRIPTION", "DBI")
+    expectFileContains("renv.lock", "DBI")
 
     check <- jetpack::check()
     expect(check, "Check should return true")
@@ -20,7 +20,7 @@ test_that("it works", {
     jetpack::update("DBI")
 
     jetpack::remove("DBI")
-    refuteContains("DESCRIPTION", "DBI")
-    refuteContains("renv.lock", "DBI")
+    refuteFileContains("DESCRIPTION", "DBI")
+    refuteFileContains("renv.lock", "DBI")
   })
 })
