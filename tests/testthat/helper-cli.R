@@ -10,22 +10,30 @@ cliFile <- function() {
 run <- function(cli, command) {
   debug <- FALSE
 
+  args <- strsplit(command, " ", fixed=TRUE)[[1]]
+
   if (!isWindows()) {
     # https://stat.ethz.ch/pipermail/r-devel/2018-February/075507.html
-    rscript <- file.path(R.home("bin"), "Rscript")
-    cli <- paste(rscript, cli)
+    args <- c(cli, args)
+    cli <- file.path(R.home("bin"), "Rscript")
   }
 
-  cmd <- paste(cli, command, "2>&1")
+  cmd <- paste(c(cli, args), collapse=" ")
   if (debug) {
     cat("\nCommand: ")
     cat(cmd)
   }
 
-  output <- paste(system(cmd, intern=TRUE), collapse="\n")
+  res <- system2(cli, args, stdout=TRUE, stderr=TRUE)
+  output <- paste(res, collapse="\n")
   if (debug) {
     cat("\nOutput:\n")
     cat(output)
+  }
+
+  status <- attr(res, "status")
+  if (!is.null(status)) {
+    stop(paste("Command exited with status:", status))
   }
 
   output
