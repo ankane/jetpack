@@ -213,8 +213,7 @@ prepCommand <- function() {
     stopNotPackified()
   }
 
-  options(jetpack_dir=dir)
-  venv_dir <- setupEnv(dir)
+  venv_dir <- setupEnv(dir, jetpack_dir=dir)
 
   # copy files
   file.copy(file.path(dir, "DESCRIPTION"), file.path(venv_dir, "DESCRIPTION"), overwrite=TRUE)
@@ -345,7 +344,7 @@ venvDir <- function(dir) {
   file.path(venv_dir, venv_name)
 }
 
-setupEnv <- function(dir=getwd(), init=FALSE) {
+setupEnv <- function(dir=getwd(), init=FALSE, jetpack_dir=NULL) {
   venv_dir <- venvDir(dir)
   if (init && file.exists(venv_dir) && !file.exists(file.path(dir, "renv.lock"))) {
     # remove previous virtual env
@@ -355,7 +354,14 @@ setupEnv <- function(dir=getwd(), init=FALSE) {
     dir.create(venv_dir, recursive=TRUE)
   }
 
-  options(renv.verbose=FALSE, renv.config.synchronized.check=FALSE, renv.config.sandbox.enabled=TRUE, jetpack_venv=venv_dir, jetpack_lib=.libPaths())
+  options(
+    renv.verbose=FALSE,
+    renv.config.synchronized.check=FALSE,
+    renv.config.sandbox.enabled=TRUE,
+    jetpack_venv=venv_dir,
+    jetpack_lib=.libPaths(),
+    jetpack_dir=jetpack_dir
+  )
 
   # initialize renv
   if (!packified()) {
