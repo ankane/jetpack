@@ -74,7 +74,7 @@ getName <- function(package) {
 }
 
 getRepos <- function() {
-  repos <- getOption("repos", c())
+  repos <- getOption("repos", list())
   if (!is.na(repos["CRAN"]) && repos["CRAN"] == "@CRAN@") {
     # fine to update in-place (does not propagate to option)
     repos["CRAN"] <- "https://cloud.r-project.org/"
