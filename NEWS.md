@@ -1,4 +1,4 @@
-## 0.5.1 (unreleased)
+## 0.5.1 (2022-01-26)
 
 - Fixed error with renv 0.15
 - Fixed CRAN note
