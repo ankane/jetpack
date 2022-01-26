@@ -20,6 +20,21 @@ color <- function(message, color) {
   }
 }
 
+configureRenv <- function(code) {
+  previous <- options(
+    "renv.verbose",
+    "renv.config.synchronized.check",
+    "renv.config.sandbox.enabled"
+  )
+  on.exit(options(previous))
+  options(
+    renv.verbose=FALSE,
+    renv.config.synchronized.check=FALSE,
+    renv.config.sandbox.enabled=TRUE
+  )
+  eval(code)
+}
+
 enableRenv <- function() {
   # use load (activate updates profile then calls load)
   # no need to call quiet since we already set it globally
@@ -256,7 +271,7 @@ sandbox <- function(code, prep=TRUE) {
   if (prep) {
     prepCommand()
   }
-  invisible(eval(code))
+  invisible(configureRenv(code))
 }
 
 showStatus <- function(status) {
@@ -356,12 +371,6 @@ setupEnv <- function(dir, init=FALSE) {
   if (!file.exists(venv_dir)) {
     dir.create(venv_dir, recursive=TRUE)
   }
-
-  options(
-    renv.verbose=FALSE,
-    renv.config.synchronized.check=FALSE,
-    renv.config.sandbox.enabled=TRUE
-  )
 
   assign("jetpack_venv", venv_dir, envir=.jetpack_env)
   assign("jetpack_lib", .libPaths(), envir=.jetpack_env)
