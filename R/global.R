@@ -40,9 +40,7 @@ globalInstallHelper <- function(packages, remotes=c()) {
 
     # TODO don't remove for add command
     for (package in unversioned) {
-      if (package %in% rownames(utils::installed.packages())) {
-        suppressMessages(utils::remove.packages(package))
-      }
+      pkgRemove(package)
     }
 
     remotes::install_deps(dir, reload=FALSE)
