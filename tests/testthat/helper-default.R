@@ -20,6 +20,10 @@ isWindows <- function() {
   .Platform$OS.type != "unix"
 }
 
+cliFile <- function() {
+  tempfile(pattern="jetpack")
+}
+
 run <- function(cli, command) {
   if (!isWindows()) {
     # https://stat.ethz.ch/pipermail/r-devel/2018-February/075507.html

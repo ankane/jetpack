@@ -4,7 +4,7 @@ test_that("it works", {
   skip_on_os("windows")
 
   setup({
-    cli <- tempfile(pattern="jetpack")
+    cli <- cliFile()
     jetpack::cli(file=cli)
 
     run(cli, "init")
