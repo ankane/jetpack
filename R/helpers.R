@@ -127,7 +127,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
       row <- specificDeps[i, ]
       currentDep <- status$lockfile$Packages[[row$package]]
       if (is.null(currentDep) || currentDep$Version != row$version) {
-        remotes::install_version(row$package, version=row$version, reload=FALSE)
+        remotes::install_version(row$package, version=row$version, reload=FALSE, repos=getRepos())
         status_updated <- TRUE
       }
     }
@@ -137,7 +137,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
   # unfortunately, install_deps doesn't check version requirements
   # https://github.com/r-lib/devtools/issues/1314
   if (length(need) > 0 || length(remove) > 0 || update_all) {
-    remotes::install_deps(dir, upgrade=update_all, reload=FALSE)
+    remotes::install_deps(dir, upgrade=update_all, reload=FALSE, repos=getRepos())
     status_updated <- TRUE
   }
 

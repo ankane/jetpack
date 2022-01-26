@@ -58,7 +58,7 @@ globalList <- function() {
 globalOutdatedPackages <- function() {
   packages <- rownames(utils::installed.packages())
 
-  deps <- remotes::package_deps(packages)
+  deps <- remotes::package_deps(packages, repos=getRepos())
 
   # TODO decide what to do about uninstalled packages
   deps[deps$diff == -1, ]
