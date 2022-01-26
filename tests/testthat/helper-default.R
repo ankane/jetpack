@@ -21,7 +21,8 @@ isWindows <- function() {
 }
 
 cliFile <- function() {
-  tempfile(pattern="jetpack")
+  ext <- if (isWindows()) ".cmd" else ""
+  tempfile(pattern="jetpack", fileext=ext)
 }
 
 run <- function(cli, command) {
