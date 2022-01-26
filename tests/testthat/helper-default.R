@@ -1,19 +1,13 @@
 library(withr)
 
-createDir <- function(path) {
-  if (!dir.exists(path)) {
-    dir.create(path)
-  }
-}
-
 setup <- function(code) {
-  app_dir <- file.path(tempdir(), "app")
-  renv_dir <- file.path(tempdir(), "renv")
-  library_dir <- file.path(tempdir(), "library")
+  app_dir <- tempfile(pattern="app")
+  renv_dir <- tempfile(pattern="renv")
+  library_dir <- tempfile(pattern="library")
 
-  createDir(app_dir)
-  createDir(renv_dir)
-  createDir(library_dir)
+  dir.create(app_dir)
+  dir.create(renv_dir)
+  dir.create(library_dir)
 
   Sys.setenv(TEST_JETPACK="true")
   Sys.setenv(RENV_PATHS_ROOT=renv_dir)
