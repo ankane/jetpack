@@ -79,7 +79,7 @@ run <- function() {
       cat(color(paste0(msg, "\n"), "red"))
       quit(status=1)
     })
-  })
+  }, prep=FALSE)
 }
 
 version <- function() {

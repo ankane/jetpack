@@ -14,8 +14,6 @@
 #' }
 update <- function(packages=c(), remotes=c()) {
   sandbox({
-    prepCommand()
-
     if (length(packages) == 0) {
       status <- getStatus()
       packages <- names(status$lockfile$Package)

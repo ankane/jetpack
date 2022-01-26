@@ -8,8 +8,6 @@
 #' }
 outdated <- function() {
   sandbox({
-    prepCommand()
-
     status <- getStatus()
     packages <- names(status$lockfile$Package)
 

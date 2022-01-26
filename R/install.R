@@ -9,8 +9,6 @@
 #' }
 install <- function(deployment=FALSE) {
   sandbox({
-    prepCommand()
-
     if (deployment) {
       status <- getStatus()
       missing <- getMissing(status)

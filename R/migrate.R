@@ -36,5 +36,5 @@ migrate <- function() {
       cmd <- if (!interactive()) "jetpack install" else "jetpack::install()"
       message(paste0("Lockfile migration successful! To finish migrating:\n1. Delete packrat.lock\n2. Run '", cmd, "'"))
     }
-  })
+  }, prep=FALSE)
 }

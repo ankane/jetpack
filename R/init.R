@@ -22,7 +22,7 @@ init <- function() {
       success("Run 'jetpack::add(package)' to add packages!")
     }
     invisible()
-  })
+  }, prep=FALSE)
 }
 
 initRprofile <- function() {

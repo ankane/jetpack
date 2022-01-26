@@ -18,8 +18,6 @@
 #' }
 add <- function(packages, remotes=c()) {
   sandbox({
-    prepCommand()
-
     desc <- updateDesc(packages, remotes)
 
     installHelper(desc=desc, show_status=TRUE)

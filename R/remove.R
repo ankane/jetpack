@@ -14,8 +14,6 @@
 #' }
 remove <- function(packages, remotes=c()) {
   sandbox({
-    prepCommand()
-
     desc <- getDesc()
 
     for (package in packages) {

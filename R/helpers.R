@@ -246,10 +246,13 @@ renvProject <- function() {
   getOption("jetpack_venv")
 }
 
-sandbox <- function(code) {
+sandbox <- function(code, prep=TRUE) {
   libs <- c("remotes", "desc", "docopt")
   for (lib in libs) {
     loadExternal(lib)
+  }
+  if (prep) {
+    prepCommand()
   }
   invisible(eval(code))
 }
