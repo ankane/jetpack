@@ -24,5 +24,11 @@ test_that("it works", {
 
     output <- run(cli, "global outdated")
     refuteContains(output, "DBI")
+
+    output <- run(cli, "global remove DBI")
+    expectContains(output, "Removed DBI")
+
+    output <- run(cli, "global list")
+    refuteContains(output, "Using DBI")
   })
 })
