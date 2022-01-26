@@ -24,14 +24,6 @@ enableRenv <- function() {
   renv::load(renvProject())
 }
 
-ensureRepos <- function() {
-  repos <- getOption("repos", list())
-  if (!is.na(repos["CRAN"]) && repos["CRAN"] == "@CRAN@") {
-    repos["CRAN"] <- "https://cloud.r-project.org/"
-    options(repos=repos)
-  }
-}
-
 findDir <- function(path) {
   if (file.exists(file.path(path, "DESCRIPTION"))) {
     path
@@ -67,6 +59,7 @@ getName <- function(package) {
 getRepos <- function() {
   repos <- getOption("repos", c())
   if (!is.na(repos["CRAN"]) && repos["CRAN"] == "@CRAN@") {
+    # fine to update in-place (does not propagate to option)
     repos["CRAN"] <- "https://cloud.r-project.org/"
   }
   repos
@@ -107,7 +100,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
   status_updated <- FALSE
 
   if (!identical(status$library$Packages, status$lockfile$Packages)) {
-    suppressWarnings(renv::restore(project=dir, prompt=FALSE, clean=TRUE))
+    suppressWarnings(renv::restore(project=dir, prompt=FALSE, clean=TRUE, repos=getRepos()))
 
     # non-vendor approach
     # for (i in 1:nrow(restore)) {
@@ -149,7 +142,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
   }
 
   if (status_updated) {
-    suppressMessages(renv::snapshot(project=dir, prompt=FALSE))
+    suppressMessages(renv::snapshot(project=dir, prompt=FALSE, repos=getRepos()))
   }
 
   # copy back after successful
@@ -235,7 +228,6 @@ prepCommand <- function() {
     }
   }
 
-  ensureRepos()
   checkInsecureRepos()
 }
 
@@ -351,8 +343,6 @@ venvDir <- function(dir) {
 }
 
 setupEnv <- function(dir=getwd(), init=FALSE) {
-  ensureRepos()
-
   venv_dir <- venvDir(dir)
   if (init && file.exists(venv_dir) && !file.exists(file.path(dir, "renv.lock"))) {
     # remove previous virtual env
@@ -375,8 +365,8 @@ setupEnv <- function(dir=getwd(), init=FALSE) {
     file.copy(file.path(dir, "DESCRIPTION"), file.path(venv_dir, "DESCRIPTION"), overwrite=TRUE)
 
     # restore wd after init changes it
-    keepwd(quietly(renv::init(project=venv_dir, bare=TRUE, restart=FALSE, settings=list(snapshot.type = "explicit"))))
-    quietly(renv::snapshot(prompt=FALSE, force=TRUE))
+    keepwd(quietly(renv::init(project=venv_dir, bare=TRUE, restart=FALSE, repos=getRepos(), settings=list(snapshot.type = "explicit"))))
+    quietly(renv::snapshot(prompt=FALSE, force=TRUE, repos=getRepos()))
 
     # reload desc
     if (interactive()) {
