@@ -18,22 +18,23 @@ run <- function(cli, command) {
     cli <- file.path(R.home("bin"), "Rscript")
   }
 
-  cmd <- paste(c(cli, args), collapse=" ")
   if (debug) {
+    cmd <- paste(c(cli, args), collapse=" ")
     cat("\nCommand: ")
     cat(cmd)
   }
 
   res <- system2(cli, args, stdout=TRUE, stderr=TRUE)
+  status <- attr(res, "status")
   output <- paste(res, collapse="\n")
+
   if (debug) {
     cat("\nOutput:\n")
     cat(output)
   }
 
-  status <- attr(res, "status")
   if (!is.null(status)) {
-    stop(paste("Command exited with status:", status))
+    stop(paste("Command exited with status:", status, "\n", output))
   }
 
   output
