@@ -12,12 +12,12 @@ load <- function() {
   }
 
   tryCatch({
-    venv_dir <- setupEnv(dir)
+    setupEnv(dir)
 
     # must source from virtualenv directory
     # for RStudio for work properly
     keepwd({
-      setwd(venv_dir)
+      setwd(renvProject())
       quietly(source("renv/activate.R"))
     })
   }, error = function(e) {

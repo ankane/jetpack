@@ -14,7 +14,7 @@ init <- function() {
 
     initRprofile()
 
-    setupEnv(init=TRUE)
+    setupEnv(getwd(), init=TRUE)
 
     if (!interactive()) {
       success("Run 'jetpack add <package>' to add packages!")

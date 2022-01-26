@@ -216,11 +216,11 @@ prepCommand <- function() {
   }
 
   assign("jetpack_dir", dir, envir=.jetpack_env)
-  venv_dir <- setupEnv(dir)
+  setupEnv(dir)
 
   # copy files
-  file.copy(file.path(dir, "DESCRIPTION"), file.path(venv_dir, "DESCRIPTION"), overwrite=TRUE)
-  file.copy(file.path(dir, "renv.lock"), file.path(venv_dir, "renv.lock"), overwrite=TRUE)
+  file.copy(file.path(dir, "DESCRIPTION"), file.path(renvProject(), "DESCRIPTION"), overwrite=TRUE)
+  file.copy(file.path(dir, "renv.lock"), file.path(renvProject(), "renv.lock"), overwrite=TRUE)
 
   if (!renvOn()) {
     if (interactive()) {
@@ -347,7 +347,7 @@ venvDir <- function(dir) {
   file.path(venv_dir, venv_name)
 }
 
-setupEnv <- function(dir=getwd(), init=FALSE) {
+setupEnv <- function(dir, init=FALSE) {
   venv_dir <- venvDir(dir)
   if (init && file.exists(venv_dir) && !file.exists(file.path(dir, "renv.lock"))) {
     # remove previous virtual env
@@ -389,6 +389,4 @@ setupEnv <- function(dir=getwd(), init=FALSE) {
   if (!file.exists(file.path(dir, "renv.lock"))) {
     file.copy(file.path(renvProject(), "renv.lock"), file.path(dir, "renv.lock"))
   }
-
-  venv_dir
 }
