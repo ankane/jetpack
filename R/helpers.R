@@ -329,7 +329,7 @@ warn <- function(msg) {
 venvDir <- function(dir) {
   # similar logic as Pipenv
   if (isTesting()) {
-    venv_dir <- file.path(tempdir(), "renvs")
+    venv_dir <- Sys.getenv("TEST_JETPACK_ROOT")
   } else if (isWindows()) {
     venv_dir <- "~/.renvs"
   } else {
