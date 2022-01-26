@@ -1,6 +1,5 @@
 prepGlobal <- function() {
   noRenv()
-  ensureRepos()
   checkInsecureRepos()
 }
 
@@ -20,7 +19,7 @@ globalInstallHelper <- function(packages, remotes=c()) {
     if (length(parts) != 1) {
       package <- parts[1]
       version <- parts[2]
-      remotes::install_version(package, version=version, reload=FALSE)
+      remotes::install_version(package, version=version, reload=FALSE, repos=getRepos())
     } else {
       unversioned <- c(unversioned, package)
     }
@@ -43,7 +42,7 @@ globalInstallHelper <- function(packages, remotes=c()) {
       pkgRemove(package)
     }
 
-    remotes::install_deps(dir, reload=FALSE)
+    remotes::install_deps(dir, reload=FALSE, repos=getRepos())
   }
 }
 
@@ -95,7 +94,7 @@ globalUpdate <- function(packages, remotes, verbose) {
       for (i in 1:nrow(outdated)) {
         row <- outdated[i, ]
         package <- row$package
-        utils::install.packages(package, quiet=!verbose)
+        utils::install.packages(package, quiet=!verbose, repos=getRepos())
         newVersion <- as.character(utils::packageVersion(package))
         success(paste0("Updated ", package, " to ", newVersion, " (was ", row$installed, ")"))
       }

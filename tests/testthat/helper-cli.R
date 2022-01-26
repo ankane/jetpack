@@ -18,14 +18,14 @@ run <- function(cli, command) {
 
   cmd <- paste(cli, command, "2>&1")
   if (debug) {
-    print("Command:")
-    print(cmd)
+    cat("\nCommand: ")
+    cat(cmd)
   }
 
   output <- paste(system(cmd, intern=TRUE), collapse="\n")
   if (debug) {
-    print("Output:")
-    print(output)
+    cat("\nOutput:\n")
+    cat(output)
   }
 
   output

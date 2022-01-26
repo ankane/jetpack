@@ -64,6 +64,14 @@ getName <- function(package) {
   package
 }
 
+getRepos <- function() {
+  repos <- getOption("repos", c())
+  if (!is.na(repos["CRAN"]) && repos["CRAN"] == "@CRAN@") {
+    repos["CRAN"] <- "https://cloud.r-project.org/"
+  }
+  repos
+}
+
 getStatus <- function(project=NULL) {
   tryCatch({
     quietly(renv::status(project=project))

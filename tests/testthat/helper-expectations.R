@@ -10,6 +10,10 @@ expectContains <- function(name, str) {
   expect(contains(name, str), paste(name, "does not contain", str))
 }
 
+refuteContains <- function(name, str) {
+  expect(!contains(name, str), paste(name, "does not contain", str))
+}
+
 expectFile <- function(name) {
   expect(file.exists(name), paste(name, "does not exist"))
 }
