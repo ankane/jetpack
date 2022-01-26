@@ -1,3 +1,5 @@
+.jetpack_env <- new.env(parent=emptyenv())
+
 checkInsecureRepos <- function() {
   repos <- getOption("repos")
   if (is.list(repos)) {
@@ -146,7 +148,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
   }
 
   # copy back after successful
-  jetpack_dir <- getOption("jetpack_dir")
+  jetpack_dir <- .jetpack_env$jetpack_dir
   file.copy(file.path(renvProject(), "DESCRIPTION"), file.path(jetpack_dir, "DESCRIPTION"), overwrite=TRUE)
   file.copy(file.path(renvProject(), "renv.lock"), file.path(jetpack_dir, "renv.lock"), overwrite=TRUE)
 
@@ -174,7 +176,7 @@ keepwd <- function(code) {
 }
 
 loadExternal <- function(package) {
-  lib_paths <- getOption("jetpack_lib")
+  lib_paths <- .jetpack_env$jetpack_lib
   loadNamespace(package, lib.loc=lib_paths)
 }
 
@@ -213,7 +215,8 @@ prepCommand <- function() {
     stopNotPackified()
   }
 
-  venv_dir <- setupEnv(dir, jetpack_dir=dir)
+  assign("jetpack_dir", dir, envir=.jetpack_env)
+  venv_dir <- setupEnv(dir)
 
   # copy files
   file.copy(file.path(dir, "DESCRIPTION"), file.path(venv_dir, "DESCRIPTION"), overwrite=TRUE)
@@ -242,7 +245,7 @@ renvOn <- function() {
 }
 
 renvProject <- function() {
-  getOption("jetpack_venv")
+  .jetpack_env$jetpack_venv
 }
 
 sandbox <- function(code, prep=TRUE) {
@@ -344,7 +347,7 @@ venvDir <- function(dir) {
   file.path(venv_dir, venv_name)
 }
 
-setupEnv <- function(dir=getwd(), init=FALSE, jetpack_dir=NULL) {
+setupEnv <- function(dir=getwd(), init=FALSE) {
   venv_dir <- venvDir(dir)
   if (init && file.exists(venv_dir) && !file.exists(file.path(dir, "renv.lock"))) {
     # remove previous virtual env
@@ -357,11 +360,11 @@ setupEnv <- function(dir=getwd(), init=FALSE, jetpack_dir=NULL) {
   options(
     renv.verbose=FALSE,
     renv.config.synchronized.check=FALSE,
-    renv.config.sandbox.enabled=TRUE,
-    jetpack_venv=venv_dir,
-    jetpack_lib=.libPaths(),
-    jetpack_dir=jetpack_dir
+    renv.config.sandbox.enabled=TRUE
   )
+
+  assign("jetpack_venv", venv_dir, envir=.jetpack_env)
+  assign("jetpack_lib", .libPaths(), envir=.jetpack_env)
 
   # initialize renv
   if (!packified()) {
