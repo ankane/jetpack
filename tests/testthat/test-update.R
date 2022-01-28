@@ -2,8 +2,6 @@ context("update")
 
 test_that("it works", {
   setup({
-    on.exit(renv::deactivate())
-
     jetpack::init()
 
     jetpack::add("DBI@1.1.1")

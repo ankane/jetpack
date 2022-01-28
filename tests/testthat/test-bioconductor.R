@@ -7,8 +7,6 @@ test_that("it works", {
   skip_on_cran()
 
   setup({
-    on.exit(renv::deactivate())
-
     jetpack::init()
 
     jetpack::add("BiocManager")

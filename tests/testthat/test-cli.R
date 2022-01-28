@@ -24,5 +24,5 @@ test_that("it works", {
     run(cli, "remove DBI")
     refuteFileContains("DESCRIPTION", "DBI")
     refuteFileContains("renv.lock", "DBI")
-  })
+  }, deactivate=FALSE)
 })

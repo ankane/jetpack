@@ -39,5 +39,5 @@ test_that("it works", {
 
     output <- run(cli, "global list")
     refuteContains(output, "Using DBI")
-  })
+  }, deactivate=FALSE)
 })

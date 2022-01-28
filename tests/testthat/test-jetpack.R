@@ -2,8 +2,6 @@ context("jetpack")
 
 test_that("it works", {
   setup({
-    on.exit(renv::deactivate())
-
     jetpack::init()
     expectFile("DESCRIPTION")
     expectFile("renv.lock")
