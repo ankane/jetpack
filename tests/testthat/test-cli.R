@@ -46,5 +46,10 @@ test_that("it works", {
 
     output <- run(cli, "outdated")
     expectContains(output, "All packages are up-to-date")
+
+    removeVenv()
+
+    output <- run(cli, "install")
+    expectContains(output, "Creating virtual environment")
   }, deactivate=FALSE)
 })

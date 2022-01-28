@@ -22,3 +22,7 @@ setup <- function(code, deactivate=TRUE) {
 
   with_dir(app_dir, code)
 }
+
+removeVenv <- function() {
+  unlink(Sys.getenv("TEST_JETPACK_ROOT", "none"), recursive=TRUE)
+}
