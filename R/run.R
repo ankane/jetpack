@@ -34,7 +34,7 @@ run <- function() {
       quit(status=1)
     })
 
-    tryCatch({
+    handleError({
       if (opts$global) {
         prepGlobal()
         if (opts$add) {
@@ -74,12 +74,24 @@ run <- function() {
       } else {
         install(deployment=opts$deployment)
       }
-    }, error=function(err) {
+    })
+  }, prep=FALSE)
+}
+
+handleError <- function(code) {
+  if (debugMode()) {
+    eval(code)
+  } else {
+    tryCatch(code, error=function(err) {
       msg <- conditionMessage(err)
       cat(color(paste0(msg, "\n"), "red"))
       quit(status=1)
     })
-  }, prep=FALSE)
+  }
+}
+
+debugMode <- function() {
+  Sys.getenv("JETPACK_DEBUG", "") != ""
 }
 
 version <- function() {
