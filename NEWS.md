@@ -4,6 +4,7 @@
 - Improved output
 - Fixed `unused argument` error with renv < 0.15
 - Fixed `update` without packages adding dependencies to `DESCRIPTION`
+- Fixed error message when `migrate` called outside of project
 
 ## 0.5.1 (2022-01-26)
 
