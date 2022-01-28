@@ -6,5 +6,8 @@ test_that("it works", {
 
     jetpack::add("dbx", remote="ankane/dbx")
     expectFileContains("DESCRIPTION", "ankane/dbx")
+
+    jetpack::remove("dbx", remote="ankane/dbx")
+    refuteFileContains("DESCRIPTION", "ankane/dbx")
   })
 })
