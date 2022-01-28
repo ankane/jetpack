@@ -23,7 +23,6 @@ load <- function() {
       quietly(source("renv/activate.R"))
     })
   }, error=function(e) {
-    msg <- geterrmessage()
     args <- commandArgs(trailingOnly=TRUE)
     migrating <- !interactive() && identical(args, "migrate")
     if (!migrating) {
