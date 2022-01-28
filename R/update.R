@@ -15,9 +15,8 @@
 update <- function(packages=c(), remotes=c()) {
   sandbox({
     if (length(packages) == 0) {
-      status <- getStatus()
-      packages <- names(status$lockfile$Package)
-      packages <- packages[!packages %in% c("renv")]
+      desc <- getDesc()
+      packages <- desc$get_deps()$package
 
       deps <- remotes::package_deps(packages, repos=getRepos())
       outdated <- deps[deps$diff < 0, ]

@@ -3,6 +3,7 @@
 - Added support for upgrading renv
 - Improved output
 - Fixed `unused argument` error with renv < 0.15
+- Fixed `update` without packages adding dependencies to `DESCRIPTION`
 
 ## 0.5.1 (2022-01-26)
 
