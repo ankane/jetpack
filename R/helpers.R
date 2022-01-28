@@ -159,7 +159,8 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
   }
 
   if (status_updated) {
-    suppressMessages(renv::snapshot(project=dir, prompt=FALSE, repos=getRepos()))
+    # repos option not available until 0.15.0
+    suppressMessages(renv::snapshot(project=dir, prompt=FALSE))
   }
 
   # copy back after successful
@@ -387,7 +388,8 @@ setupEnv <- function(dir, init=FALSE) {
 
     # restore wd after init changes it
     keepwd(quietly(renv::init(project=venv_dir, bare=TRUE, restart=FALSE, repos=getRepos(), settings=list(snapshot.type = "explicit"))))
-    quietly(renv::snapshot(prompt=FALSE, force=TRUE, repos=getRepos()))
+    # repos option not available until 0.15.0
+    quietly(renv::snapshot(prompt=FALSE, force=TRUE))
 
     # reload desc
     if (interactive()) {
