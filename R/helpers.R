@@ -121,7 +121,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
   status_updated <- FALSE
 
   if (!identical(status$library$Packages, status$lockfile$Packages)) {
-    suppressWarnings(renv::restore(project=dir, prompt=FALSE, clean=TRUE, repos=getRepos()))
+    suppressWarnings(renv::restore(project=dir, prompt=FALSE, clean=TRUE))
 
     # non-vendor approach
     # for (i in 1:nrow(restore)) {
@@ -163,7 +163,8 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
   }
 
   if (status_updated) {
-    # repos option not available until 0.15.0
+    # let renv handle repos for all renv functions
+    # also, repos option not available until 0.15.0
     suppressMessages(renv::snapshot(project=dir, prompt=FALSE))
   }
 
@@ -395,8 +396,9 @@ setupEnv <- function(dir, init=FALSE) {
     file.copy(file.path(dir, "DESCRIPTION"), file.path(venv_dir, "DESCRIPTION"), overwrite=TRUE)
 
     # restore wd after init changes it
-    keepwd(quietly(renv::init(project=venv_dir, bare=TRUE, restart=FALSE, repos=getRepos(), settings=list(snapshot.type = "explicit"))))
-    # repos option not available until 0.15.0
+    keepwd(quietly(renv::init(project=venv_dir, bare=TRUE, restart=FALSE, settings=list(snapshot.type = "explicit"))))
+    # let renv handle repos for all renv functions
+    # also, repos option not available until 0.15.0
     quietly(renv::snapshot(prompt=FALSE, force=TRUE))
 
     # reload desc
