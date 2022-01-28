@@ -378,7 +378,9 @@ venvDir <- function(dir) {
 }
 
 verboseRenv <- function(code) {
-  configureRenv(code, verbose=TRUE)
+  # TODO filter output
+  # configureRenv(code, verbose=TRUE)
+  eval(code)
 }
 
 setupEnv <- function(dir, init=FALSE) {
