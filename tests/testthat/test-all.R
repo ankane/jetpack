@@ -1,4 +1,4 @@
-context("jetpack")
+context("all")
 
 test_that("it works", {
   setup({
