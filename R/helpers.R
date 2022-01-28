@@ -28,11 +28,15 @@ configureRenv <- function(code) {
   )
   on.exit(options(previous))
   options(
-    renv.verbose=FALSE,
+    renv.verbose=debugMode(),
     renv.config.synchronized.check=FALSE,
     renv.config.sandbox.enabled=TRUE
   )
   eval(code)
+}
+
+debugMode <- function() {
+  Sys.getenv("JETPACK_DEBUG", "") != ""
 }
 
 enableRenv <- function() {
@@ -250,10 +254,14 @@ prepCommand <- function() {
 }
 
 quietly <- function(code) {
-  utils::capture.output(suppressMessages({
-    val <- code
-  }))
-  val
+  if (debugMode()) {
+    eval(code)
+  } else {
+    utils::capture.output(suppressMessages({
+      val <- code
+    }))
+    val
+  }
 }
 
 renvOn <- function() {

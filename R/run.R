@@ -90,10 +90,6 @@ handleError <- function(code) {
   }
 }
 
-debugMode <- function() {
-  Sys.getenv("JETPACK_DEBUG", "") != ""
-}
-
 version <- function() {
   message(paste0("Jetpack version ", utils::packageVersion("jetpack")))
 }
