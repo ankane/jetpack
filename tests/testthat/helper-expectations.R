@@ -1,9 +1,9 @@
 contains <- function(str, x) {
-  grepl(x, str)
+  grepl(x, str, fixed=TRUE)
 }
 
-fileContains <- function(file, x) {
-  contains(paste(readLines(file), collapse=""), x)
+readFile <- function(file) {
+  paste(readLines(file), collapse="")
 }
 
 expectContains <- function(name, str) {
@@ -11,7 +11,7 @@ expectContains <- function(name, str) {
 }
 
 refuteContains <- function(name, str) {
-  expect(!contains(name, str), paste(name, "does not contain", str))
+  expect(!contains(name, str), paste(name, "contains", str))
 }
 
 expectFile <- function(name) {
@@ -19,9 +19,9 @@ expectFile <- function(name) {
 }
 
 expectFileContains <- function(name, str) {
-  expect(fileContains(name, str), paste(name, "does not contain", str))
+  expectContains(readFile(name), str)
 }
 
 refuteFileContains <- function(name, str) {
-  expect(!fileContains(name, str), paste(name, "contains", str))
+  refuteContains(readFile(name), str)
 }
