@@ -124,7 +124,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
     verboseRenv(suppressWarnings(renv::restore(project=dir, prompt=FALSE, clean=TRUE)))
 
     # non-vendor approach
-    # for (i in 1:nrow(restore)) {
+    # for (i in seq_len(nrow(restore))) {
     #   row <- restore[i, ]
     #   devtools::install_version(row$package, version=row$version, dependencies=FALSE)
     # }
@@ -144,7 +144,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
   specificDeps <- deps[startsWith(deps$version, "== "), ]
   if (nrow(specificDeps) > 0) {
     specificDeps$version <- sub("== ", "", specificDeps$version)
-    for (i in 1:nrow(specificDeps)) {
+    for (i in seq_len(nrow(specificDeps))) {
       row <- specificDeps[i, ]
       currentDep <- status$lockfile$Packages[[row$package]]
       if (is.null(currentDep) || currentDep$Version != row$version) {
