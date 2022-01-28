@@ -14,7 +14,7 @@ migrate <- function() {
     packrat_lockfile <- file.path(dir, "packrat.lock")
 
     if (is.null(dir)) {
-      message("This project has not yet been packified.")
+      message("This project has not yet been initialized.")
     } else if (file.exists(renv_lockfile)) {
       message("renv.lock already exists. You should be good to go.")
     } else if (!file.exists(packrat_lockfile)) {

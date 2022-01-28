@@ -10,8 +10,8 @@ test_that("keeps DESCRIPTION", {
   })
 })
 
-test_that("not packified", {
+test_that("not initialized", {
   setup({
-    expect_error(jetpack::add("DBI"), "This project has not yet been packified.\nRun 'jetpack::init()' to init.", fixed=TRUE)
+    expect_error(jetpack::add("DBI"), "This project has not yet been initialized.\nRun 'jetpack::init()' to init.", fixed=TRUE)
   })
 })

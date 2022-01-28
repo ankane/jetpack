@@ -91,7 +91,7 @@ getStatus <- function(project=NULL) {
     quietly(renv::status(project=project))
   }, error=function(err) {
     msg <- conditionMessage(err)
-    if (grepl("This project has not yet been packified", msg)) {
+    if (grepl("This project has not yet been initialized", msg, fixed=TRUE)) {
       stopNotPackified()
     } else {
       stop(msg)
@@ -321,7 +321,7 @@ stopNotMigrated <- function() {
 
 stopNotPackified <- function() {
   cmd <- if (!interactive()) "jetpack init" else "jetpack::init()"
-  stop(paste0("This project has not yet been packified.\nRun '", cmd, "' to init."))
+  stop(paste0("This project has not yet been initialized.\nRun '", cmd, "' to init."))
 }
 
 success <- function(msg) {
