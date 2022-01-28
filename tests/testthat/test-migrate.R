@@ -1,7 +1,11 @@
 context("migrate")
 
+library(packrat)
+
 test_that("it works", {
   setup({
+    on.exit(renv::deactivate())
+
     expect_message(jetpack::migrate(), "This project has not yet been packified.")
 
     write("Package: app", file="DESCRIPTION")

@@ -1,5 +1,6 @@
 context("cli")
 
+# must run before any calls to renv::deactivate()
 test_that("it works", {
   setup({
     cli <- cliFile()
