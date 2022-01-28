@@ -48,7 +48,7 @@ update <- function(packages=c(), remotes=c()) {
       }
 
       if (packages %in% c("renv")) {
-        renv::upgrade(prompt=FALSE)
+        renv::upgrade(prompt=FALSE, reload=FALSE)
       }
 
       desc <- updateDesc(packages[!packages %in% c("renv")], remotes)
