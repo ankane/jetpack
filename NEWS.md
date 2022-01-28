@@ -1,5 +1,6 @@
 ## 0.5.2 (unreleased)
 
+- Added support for upgrading renv
 - Fixed `unused argument` error with renv < 0.15
 
 ## 0.5.1 (2022-01-26)

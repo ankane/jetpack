@@ -48,9 +48,13 @@ update <- function(packages=c(), remotes=c()) {
         versions[package] <- pkgVersion(status, package)
       }
 
-      desc <- updateDesc(packages, remotes)
+      if (packages %in% c("renv")) {
+        renv::upgrade(prompt=FALSE)
+      }
 
-      installHelper(remove=packages, desc=desc)
+      desc <- updateDesc(packages[!packages %in% c("renv")], remotes)
+
+      installHelper(remove=packages[!packages %in% c("renv")], desc=desc)
 
       # show updated versions
       status <- getStatus()
