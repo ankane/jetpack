@@ -2,6 +2,8 @@ context("global")
 
 # must run before any calls to renv::deactivate()
 test_that("it works", {
+  skip_on_cran()
+
   skip_if(!identical(Sys.getenv("TEST_JETPACK_GLOBAL"), "true"))
 
   setup({
