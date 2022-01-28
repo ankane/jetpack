@@ -20,7 +20,7 @@ color <- function(message, color) {
   }
 }
 
-configureRenv <- function(code) {
+configureRenv <- function(code, verbose=FALSE) {
   previous <- options(
     "renv.verbose",
     "renv.config.synchronized.check",
@@ -28,7 +28,7 @@ configureRenv <- function(code) {
   )
   on.exit(options(previous))
   options(
-    renv.verbose=debugMode(),
+    renv.verbose=(verbose || debugMode()),
     renv.config.synchronized.check=FALSE,
     renv.config.sandbox.enabled=TRUE
   )
@@ -121,7 +121,7 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
   status_updated <- FALSE
 
   if (!identical(status$library$Packages, status$lockfile$Packages)) {
-    suppressWarnings(renv::restore(project=dir, prompt=FALSE, clean=TRUE))
+    verboseRenv(suppressWarnings(renv::restore(project=dir, prompt=FALSE, clean=TRUE)))
 
     # non-vendor approach
     # for (i in 1:nrow(restore)) {
@@ -370,6 +370,10 @@ venvDir <- function(dir) {
   dir_hash <- sum(utf8ToInt(dir)) + 1
   venv_name <- paste0(basename(dir), "-", dir_hash)
   file.path(venv_dir, venv_name)
+}
+
+verboseRenv <- function(code) {
+  configureRenv(code, verbose=TRUE)
 }
 
 setupEnv <- function(dir, init=FALSE) {

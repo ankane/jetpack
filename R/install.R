@@ -15,7 +15,7 @@ install <- function(deployment=FALSE) {
       if (length(missing) > 0) {
         stop(paste("Missing packages:", paste(missing, collapse=", ")))
       }
-      suppressWarnings(renv::restore(prompt=FALSE))
+      verboseRenv(suppressWarnings(renv::restore(prompt=FALSE)))
       showStatus(status)
     } else {
       installHelper(show_status=TRUE)
