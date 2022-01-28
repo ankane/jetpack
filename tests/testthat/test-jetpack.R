@@ -17,6 +17,7 @@ test_that("it works", {
     expect(check, "Check should return true")
 
     jetpack::install()
+    jetpack::install(deployment=TRUE)
     jetpack::update("DBI")
 
     jetpack::remove("DBI")

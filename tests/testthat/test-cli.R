@@ -17,6 +17,7 @@ test_that("it works", {
     run(cli, "check")
 
     run(cli, "install")
+    run(cli, "install --deployment")
     run(cli, "update DBI")
 
     run(cli, "remove DBI")
