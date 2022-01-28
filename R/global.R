@@ -49,7 +49,7 @@ globalInstallHelper <- function(packages, remotes=c()) {
 globalList <- function() {
   packages <- as.data.frame(utils::installed.packages())
   packages <- packages[order(tolower(packages$Package)), ]
-  for (i in 1:nrow(packages)) {
+  for (i in seq_len(nrow(packages))) {
     row <- packages[i, ]
     message(paste0("Using ", row$Package, " ", row$Version))
   }
@@ -68,7 +68,7 @@ globalOutdated <- function() {
   outdated <- globalOutdatedPackages()
 
   if (nrow(outdated) > 0) {
-    for (i in 1:nrow(outdated)) {
+    for (i in seq_len(nrow(outdated))) {
       row <- outdated[i, ]
       message(paste0(row$package, " (latest ", row$available, ", installed ", row$installed, ")"))
     }
@@ -91,7 +91,7 @@ globalUpdate <- function(packages, remotes, verbose) {
     outdated <- globalOutdatedPackages()
 
     if (nrow(outdated) > 0) {
-      for (i in 1:nrow(outdated)) {
+      for (i in seq_len(nrow(outdated))) {
         row <- outdated[i, ]
         package <- row$package
         utils::install.packages(package, quiet=!verbose, repos=getRepos())
