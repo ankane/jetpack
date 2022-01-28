@@ -258,6 +258,11 @@ quietly <- function(code) {
   if (debugMode()) {
     eval(code)
   } else {
+    # status output not captured by capture.output
+    previous <- options("renv.pretty.print.emitter")
+    on.exit(options(previous))
+    options(renv.pretty.print.emitter=function(msg) {})
+
     utils::capture.output(suppressMessages({
       val <- code
     }))
