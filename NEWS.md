@@ -1,4 +1,4 @@
-## 0.5.2 (unreleased)
+## 0.5.2 (2022-01-28)
 
 - Added support for upgrading renv
 - Improved output
