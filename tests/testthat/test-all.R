@@ -17,6 +17,9 @@ test_that("it works", {
     jetpack::install()
     jetpack::install(deployment=TRUE)
     jetpack::update("DBI")
+    jetpack::update()
+
+    jetpack::outdated()
 
     jetpack::remove("DBI")
     refuteFileContains("DESCRIPTION", "DBI")

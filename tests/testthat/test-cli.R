@@ -32,6 +32,9 @@ test_that("it works", {
     output <- run(cli, "update")
     expectContains(output, "All packages are up-to-date")
 
+    # different output based on whether renv is latest
+    run(cli, "outdated")
+
     output <- run(cli, "remove DBI")
     expectContains(output, "Removed DBI")
     refuteFileContains("DESCRIPTION", "DBI")
@@ -40,5 +43,8 @@ test_that("it works", {
     # TODO test when older version installed
     output <- run(cli, "update renv")
     expectContains(output, "Updated renv")
+
+    output <- run(cli, "outdated")
+    expectContains(output, "All packages are up-to-date")
   }, deactivate=FALSE)
 })
