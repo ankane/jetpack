@@ -13,7 +13,7 @@ checkInsecureRepos <- function() {
 
 color <- function(message, color) {
   if (interactive() || isatty(stdout())) {
-    color_codes = list(red=31, green=32, yellow=33)
+    color_codes <- list(red=31, green=32, yellow=33)
     paste0("\033[", color_codes[color], "m", message, "\033[0m")
   } else {
     message
@@ -407,7 +407,7 @@ setupEnv <- function(dir, init=FALSE) {
     file.copy(file.path(dir, "DESCRIPTION"), file.path(venv_dir, "DESCRIPTION"), overwrite=TRUE)
 
     # restore wd after init changes it
-    keepwd(quietly(renv::init(project=venv_dir, bare=TRUE, restart=FALSE, settings=list(snapshot.type = "explicit"))))
+    keepwd(quietly(renv::init(project=venv_dir, bare=TRUE, restart=FALSE, settings=list(snapshot.type="explicit"))))
     # let renv handle repos for all renv functions
     # also, repos option not available until 0.15.0
     quietly(renv::snapshot(prompt=FALSE, force=TRUE))
