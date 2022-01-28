@@ -27,7 +27,7 @@ init <- function() {
 
 initRprofile <- function() {
   rprofile <- file.exists(".Rprofile")
-  if (!rprofile || !any(grepl("jetpack", readLines(".Rprofile")))) {
+  if (!rprofile || !any(grepl("jetpack", readLines(".Rprofile"), fixed=TRUE))) {
     str <- "if (requireNamespace(\"jetpack\", quietly=TRUE)) {
   jetpack::load()
 } else {
