@@ -66,7 +66,7 @@ getDesc <- function() {
 getMissing <- function(status) {
   packages <- names(status$lockfile$Package)
   dependencies <- getDependencies()$Package
-  missing <- setdiff(dependencies, packages)
+  setdiff(dependencies, packages)
 }
 
 getName <- function(package) {
