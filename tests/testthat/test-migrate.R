@@ -27,6 +27,8 @@ Hash: 3d49688287bd2246cd8a58e233be39d5
 "
     write(packrat_lock, file="packrat.lock")
 
+    expect_error(jetpack::install(), "This project has not yet been migrated to renv.\nRun 'jetpack::migrate()' to migrate.", fixed=TRUE)
+
     jetpack::migrate()
 
     expectFile("renv.lock")
