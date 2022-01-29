@@ -12,5 +12,7 @@ test_that("it works", {
     jetpack::update()
     expectFileContains("DESCRIPTION", "DBI")
     refuteFileContains("DESCRIPTION", "1.1.1")
+
+    expect_error(jetpack::update("dbx"), "Cannot find package 'dbx' in DESCRIPTION file")
   })
 })
