@@ -14,11 +14,11 @@ test_that("can be called multiple times", {
   setup({
     jetpack::init()
 
-    rprofile <- readLines(".RProfile")
+    rprofile <- readFile(".Rprofile")
 
     jetpack::init()
 
-    expect_equal(readLines(".RProfile"), rprofile)
+    expect_equal(readFile(".Rprofile"), rprofile)
   })
 })
 
