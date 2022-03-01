@@ -16,7 +16,7 @@ init <- function() {
 
     setupEnv(getwd(), init=TRUE)
 
-    if (!interactive()) {
+    if (isCLI()) {
       success("Run 'jetpack add <package>' to add packages!")
     } else {
       success("Run 'jetpack::add(package)' to add packages!")

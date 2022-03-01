@@ -34,6 +34,8 @@ run <- function() {
       quit(status=1)
     })
 
+    assign("jetpack_cli", TRUE, envir=.jetpack_env)
+
     handleError({
       if (opts$global) {
         prepGlobal()

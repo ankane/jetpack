@@ -182,6 +182,10 @@ installHelper <- function(remove=c(), desc=NULL, show_status=FALSE, update_all=F
   }
 }
 
+isCLI <- function() {
+  isTRUE(.jetpack_env$jetpack_cli)
+}
+
 isTesting <- function() {
   identical(Sys.getenv("TEST_JETPACK"), "true")
 }
@@ -315,12 +319,12 @@ silenceWarnings <- function(msgs, code) {
 }
 
 stopNotMigrated <- function() {
-  cmd <- if (!interactive()) "jetpack migrate" else "jetpack::migrate()"
+  cmd <- if (isCLI()) "jetpack migrate" else "jetpack::migrate()"
   stop(paste0("This project has not yet been migrated to renv.\nRun '", cmd, "' to migrate."))
 }
 
 stopNotPackified <- function() {
-  cmd <- if (!interactive()) "jetpack init" else "jetpack::init()"
+  cmd <- if (isCLI()) "jetpack init" else "jetpack::init()"
   stop(paste0("This project has not yet been initialized.\nRun '", cmd, "' to init."))
 }
 

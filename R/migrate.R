@@ -35,7 +35,7 @@ migrate <- function() {
       renv::record(list(renv=record), project=temp_dir)
 
       file.copy(file.path(temp_dir, "renv.lock"), renv_lockfile)
-      cmd <- if (!interactive()) "jetpack install" else "jetpack::install()"
+      cmd <- if (isCLI()) "jetpack install" else "jetpack::install()"
       message(paste0("Lockfile migration successful! To finish migrating:\n1. Delete packrat.lock\n2. Run '", cmd, "'"))
     }
   }, prep=FALSE)

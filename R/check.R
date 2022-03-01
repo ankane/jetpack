@@ -12,7 +12,7 @@ check <- function() {
     missing <- getMissing(status)
     if (length(missing) > 0) {
       message(paste("Missing packages:", paste(missing, collapse=", ")))
-      if (!interactive()) {
+      if (isCLI()) {
         warn("Run 'jetpack install' to install them")
       } else {
         warn("Run 'jetpack::install()' to install them")
