@@ -1,3 +1,7 @@
+## 0.5.4 (unreleased)
+
+- Fixed CRAN error
+
 ## 0.5.3 (2022-10-20)
 
 - Fixed error with updating renv
