@@ -9,13 +9,13 @@ test_that("it works", {
   setup({
     jetpack::init()
 
-    record <- list(Package="renv", Version="0.14.0", Source="CRAN")
+    record <- list(Package="renv", Version="0.15.5", Source="CRAN")
     renv::record(list(renv=record), project=getwd())
 
     jetpack::install()
-    expectFileContains("renv.lock", "0.14.0")
+    expectFileContains("renv.lock", "0.15.5")
 
     jetpack::update("renv")
-    refuteFileContains("renv.lock", "0.14.0")
+    refuteFileContains("renv.lock", "0.15.5")
   })
 })
