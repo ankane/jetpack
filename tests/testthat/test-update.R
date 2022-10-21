@@ -1,7 +1,8 @@
 context("update")
 
 test_that("it works", {
-  # fails with cannot open URL error with r-devel-linux-x86_64-fedora-*
+  # fails on CRAN r-devel-linux-x86_64-fedora-* with cannot open URL error
+  # but passes on R-hub Fedora Linux, R-devel, clang, gfortran
   skip_on_cran()
 
   setup({
