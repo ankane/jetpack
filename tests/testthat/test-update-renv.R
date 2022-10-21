@@ -1,6 +1,11 @@
 context("update renv")
 
 test_that("it works", {
+  # fails on CRAN r-devel-linux-x86_64-fedora-* with
+  # failed to find source for 'renv 0.14.0' in package repositories
+  # but passes on R-hub Fedora Linux, R-devel, clang, gfortran
+  skip_on_cran()
+
   setup({
     jetpack::init()
 
