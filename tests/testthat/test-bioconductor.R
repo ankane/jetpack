@@ -11,7 +11,6 @@ test_that("it works", {
 
     jetpack::add("BiocManager")
     expectFileContains("DESCRIPTION", "BiocManager")
-    expectFileContains("renv.lock", "Bioconductor")
 
     jetpack::add("Biobase", remote="bioc::release/Biobase")
     expectFileContains("DESCRIPTION", "Biobase")
@@ -19,6 +18,5 @@ test_that("it works", {
 
     jetpack::remove("Biobase", remote="bioc::release/Biobase")
     jetpack::remove("BiocManager")
-    refuteFileContains("renv.lock", "Bioconductor")
   })
 })
