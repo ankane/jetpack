@@ -1,6 +1,9 @@
 context("update")
 
 test_that("it works", {
+  # fails with cannot open URL error with r-devel-linux-x86_64-fedora-*
+  skip_on_cran()
+
   setup({
     jetpack::init()
 
