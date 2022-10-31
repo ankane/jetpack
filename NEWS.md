@@ -1,3 +1,7 @@
+## 0.5.5 (2022-10-30)
+
+- Resubmitted to CRAN
+
 ## 0.5.4 (2022-10-21)
 
 - Fixed CRAN error

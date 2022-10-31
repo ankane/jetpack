@@ -10,9 +10,17 @@ There were no ERRORs or WARNINGs.
 
 There was 1 NOTE:
 
-- Days since last update: 0
+```text
+New submission
 
-This fixes a failing test from the previous release.
+Package was archived on CRAN
+```
+
+The package was archived due to a network issue:
+
+```text
+cannot open URL 'https://api.github.com/repos/ankane/dbx/commits/HEAD'
+```
 
 ## Downstream dependencies
 
