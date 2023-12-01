@@ -20,6 +20,7 @@ test_that("it works", {
     expectFileContains("DESCRIPTION", "bioc::release/Biobase")
 
     jetpack::remove("Biobase", remote="bioc::release/Biobase")
+    jetpack::remove("BiocVersion", remote="bioc::release/BiocVersion")
     jetpack::remove("BiocManager")
   })
 })
