@@ -12,6 +12,9 @@ test_that("it works", {
     jetpack::add("BiocManager")
     expectFileContains("DESCRIPTION", "BiocManager")
 
+    # needed for Biobase
+    jetpack::add("BiocVersion", remote="bioc::release/BiocVersion")
+
     jetpack::add("Biobase", remote="bioc::release/Biobase")
     expectFileContains("DESCRIPTION", "Biobase")
     expectFileContains("DESCRIPTION", "bioc::release/Biobase")
