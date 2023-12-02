@@ -8,7 +8,7 @@
 
 Inspired by [Yarn](https://yarnpkg.com/), [Bundler](https://bundler.io/), and [Pipenv](https://pipenv.pypa.io/en/latest/)
 
-[![Build Status](https://github.com/ankane/jetpack/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/ankane/jetpack/actions) [![CRAN status](https://www.r-pkg.org/badges/version/jetpack)](https://cran.r-project.org/package=jetpack)
+[![Build Status](https://github.com/ankane/jetpack/actions/workflows/build.yml/badge.svg)](https://github.com/ankane/jetpack/actions) [![CRAN status](https://www.r-pkg.org/badges/version/jetpack)](https://cran.r-project.org/package=jetpack)
 
 ## Installation
 
