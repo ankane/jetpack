@@ -1,3 +1,7 @@
+## 0.6.0 (unreleased)
+
+- Removed `base` and `recommended` packages from install output
+
 ## 0.5.5 (2022-10-30)
 
 - Resubmitted to CRAN

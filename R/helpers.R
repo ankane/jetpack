@@ -297,7 +297,9 @@ showStatus <- function(status) {
   packages <- status$library$Packages
   packages <- packages[order(names(packages))]
   for (row in packages) {
-    message(paste0("Using ", row$Package, " ", row$Version))
+    if (is.null(row$Priority)) {
+      message(paste0("Using ", row$Package, " ", row$Version))
+    }
   }
 }
 
