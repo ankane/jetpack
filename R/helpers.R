@@ -283,7 +283,7 @@ renvProject <- function() {
 }
 
 sandbox <- function(code, prep=TRUE) {
-  libs <- c("remotes", "desc", "docopt", "callr")
+  libs <- c("remotes", "desc", "docopt")
   for (lib in libs) {
     loadExternal(lib)
   }
