@@ -1,5 +1,3 @@
-library(withr)
-
 setup <- function(code, deactivate=TRUE) {
   app_dir <- tempfile(pattern="app")
   renv_dir <- tempfile(pattern="renv")
@@ -20,7 +18,7 @@ setup <- function(code, deactivate=TRUE) {
     on.exit(renv::deactivate())
   }
 
-  with_dir(app_dir, code)
+  withr::with_dir(app_dir, code)
 }
 
 removeVenv <- function() {

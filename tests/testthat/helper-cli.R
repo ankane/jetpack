@@ -7,7 +7,7 @@ cliFile <- function() {
   tempfile(pattern="jetpack", fileext=ext)
 }
 
-run <- function(cli, command) {
+runCli <- function(cli, command) {
   debug <- FALSE
 
   args <- strsplit(command, " ", fixed=TRUE)[[1]]
