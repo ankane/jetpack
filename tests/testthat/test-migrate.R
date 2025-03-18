@@ -6,6 +6,7 @@ test_that("it works", {
   # fails with unreleased renv versions
   # https://github.com/ankane/jetpack/issues/23
   skip_on_cran()
+  skip_on_ci()
 
   setup({
     expect_message(jetpack::migrate(), "This project has not yet been initialized.")

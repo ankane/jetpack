@@ -5,6 +5,7 @@ test_that("it works", {
   # possibly due to this warning:
   # 'getOption("repos")' replaces Bioconductor standard repositories
   skip_on_cran()
+  skip_on_ci()
   skip_if(contains(R.version$status, "devel"))
 
   setup({
