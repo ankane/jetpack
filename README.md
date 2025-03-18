@@ -61,7 +61,7 @@ jetpack::add(c("randomForest", "DBI"))
 Add a specific version
 
 ```r
-jetpack::add("DBI@1.0.0")
+jetpack::add("DBI@1.2.0")
 ```
 
 Add from GitHub or another remote source
@@ -227,7 +227,7 @@ All the Jetpack commands are now available
 jetpack init
 jetpack install
 jetpack add randomForest
-jetpack add DBI@1.0.0
+jetpack add DBI@1.2.0
 jetpack add plyr --remote=hadley/plyr
 jetpack update randomForest
 jetpack remove DBI
