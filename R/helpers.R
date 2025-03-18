@@ -320,11 +320,6 @@ silenceWarnings <- function(msgs, code) {
   res
 }
 
-stopNotMigrated <- function() {
-  cmd <- if (isCLI()) "jetpack migrate" else "jetpack::migrate()"
-  stop(paste0("This project has not yet been migrated to renv.\nRun '", cmd, "' to migrate."))
-}
-
 stopNotPackified <- function() {
   cmd <- if (isCLI()) "jetpack init" else "jetpack::init()"
   stop(paste0("This project has not yet been initialized.\nRun '", cmd, "' to init."))
@@ -404,10 +399,6 @@ setupEnv <- function(dir, init=FALSE) {
 
   # initialize renv
   if (!packified()) {
-    if (file.exists(file.path(dir, "packrat.lock")) && !file.exists(file.path(dir, "renv.lock"))) {
-      stopNotMigrated()
-    }
-
     message("Creating virtual environment...")
 
     file.copy(file.path(dir, "DESCRIPTION"), file.path(venv_dir, "DESCRIPTION"), overwrite=TRUE)
