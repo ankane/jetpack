@@ -1,7 +1,7 @@
 ## 0.6.0 (unreleased)
 
 - Removed `migrate` command
-- Removed `base` and `recommended` packages from install output
+- Removed `base` and `recommended` packages from `install` output
 
 ## 0.5.5 (2022-10-30)
 
