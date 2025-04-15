@@ -24,13 +24,15 @@ configureRenv <- function(code, verbose=FALSE) {
   previous <- options(
     "renv.verbose",
     "renv.config.synchronized.check",
-    "renv.config.sandbox.enabled"
+    "renv.config.sandbox.enabled",
+    "renv.lockfile.version"
   )
   on.exit(options(previous))
   options(
     renv.verbose=(verbose || debugMode()),
     renv.config.synchronized.check=FALSE,
-    renv.config.sandbox.enabled=TRUE
+    renv.config.sandbox.enabled=TRUE,
+    renv.lockfile.version=1
   )
   eval(code)
 }
